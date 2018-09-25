@@ -429,3 +429,20 @@ https://dev.routific.com/
 Website and mobile app for commercial use. Aimed at buisnesses which need to route drivers making deliveries/pickups/vists/etc. Many features require payment after free (limited) trial. Again possibly more vehicle routing than TSP.
 
 https://jungleworks.com/tookan/
+
+
+<style>
+  ul {
+    list-style-type: none;
+  }
+  ul > li:before {
+    font-weight: bold;
+    padding-right: 1rem;
+  }
+  ul.positive > li:before {
+    content: '+';
+  }
+  ul.negative > li:before {
+    content: '-';
+  }
+</style>
