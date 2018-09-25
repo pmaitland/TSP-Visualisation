@@ -1,8 +1,11 @@
 This document is a work log for this project. Dates are in *DD/MM/YY* format. Times are in 24 hour clock and are approximate.
 
----
+## Week 1
 
 17/09/18
+
+**10:00-10:30**
+[Supervisor Meeting](./meetings/18-09-17.md)
 
 **14:00-16:30**
 Looked for existing visualisations. Found VISUALGO and T. W. Schneider's implementations.
@@ -44,12 +47,22 @@ Read *The Traveling Salesman Problem: A Computational Study, David L. Applegate 
 **13:30-17:00**
 Continued with reading.
 
----
+## Week 2
 
 24/09/18
 
 **13:00-13:30**
 Prepared for supervisor meeting.
 
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-09-24.md)
+
 **16:00-16:30**
 Set up GitHub repository and added existing files. Wrote up summary of supervisor meeting.
+
+---
+
+25/09/18
+
+**15:30-16:30**
+Summarised existing TSP software into table.
