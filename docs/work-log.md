@@ -64,5 +64,5 @@ Set up GitHub repository and added existing files. Wrote up summary of superviso
 
 25/09/18
 
-**15:30-16:30**
-Summarised existing TSP software into table.
+**15:30-17:30**
+Summarised existing TSP software into table and wrote up initial requirements.
