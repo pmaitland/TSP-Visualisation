@@ -66,3 +66,17 @@ Set up GitHub repository and added existing files. Wrote up summary of superviso
 
 **15:30-17:30**
 Summarised existing TSP software into table and wrote up initial requirements.
+
+30/09/18
+
+**09:30-10:30**
+Began creating initial wireframes.
+
+**16:00-17:00**
+Continued with wireframes.
+
+**17:45-19:30**
+Looked into JavaScript libraries which could be used for implementation.
+
+**23:00-00:00**
+Continued with wireframes.
