@@ -80,3 +80,16 @@ Looked into JavaScript libraries which could be used for implementation.
 
 **23:00-00:00**
 Continued with wireframes.
+
+## Week 3
+
+01/10/18
+
+**12:50-13:50**
+Prepared for supervisor meeting.
+
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-10-01.md)
+
+**16:00-16:30**
+Wrote up summary of supervisor meeting.
