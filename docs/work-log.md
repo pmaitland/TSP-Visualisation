@@ -67,6 +67,8 @@ Set up GitHub repository and added existing files. Wrote up summary of superviso
 **15:30-17:30**
 Summarised existing TSP software into table and wrote up initial requirements.
 
+---
+
 30/09/18
 
 **09:30-10:30**
@@ -94,12 +96,17 @@ Prepared for supervisor meeting.
 **16:00-17:50**
 Wrote up summary of supervisor meeting and played around with D3.js.
 
+---
+
 04/10/18
 
 **20:00-22:20**
 Began implementing nearest neighbour in JavaScript.
 
+---
+
 05/10/18
+
 **00:40-01:00**
 Continued with nearest neighbour in JavaScript.
 
