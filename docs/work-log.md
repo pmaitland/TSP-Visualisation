@@ -91,5 +91,17 @@ Prepared for supervisor meeting.
 **15:00-15:30**
 [Supervisor Meeting](./meetings/18-10-01.md)
 
-**16:00-16:30**
-Wrote up summary of supervisor meeting.
+**16:00-17:50**
+Wrote up summary of supervisor meeting and played around with D3.js.
+
+04/10/18
+
+**20:00-22:20**
+Began implementing nearest neighbour in JavaScript.
+
+05/10/18
+**00:40-01:00**
+Continued with nearest neighbour in JavaScript.
+
+**14:00-15:00**
+Continued with nearest neighbour in JavaScript.
