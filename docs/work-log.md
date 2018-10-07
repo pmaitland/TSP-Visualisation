@@ -112,3 +112,13 @@ Continued with nearest neighbour in JavaScript.
 
 **14:00-15:00**
 Continued with nearest neighbour in JavaScript.
+
+**16:40-17:00**
+Began implementing brute force in JavaScript.
+
+---
+
+07/10/18
+
+**10:30-10:50**
+Continued with nearest neighbour in JavaScript.

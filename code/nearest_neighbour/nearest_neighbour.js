@@ -1,33 +1,34 @@
 
 var distanceMatrix = [
-  [0, 5, 4, 3, 2],
-  [6, 0, 3, 5, 1],
-  [9, 4, 0, 3, 2],
-  [2, 2, 2, 0, 5],
-  [9, 1, 2, 6, 0]
-]; // must be size m x m
+  [0, 3, 4, 5],
+  [1, 0, 7, 4],
+  [1, 3, 0, 1],
+  [7, 3, 6, 0]
+]; // must b size m x m
 
-var startingVertex    = 0, // must be >= 0 and <= m
+var startingVertex    = 2, // must be >= 0 and <= m
     currentVertex     = startingVertex,
     numberOfVertices  = distanceMatrix.length,
-    finalTour         = [startingVertex];
+    finalTour         = [startingVertex],
+    tourLength        = 0;
 
 /**
   Builds and displays a list of vertices in they order they are visited when
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour() {
-  // display each row of the matrix and fill the main diagonal with Infinity
+  // fills the main diagonal with Infinity
   for (let i = 0; i < numberOfVertices; i++) {
-    displayRowInHtml(i);
     distanceMatrix[i][i] = Infinity;
   }
 
   for (let i = 0; i < numberOfVertices - 1; i++) {
     let nearestNeighbour = findNearestUnvisitedNeighbour(distanceMatrix, currentVertex);
     finalTour.push(nearestNeighbour);
+    tourLength += distanceMatrix[currentVertex][nearestNeighbour];
     currentVertex = nearestNeighbour;
   }
+  tourLength += distanceMatrix[currentVertex][startingVertex];
 
   displayFinalTour();
 }
@@ -49,10 +50,19 @@ function findNearestUnvisitedNeighbour(distances, v) {
 }
 
 /**
+  Displays the distance matrix on window load.
+ */
+window.onload = function displayDistanceMatrix() {
+  for (let i = 0; i < numberOfVertices; i++) {
+    displayMatrixRow(i);
+  }
+}
+
+/**
   Takes the index of a vertex in the distance matrix and
   displays it's row of distances.
  */
-function displayRowInHtml(index) {
+function displayMatrixRow(index) {
   var matrix = document.getElementById("distanceMatrix"),
       row    = document.createTextNode("[" + distanceMatrix[index] + "]"),
       br     = document.createElement("br");
@@ -62,11 +72,12 @@ function displayRowInHtml(index) {
 }
 
 /**
-  Displays the final tour in a readable format.
+  Displays the final tour in a legible format.
  */
 function displayFinalTour() {
   for (let vertex in finalTour) {
-     document.getElementById("finalTour").innerHTML = document.getElementById("finalTour").innerHTML + finalTour[vertex] + "->";
+     document.getElementById("finalTour").innerHTML += finalTour[vertex] + "->";
   }
-  document.getElementById("finalTour").innerHTML = document.getElementById("finalTour").innerHTML + startingVertex;
+  document.getElementById("finalTour").innerHTML += startingVertex;
+  document.getElementById("tourLength").innerHTML = tourLength;
 }
