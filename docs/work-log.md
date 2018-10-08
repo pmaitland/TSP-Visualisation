@@ -131,3 +131,9 @@ Added tracking of steps taken to nearest neighbour implementation.
 
 **12:30-14:00**
 Worked on improving steps taken to nearest neighbour and prepared for supervisor meeting.
+
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-10-08.md)
+
+**16:00-16:20**
+Wrote up summary of supervisor meeting.

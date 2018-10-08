@@ -7,7 +7,7 @@ var distanceMatrix = [
   [2, 6, 6, 5, 0]
 ]; // must b size m x m
 
-var StepsEnum = {
+var StepsEnum = Object.freeze({
   at:                 0,
   nearest:            1,
   addToTour:          2,
@@ -16,8 +16,7 @@ var StepsEnum = {
   last:               5,
   start:              6,
   end:                7,
-};
-Object.freeze(StepsEnum);
+});
 
 var startingVertex   = 0, // must be >= 0 and <= m
     currentVertex    = startingVertex,
@@ -27,7 +26,7 @@ var startingVertex   = 0, // must be >= 0 and <= m
     stepsTaken       = [];
 
 /**
-  Builds and displays a list of vertices in they order they are visited when
+  Builds and displays a list of vertices in the order they are visited when
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour() {
