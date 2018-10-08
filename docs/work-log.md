@@ -122,3 +122,12 @@ Began implementing brute force in JavaScript.
 
 **10:30-10:50**
 Continued with nearest neighbour in JavaScript.
+
+## Week 4
+
+08/10/18
+**11:00-12:00**
+Added tracking of steps taken to nearest neighbour implementation.
+
+**12:30-14:00**
+Worked on improving steps taken to nearest neighbour and prepared for supervisor meeting.
