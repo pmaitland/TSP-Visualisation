@@ -135,5 +135,26 @@ Worked on improving steps taken to nearest neighbour and prepared for supervisor
 **15:00-15:30**
 [Supervisor Meeting](./meetings/18-10-08.md)
 
-**16:00-16:20**
-Wrote up summary of supervisor meeting.
+**16:00-18:00**
+Wrote up summary of supervisor meeting and began implementing initial visualisation.
+
+**21:30-22:30**
+Continued with implementation of visualisation.
+
+---
+
+09/10/18
+
+**12:15-13:45**
+Changed visualisation to use p5.js instead of d3.js
+
+**15:15-16:15**
+Allowed vertices to be selected and dragged.
+
+**19:30-19:50**
+Prevented vertices from being able to be dragged off the canvas.
+
+**23:00-00:00**
+Made the canvas take up the full window size and added an info box to the right.
+
+---
