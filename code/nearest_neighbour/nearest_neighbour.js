@@ -1,66 +1,70 @@
 
-var distanceMatrix = [
-  [0, 1, 1, 1, 1],
-  [7, 0, 1, 4, 9],
-  [8, 9, 0, 4, 5],
-  [3, 1, 5, 0, 2],
-  [2, 6, 6, 5, 0]
-]; // must b size m x m
-
 var StepsEnum = Object.freeze({
   at:                 0,
   nearest:            1,
   addToTour:          2,
   move:               3,
   increaseTourLength: 4,
-  last:               5,
-  start:              6,
-  end:                7,
+  last:               5
 });
 
 var startingVertex   = 0, // must be >= 0 and <= m
     currentVertex    = startingVertex,
-    numberOfVertices = distanceMatrix.length,
     finalTour        = [startingVertex],
     tourLength       = 0,
-    stepsTaken       = [];
+    stepsTaken       = [],
+    animationSteps   = [];
 
 /**
   Builds and displays a list of vertices in the order they are visited when
   moving to each vertices nearest, unvisited neighbour.
  */
-function nearestNeighbour() {
-  addToStepsTaken(StepsEnum.start);
+function nearestNeighbour(distances) {
+  stepsTaken = [];
+  animationSteps = [];
 
   // fills the main diagonal with Infinity
-  for (let i = 0; i < numberOfVertices; i++) {
-    distanceMatrix[i][i] = Infinity;
+  for (let i = 0; i < distances.length; i++) {
+    distances[i][i] = Infinity;
   }
 
-  for (let i = 0; i < numberOfVertices - 1; i++) {
-    addToStepsTaken(StepsEnum.at, [currentVertex]);
+  addToStepsTaken(StepsEnum.at, [currentVertex]);
+  animationSteps.push([StepsEnum.at, currentVertex]);
 
+  addToStepsTaken(StepsEnum.addToTour, [startingVertex]);
+  animationSteps.push([StepsEnum.addToTour, startingVertex]);
+
+  for (let i = 0; i < distances.length - 1; i++) {
     let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex);
     addToStepsTaken(StepsEnum.nearest, [currentVertex, nearestNeighbour]);
+    animationSteps.push([StepsEnum.nearest, currentVertex, nearestNeighbour]);
 
     finalTour.push(nearestNeighbour);
     addToStepsTaken(StepsEnum.addToTour, [nearestNeighbour]);
+    animationSteps.push([StepsEnum.addToTour, nearestNeighbour]);
 
-    tourLength += distanceMatrix[currentVertex][nearestNeighbour]
-    addToStepsTaken(StepsEnum.increaseTourLength, [distanceMatrix[currentVertex][nearestNeighbour]]);
+    tourLength += distances[currentVertex][nearestNeighbour]
+    addToStepsTaken(StepsEnum.increaseTourLength, [distances[currentVertex][nearestNeighbour]]);
+    animationSteps.push([StepsEnum.increaseTourLength, distances[currentVertex][nearestNeighbour], tourLength]);
 
     addToStepsTaken(StepsEnum.move, [currentVertex, nearestNeighbour]);
+    animationSteps.push([StepsEnum.move, currentVertex, nearestNeighbour]);
     currentVertex = nearestNeighbour;
+
+    addToStepsTaken(StepsEnum.at, [currentVertex]);
+    animationSteps.push([StepsEnum.at, currentVertex]);
   }
 
   addToStepsTaken(StepsEnum.last);
-  addToStepsTaken(StepsEnum.addToTour, [startingVertex]);
-  tourLength += distanceMatrix[currentVertex][startingVertex];
-  addToStepsTaken(StepsEnum.increaseTourLength, [distanceMatrix[currentVertex][startingVertex]]);
-  addToStepsTaken(StepsEnum.end);
+  animationSteps.push([StepsEnum.last, currentVertex, startingVertex]);
+  tourLength += distances[currentVertex][startingVertex];
+  addToStepsTaken(StepsEnum.increaseTourLength, [distances[currentVertex][startingVertex]]);
+  animationSteps.push([StepsEnum.increaseTourLength, distances[currentVertex][startingVertex], tourLength]);
 
-  displayFinalTour();
-  displayStepsTaken();
+  //displayFinalTour();
+  //displayStepsTaken();
+
+  return animationSteps;
 }
 
 /**
@@ -68,10 +72,10 @@ function nearestNeighbour() {
   been included in the tour.
  */
 function findNearestUnvisitedNeighbour(v) {
-  let neighbours = distanceMatrix[v],
+  let neighbours = distances[v],
       nearest    = v; // infinity
 
-  for (let n = 0; n < numberOfVertices; n++) {
+  for (let n = 0; n < distances.length; n++) {
     if (neighbours[n] < neighbours[nearest] && !finalTour.includes(n)) {
       nearest = n;
     }
@@ -128,9 +132,9 @@ function addToStepsTaken(stepType, info) {
 /**
   Displays the distance matrix on window load.
  */
-window.onload = function displayDistanceMatrix() {
-  for (let i = 0; i < numberOfVertices; i++) {
-    displayMatrixRow(i);
+window.onload = function displayDistances() {
+  for (let i = 0; i < distances.length; i++) {
+    //displayMatrixRow(i);
   }
 }
 
@@ -139,8 +143,8 @@ window.onload = function displayDistanceMatrix() {
   displays it's row of distances.
  */
 function displayMatrixRow(index) {
-  var matrix = document.getElementById("distanceMatrix"),
-      row    = document.createTextNode("[" + distanceMatrix[index] + "]"),
+  var matrix = document.getElementById("distances"),
+      row    = document.createTextNode("[" + distances[index] + "]"),
       br     = document.createElement("br");
 
   matrix.appendChild(row);

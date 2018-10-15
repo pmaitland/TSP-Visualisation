@@ -155,6 +155,18 @@ Allowed vertices to be selected and dragged.
 Prevented vertices from being able to be dragged off the canvas.
 
 **23:00-00:00**
-Made the canvas take up the full window size and added an info box to the right.
+Made the canvas take up the full window size and added a configuration box to the right.
 
 ---
+
+10/10/18
+
+**15:20-18:20**
+Separated the configuration box from the canvas and implemented rough animation using nearest neighbour.
+
+---
+
+11/10/18
+
+**14:30-13:50**
+Added log of steps to html.
