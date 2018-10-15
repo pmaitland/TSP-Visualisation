@@ -170,3 +170,13 @@ Separated the configuration box from the canvas and implemented rough animation 
 
 **14:30-13:50**
 Added log of steps to html.
+
+## Week 5
+
+15/10/18
+
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-10-15.md)
+
+**16:00-16:20**
+Wrote up summary of supervisor meeting.
