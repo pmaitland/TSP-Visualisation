@@ -9,8 +9,6 @@ class AtVertexStep {
   }
 }
 
-
-
 class NearestVertexStep {
   constructor(currentVertex, nearestVertex) {
     this.currentVertex = currentVertex;
@@ -22,8 +20,6 @@ class NearestVertexStep {
   }
 }
 
-
-
 class AddToTourStep {
   constructor(vertex) {
     this.vertex = vertex;
@@ -33,8 +29,6 @@ class AddToTourStep {
     return "Added vertex " + this.vertex + " to the tour";
   }
 }
-
-
 
 class ChangeCurrentVertexStep {
   constructor(lastVertex, newVertex) {
@@ -47,8 +41,6 @@ class ChangeCurrentVertexStep {
   }
 }
 
-
-
 class IncreaseTourLengthStep {
   constructor(length, totalLength) {
     this.length = length;
@@ -59,8 +51,6 @@ class IncreaseTourLengthStep {
     return "Increased tour length by " + this.length + ". Current tour length is " + this.totalLength;
   }
 }
-
-
 
 class AtLastVertexStep {
   constructor(lastVertex, startingVertex) {

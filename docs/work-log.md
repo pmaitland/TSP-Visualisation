@@ -185,5 +185,8 @@ Wrote up summary of supervisor meeting.
 
 20/10/18
 
-**15:30-**
-Tidied folder structure. Created classes for animation steps.
+**15:30-16:50**
+Created classes for animation steps.
+
+**18:10-18:30**
+Tidied folder structure.
