@@ -180,3 +180,10 @@ Added log of steps to html.
 
 **16:00-16:20**
 Wrote up summary of supervisor meeting.
+
+---
+
+20/10/18
+
+**15:30-**
+Tidied folder structure. Created classes for animation steps.

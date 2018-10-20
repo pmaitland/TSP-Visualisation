@@ -55,9 +55,7 @@ var distances = [
 var vertices = [],
     vertexCount = distances.length;
 
-var selectedVertex = null,
-    draggingVertex = null,
-    dragOffsetX, dragOffsetY;
+var selectedVertex = null;
 
 /**
   Called once at the very beginning.
@@ -83,6 +81,7 @@ function setup() {
       radius: radius,
       label: i.toString()
     });
+
 	}
 
   displayDistanceMatrix();
@@ -167,23 +166,6 @@ function drawVertices() {
       strokeWeight(selectedVertexStrokeWeight);
     }
 
-    if (draggingVertex == vertex.id) {
-      vertex.x = mouseX + dragOffsetX;
-      vertex.y = mouseY + dragOffsetY;
-
-      if (vertex.x > canvasWidth) {
-        vertex.x = canvasWidth;
-      } else if (vertex.x < 0) {
-        vertex.x = 0;
-      }
-
-      if (vertex.y > height) {
-        vertex.y = height;
-      } else if (vertex.y < 0) {
-        vertex.y = 0;
-      }
-    }
-
     if (vertex.isPartOfTour) {
       fill(partOfTourVertexColour);
     }
@@ -210,22 +192,10 @@ function mousePressed() {
     // check to see if the mouse has clicked the vertex
     if (mouseX > v.x - v.radius && mouseX < v.x + v.radius
       && mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
-      // select and start dragging the vertex
       selectedVertex = v.id;
-      draggingVertex = v.id;
-
-      // use an offset to stop the vertex center from jumping to the mouse position
-      dragOffsetX = v.x - mouseX;
-      dragOffsetY = v.y - mouseY;
     }
   }
-}
-
-/**
-  Stop dragging.
- */
-function mouseReleased() {
-  draggingVertex = null;
+  redraw();
 }
 
 function displayDistanceMatrix() {
@@ -278,9 +248,7 @@ function editVertexLabel(vertexID, newLabel) {
 function restartAnimation() {
   currentAnimationStep = 0;
   playingAnimation = true;
-  setInterval(function(){
-    playAnimationStep()
-  }, 1000);
+  playAnimationStep();
 }
 
 function playAnimationStep() {
@@ -289,74 +257,61 @@ function playAnimationStep() {
 
       currentStep = animationSteps[currentAnimationStep];
 
-      var stepAsString = "";
-
       var vertex1, vertex2;
 
-      switch (currentStep[0]) {
-        case StepsEnum.at:
+      switch (currentStep.constructor) {
+        case AtVertexStep:
           for (let vertex of vertices) {
-            if (vertex.id == currentStep[1]) {
+            if (vertex.id == currentStep.vertex) {
               vertex.isAt = true;
               vertex.isPartOfTour = true;
-              stepAsString = "At vertex " + vertex.label;
             }
           }
           break;
 
-        case StepsEnum.nearest:
+        case NearestVertexStep:
           for (let vertex of vertices) {
-            if (vertex.id == currentStep[1]) {
+            if (vertex.id == currentStep.currentVertex) {
               vertex1 = vertex;
-            } else if (vertex.id == currentStep[2]) {
+            } else if (vertex.id == currentStep.nearestVertex) {
               vertex.isNearest = true;
               vertex2 = vertex;
             }
           }
-          edgeToNearest = [currentStep[1], currentStep[2]];
-
-          stepAsString = "Nearest to vertex " + vertex1.label + " is vertex " + vertex2.label;
+          edgeToNearest = [currentStep.currentVertex, currentStep.nearestVertex];
           break;
 
-        case StepsEnum.addToTour:
+        case AddToTourStep:
           for (let vertex of vertices) {
-            if (vertex.id == currentStep[1]) {
+            if (vertex.id == currentStep.vertex) {
               vertex.isPartOfTour = true;
-              stepAsString = "Added vertex " + vertex.label + " to the final tour";
             }
           }
           break;
 
-        case StepsEnum.move:
+        case ChangeCurrentVertexStep:
           for (let vertex of vertices) {
-            if (vertex.id == currentStep[1]) {
+            if (vertex.id == currentStep.lastVertex) {
               vertex.isAt = false;
-              vertex1 = vertex;
-            } else if (vertex.id == currentStep[2]) {
+            } else if (vertex.id == currentStep.newVertex) {
               vertex.isAt = true;
               vertex.isNearest = false;
-              vertex2 = vertex;
             }
           }
-          edgesInTour.push([currentStep[1], currentStep[2]]);
+          edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
           edgeToNearest = [];
-
-          stepAsString = "Moved from vertex " + vertex1.label + " to vertex " + vertex2.label;
           break;
 
-        case StepsEnum.increaseTourLength:
-          stepAsString = "Added " + currentStep[1] + " to tour length. Current tour length is " + currentStep[2];
-          break;
+        case IncreaseTourLengthStep:
+        break;
 
-        case StepsEnum.last:
+        case AtLastVertexStep:
           for (let vertex of vertices) {
-            if (vertex.id == currentStep[1]) {
+            if (vertex.id == currentStep.lastVertex) {
               vertex.isAt = false;
-            } else if (vertex.id == currentStep[2]) {
-              stepAsString = "At the last vertex. Returning to starting vertex (vertex " + vertex.label + ")";
             }
           }
-          edgesInTour.push([currentStep[1], currentStep[2]]);
+          edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
           edgeToNearest = [];
           break;
 
@@ -365,12 +320,14 @@ function playAnimationStep() {
       }
 
       currentAnimationStep++;
-      showStepInLog(stepAsString);
+      showStepInLog(currentStep.toString());
 
-      //setTimeout(playAnimationStep, 1000);
+      setTimeout(playAnimationStep, 1000);
     } else {
       playingAnimation = false;
     }
+
+    redraw();
   }
 }
 
