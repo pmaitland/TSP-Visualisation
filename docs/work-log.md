@@ -200,3 +200,12 @@ Implemented play, pause, and step forward buttons for animation.
 
 **10:00-10:55**
 Implemented a step backwards button.
+
+**14:00-14:20**
+Prepared for supervisor meeting.
+
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-10-22.md)
+
+**16:30-16:40**
+Wrote up summary of supervisor meeting.
