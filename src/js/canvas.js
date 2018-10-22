@@ -96,6 +96,18 @@ function drawAnimationEdges() {
   var vertex1, vertex2;
   strokeWeight(4);
 
+  if (edgeToNearest.length > 0) {
+    for (let vertex of vertices) {
+      if (vertex.id == edgeToNearest[0]) {
+        vertex1 = vertex;
+      } else if (vertex.id == edgeToNearest[1]) {
+        vertex2 = vertex;
+      }
+    }
+    stroke(neartestEdgeColour);
+    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
+  }
+
   for (let edge of edgesInTour) {
     for (let vertex of vertices) {
       if (vertex.id == edge[0]) {
@@ -108,17 +120,6 @@ function drawAnimationEdges() {
     line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
   }
 
-  if (edgeToNearest.length > 0) {
-    for (let vertex of vertices) {
-      if (vertex.id == edgeToNearest[0]) {
-        vertex1 = vertex;
-      } else if (vertex.id == edgeToNearest[1]) {
-        vertex2 = vertex;
-      }
-    }
-    stroke(neartestEdgeColour);
-    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
-  }
 }
 
 /**
@@ -134,11 +135,11 @@ function drawVertices() {
       strokeWeight(selectedVertexStrokeWeight);
     }
 
-    if (vertex.isPartOfTour) {
-      fill(partOfTourVertexColour);
-    }
     if (vertex.isNearest) {
       fill(nearestVertexColour);
+    }
+    if (vertex.isPartOfTour) {
+      fill(partOfTourVertexColour);
     }
     if (vertex.isAt) {
       fill(currentVertexColour);

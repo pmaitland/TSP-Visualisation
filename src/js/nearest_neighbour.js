@@ -26,9 +26,6 @@ function nearestNeighbour(distances) {
     let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex);
     animationSteps.push(new NearestVertexStep(currentVertex, nearestNeighbour));
 
-    finalTour.push(nearestNeighbour);
-    animationSteps.push(new AddToTourStep(nearestNeighbour));
-
     tourLength += distances[currentVertex][nearestNeighbour]
     animationSteps.push(new IncreaseTourLengthStep(distances[currentVertex][nearestNeighbour], tourLength));
 
@@ -36,6 +33,9 @@ function nearestNeighbour(distances) {
     currentVertex = nearestNeighbour;
 
     animationSteps.push(new AtVertexStep(currentVertex));
+
+    finalTour.push(currentVertex);
+    animationSteps.push(new AddToTourStep(currentVertex));
   }
 
   animationSteps.push(new AtLastVertexStep(currentVertex, startingVertex));

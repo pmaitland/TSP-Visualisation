@@ -190,3 +190,13 @@ Created classes for animation steps.
 
 **18:10-18:30**
 Tidied folder structure.
+
+**23:00-00:20**
+Implemented play, pause, and step forward buttons for animation.
+
+## Week 6
+
+22/10/18
+
+**10:00-10:55**
+Implemented a step backwards button.

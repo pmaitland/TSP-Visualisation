@@ -73,82 +73,165 @@ function editVertexLabel(vertexID, newLabel) {
 function restartAnimation() {
   currentAnimationStep = 0;
   playingAnimation = true;
-  playAnimationStep();
+  playAnimation();
 }
 
-function playAnimationStep() {
+function playAnimation() {
   if (playingAnimation) {
-    if (currentAnimationStep < animationSteps.length) {
+    stepForwardAnimation();
+    setTimeout(playAnimation, 1000);
+  }
+}
 
-      currentStep = animationSteps[currentAnimationStep];
+function resumeAnimation() {
+  if (!playingAnimation) {
+    playingAnimation = true;
+    playAnimation();
+  }
+}
 
-      switch (currentStep.constructor) {
-        case AtVertexStep:
-          for (let vertex of vertices) {
-            if (vertex.id == currentStep.vertex) {
-              vertex.isAt = true;
-              vertex.isPartOfTour = true;
-            }
+function pauseAnimation() {
+  playingAnimation = false;
+}
+
+function stepForwardAnimation() {
+  if (currentAnimationStep < animationSteps.length) {
+
+    currentStep = animationSteps[currentAnimationStep];
+
+    switch (currentStep.constructor) {
+
+      case AtVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.vertex) {
+            vertex.isAt = true;
+            vertex.isPartOfTour = true;
           }
-          break;
-
-        case NearestVertexStep:
-          for (let vertex of vertices) {
-            if (vertex.id == currentStep.currentVertex) {
-              vertex1 = vertex;
-            } else if (vertex.id == currentStep.nearestVertex) {
-              vertex.isNearest = true;
-              vertex2 = vertex;
-            }
-          }
-          edgeToNearest = [currentStep.currentVertex, currentStep.nearestVertex];
-          break;
-
-        case AddToTourStep:
-          for (let vertex of vertices) {
-            if (vertex.id == currentStep.vertex) {
-              vertex.isPartOfTour = true;
-            }
-          }
-          break;
-
-        case ChangeCurrentVertexStep:
-          for (let vertex of vertices) {
-            if (vertex.id == currentStep.lastVertex) {
-              vertex.isAt = false;
-            } else if (vertex.id == currentStep.newVertex) {
-              vertex.isAt = true;
-              vertex.isNearest = false;
-            }
-          }
-          edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
-          edgeToNearest = [];
-          break;
-
-        case IncreaseTourLengthStep:
+        }
         break;
 
-        case AtLastVertexStep:
-          for (let vertex of vertices) {
-            if (vertex.id == currentStep.lastVertex) {
-              vertex.isAt = false;
-            }
+      case NearestVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.currentVertex) {
+            vertex1 = vertex;
+          } else if (vertex.id == currentStep.nearestVertex) {
+            vertex.isNearest = true;
+            vertex2 = vertex;
           }
-          edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
-          edgeToNearest = [];
-          break;
+        }
+        edgeToNearest = [currentStep.currentVertex, currentStep.nearestVertex];
+        break;
 
-        default:
-          break;
-      }
+      case AddToTourStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.vertex) {
+            vertex.isPartOfTour = true;
+          }
+        }
+        break;
 
-      currentAnimationStep++;
-      showStepInLog(currentStep.toString());
+      case ChangeCurrentVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.lastVertex) {
+            vertex.isAt = false;
+          } else if (vertex.id == currentStep.newVertex) {
+            vertex.isAt = true;
+            vertex.isNearest = false;
+          }
+        }
+        edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
+        edgeToNearest = [];
+        break;
 
-      setTimeout(playAnimationStep, 1000);
-    } else {
-      playingAnimation = false;
+      case IncreaseTourLengthStep:
+      break;
+
+      case AtLastVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.lastVertex) {
+            vertex.isAt = false;
+          }
+        }
+        edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
+        edgeToNearest = [];
+        break;
+
+      default:
+        break;
     }
+
+    currentAnimationStep++;
+    showStepInLog(currentStep.toString());
+
+    redraw();
+  }
+}
+
+function stepBackwardAnimation() {
+  if (currentAnimationStep > 0) {
+
+    currentStep = animationSteps[currentAnimationStep - 1];
+
+    switch (currentStep.constructor) {
+
+      case AtVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.vertex) {
+
+          }
+        }
+        break;
+
+      case NearestVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.nearestVertex) {
+            vertex.isNearest = false;
+          }
+        }
+        edgeToNearest = [];
+        break;
+
+      case AddToTourStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.vertex) {
+            vertex.isPartOfTour = false;
+          }
+        }
+        break;
+
+      case ChangeCurrentVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.lastVertex) {
+            vertex.isAt = true;
+          } else if (vertex.id == currentStep.newVertex) {
+            vertex.isAt = false;
+            vertex.isNearest = true;
+            vertex.isPartOfTour = false;
+          }
+        }
+        edgesInTour.splice(-1, 1);
+        edgeToNearest = [currentStep.lastVertex, currentStep.newVertex];
+        break;
+
+      case IncreaseTourLengthStep:
+      break;
+
+      case AtLastVertexStep:
+        for (let vertex of vertices) {
+          if (vertex.id == currentStep.lastVertex) {
+            vertex.isAt = true;
+          }
+        }
+        edgesInTour.pop();
+        edgeToNearest = [];
+        break;
+
+      default:
+        break;
+    }
+
+    currentAnimationStep--;
+    removeStepFromLog();
 
     redraw();
   }
@@ -162,6 +245,14 @@ function showStepInLog(stepString) {
   log.appendChild(step);
   log.appendChild(br);
   log.scrollTop = log.scrollHeight;
+}
+
+function removeStepFromLog() {
+  var log = document.getElementById("stepLog");
+
+  // called twice to remove text AND break
+  log.removeChild(log.lastChild);
+  log.removeChild(log.lastChild);
 }
 
 function solveWithNearestNeighbour() {
