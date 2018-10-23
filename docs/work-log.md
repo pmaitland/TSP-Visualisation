@@ -218,4 +218,7 @@ Wrote up summary of supervisor meeting and added an animation step for finding t
 Began updating visualisation to show new animation step.
 
 **13:00-13:50**
-Updated visualisation to show the new step.
+Updated visualisation to show the new step and began implementing buttons to jump to the start/end of the animation.
+
+**15:05-15:30**
+Finished implementing buttons to jump to the start/end of the animation.

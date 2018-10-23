@@ -63,7 +63,7 @@ class AtLastVertexStep {
   }
 }
 
-class FindingNearestUnvisitedVertex {
+class FindingNearestUnvisitedVertexStep {
   constructor(currentVertex, unvisitedVertices) {
     this.currentVertex = currentVertex;
     this.unvisitedVertices = unvisitedVertices;
@@ -71,5 +71,15 @@ class FindingNearestUnvisitedVertex {
 
   toString() {
     return "Finding the vertex nearest vertex " + this.currentVertex + " which is still unvisited";
+  }
+}
+
+class FinalTourFoundStep {
+  constructor(tour) {
+    this.tour = tour;
+  }
+
+  toString() {
+    return "Final tour found";
   }
 }

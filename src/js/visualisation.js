@@ -72,8 +72,32 @@ function editVertexLabel(vertexID, newLabel) {
 
 function restartAnimation() {
   currentAnimationStep = 0;
-  playingAnimation = true;
-  playAnimation();
+  playingAnimation = false;
+  edgesInTour = [];
+  edgesToNearest = [];
+
+  for (let vertex of vertices) {
+    vertex.isAt = false;
+    vertex.isNearest = false;
+    vertex.isPartOfTour = false;
+  }
+
+  let log = document.getElementById("stepLog")
+  while (log.firstChild) {
+    log.removeChild(log.firstChild);
+  }
+}
+
+function endAnimation() {
+  playingAnimation = false;
+
+  let stepStartingFrom = currentAnimationStep - 1;
+  if (stepStartingFrom < 0) {
+    stepStartingFrom = 0;
+  }
+  for (let step in animationSteps.slice(stepStartingFrom)) {
+    stepForwardAnimation();
+  }
 }
 
 function playAnimation() {
@@ -157,7 +181,7 @@ function stepForwardAnimation() {
         edgesToNearest = [];
         break;
 
-      case FindingNearestUnvisitedVertex:
+      case FindingNearestUnvisitedVertexStep:
         edgesToNearest = [];
         for (let vertex of vertices) {
           if (currentStep.unvisitedVertices.includes(vertex.id)) {
@@ -241,7 +265,7 @@ function stepBackwardAnimation() {
         edgesToNearest = [];
         break;
 
-      case FindingNearestUnvisitedVertex:
+      case FindingNearestUnvisitedVertexStep:
         edgesToNearest = [];
         for (let vertex of vertices) {
           if (currentStep.unvisitedVertices.includes(vertex.id)) {
@@ -280,5 +304,6 @@ function removeStepFromLog() {
 
 function solveWithNearestNeighbour() {
   stepsTaken = nearestNeighbour(distances);
-  restartAnimation();
+  playingAnimation = true;
+  playAnimation();
 }
