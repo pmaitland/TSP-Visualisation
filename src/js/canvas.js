@@ -6,6 +6,7 @@ var vertexStrokeWeight = 2,
     selectedVertexStrokeWeight = 4,
 
     edgeStrokeWeight = 1;
+    animatedEdgeStrokeWeight = 4;
 
 // COLOURS
 // creating graph
@@ -65,8 +66,9 @@ function windowResized() {
 function draw() {
   background("#fff");
 
-  drawEdges();
   drawAnimationEdges();
+  drawEdges();
+  drawEdgeWeights();
   drawVertices();
 }
 
@@ -82,6 +84,17 @@ function drawEdges() {
          if (vertex.id != otherVertex.id) {
            stroke(edgeColour);
            line(vertex.x, vertex.y, otherVertex.x, otherVertex.y);
+         }
+       }
+    }
+  }
+}
+
+function drawEdgeWeights() {
+  for (let vertex of vertices) {
+    if (selectedVertex == vertex.id) {
+       for (let otherVertex of vertices) {
+         if (vertex.id != otherVertex.id) {
            fill(edgeWeightColour);
            strokeWeight(1);
            textSize(16);
@@ -94,19 +107,6 @@ function drawEdges() {
 
 function drawAnimationEdges() {
   var vertex1, vertex2;
-  strokeWeight(4);
-
-  if (edgeToNearest.length > 0) {
-    for (let vertex of vertices) {
-      if (vertex.id == edgeToNearest[0]) {
-        vertex1 = vertex;
-      } else if (vertex.id == edgeToNearest[1]) {
-        vertex2 = vertex;
-      }
-    }
-    stroke(neartestEdgeColour);
-    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
-  }
 
   for (let edge of edgesInTour) {
     for (let vertex of vertices) {
@@ -117,7 +117,26 @@ function drawAnimationEdges() {
       }
     }
     stroke(partOfTourEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
     line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
+  }
+
+  for (let edge of edgesToNearest) {
+    for (let vertex of vertices) {
+      if (vertex.id == edge[0]) {
+        vertex1 = vertex;
+      } else if (vertex.id == edge[1]) {
+        vertex2 = vertex;
+      }
+    }
+    stroke(neartestEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
+
+    fill(edgeWeightColour);
+    strokeWeight(1);
+    textSize(16);
+    text(distances[vertex1.id][vertex2.id], (vertex1.x + vertex2.x) / 2, (vertex1.y + vertex2.y) /2);
   }
 
 }

@@ -207,5 +207,15 @@ Prepared for supervisor meeting.
 **15:00-15:30**
 [Supervisor Meeting](./meetings/18-10-22.md)
 
-**16:30-16:40**
-Wrote up summary of supervisor meeting.
+**16:30-17:00**
+Wrote up summary of supervisor meeting and added an animation step for finding the nearest neighbour.
+
+---
+
+23/10/18
+
+**09:50-10:20**
+Began updating visualisation to show new animation step.
+
+**13:00-13:50**
+Updated visualisation to show the new step.

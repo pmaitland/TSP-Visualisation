@@ -51,12 +51,19 @@ function nearestNeighbour(distances) {
  */
 function findNearestUnvisitedNeighbour(v) {
   let neighbours = distances[v],
-      nearest    = v; // infinity
+      nearest    = v, // infinity
+      unvisitedVertices = [];
 
   for (let n = 0; n < distances.length; n++) {
-    if (neighbours[n] < neighbours[nearest] && !finalTour.includes(n)) {
-      nearest = n;
+    if (!finalTour.includes(n)) {
+      unvisitedVertices.push(n);
+
+      if (neighbours[n] < neighbours[nearest]) {
+        nearest = n;
+      }
     }
   }
+
+  animationSteps.push(new FindingNearestUnvisitedVertex(currentVertex, unvisitedVertices));
   return nearest;
 }

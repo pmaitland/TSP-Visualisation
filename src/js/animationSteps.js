@@ -62,3 +62,14 @@ class AtLastVertexStep {
     return "Vertex " + this.lastVertex + " is the last vertex. Returning to vertex " + this.startingVertex;
   }
 }
+
+class FindingNearestUnvisitedVertex {
+  constructor(currentVertex, unvisitedVertices) {
+    this.currentVertex = currentVertex;
+    this.unvisitedVertices = unvisitedVertices;
+  }
+
+  toString() {
+    return "Finding the vertex nearest vertex " + this.currentVertex + " which is still unvisited";
+  }
+}

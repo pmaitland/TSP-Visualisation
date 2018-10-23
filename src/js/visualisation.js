@@ -3,7 +3,7 @@ var stepsTaken,
     currentAnimationStep = 0,
     playingAnimation = false,
     edgesInTour = [],
-    edgeToNearest = [];
+    edgesToNearest = [];
 
 var distances = [
   [ 0, 24, 28,  44, 91, 16,  38,  1, 84, 23],
@@ -112,6 +112,7 @@ function stepForwardAnimation() {
 
       case NearestVertexStep:
         for (let vertex of vertices) {
+          vertex.isNearest = false;
           if (vertex.id == currentStep.currentVertex) {
             vertex1 = vertex;
           } else if (vertex.id == currentStep.nearestVertex) {
@@ -119,7 +120,7 @@ function stepForwardAnimation() {
             vertex2 = vertex;
           }
         }
-        edgeToNearest = [currentStep.currentVertex, currentStep.nearestVertex];
+        edgesToNearest = [[currentStep.currentVertex, currentStep.nearestVertex]];
         break;
 
       case AddToTourStep:
@@ -140,7 +141,7 @@ function stepForwardAnimation() {
           }
         }
         edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
-        edgeToNearest = [];
+        edgesToNearest = [];
         break;
 
       case IncreaseTourLengthStep:
@@ -153,8 +154,17 @@ function stepForwardAnimation() {
           }
         }
         edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
-        edgeToNearest = [];
+        edgesToNearest = [];
         break;
+
+      case FindingNearestUnvisitedVertex:
+        edgesToNearest = [];
+        for (let vertex of vertices) {
+          if (currentStep.unvisitedVertices.includes(vertex.id)) {
+            vertex.isNearest = true;
+            edgesToNearest.push([currentStep.currentVertex, vertex.id]);
+          }
+        }
 
       default:
         break;
@@ -187,8 +197,13 @@ function stepBackwardAnimation() {
           if (vertex.id == currentStep.nearestVertex) {
             vertex.isNearest = false;
           }
+
+          let previousStep = animationSteps[currentAnimationStep - 2];
+          if (previousStep.unvisitedVertices.includes(vertex.id)) {
+            vertex.isNearest = true;
+            edgesToNearest.push([previousStep.currentVertex, vertex.id]);
+          }
         }
-        edgeToNearest = [];
         break;
 
       case AddToTourStep:
@@ -210,7 +225,7 @@ function stepBackwardAnimation() {
           }
         }
         edgesInTour.splice(-1, 1);
-        edgeToNearest = [currentStep.lastVertex, currentStep.newVertex];
+        edgesToNearest = [[currentStep.lastVertex, currentStep.newVertex]];
         break;
 
       case IncreaseTourLengthStep:
@@ -223,15 +238,23 @@ function stepBackwardAnimation() {
           }
         }
         edgesInTour.pop();
-        edgeToNearest = [];
+        edgesToNearest = [];
         break;
+
+      case FindingNearestUnvisitedVertex:
+        edgesToNearest = [];
+        for (let vertex of vertices) {
+          if (currentStep.unvisitedVertices.includes(vertex.id)) {
+            vertex.isNearest = false;
+          }
+        }
 
       default:
         break;
     }
 
-    currentAnimationStep--;
     removeStepFromLog();
+    currentAnimationStep--;
 
     redraw();
   }

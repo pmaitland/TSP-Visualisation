@@ -25,6 +25,10 @@ th, td {
   text-align: left;
 }
 
+button {
+  margin-left: 2%;
+}
+
 #canvasHolder {
   width: 67%;
 }
