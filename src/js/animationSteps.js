@@ -88,3 +88,15 @@ class FindingNearestUnvisitedVertexStep extends AnimationStep {
     return "Finding the vertex nearest vertex " + this.currentVertex + " which is still unvisited";
   }
 }
+
+class FinishedStep extends AnimationStep {
+  constructor(pseudocodeLine, finalTour, tourLength) {
+    super(pseudocodeLine);
+    this.finalTour = finalTour;
+    this.tourLength = tourLength;
+  }
+
+  toString() {
+    return "Final tour found. Length of tour is " + this.tourLength;
+  }
+}

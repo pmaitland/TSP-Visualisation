@@ -234,5 +234,5 @@ Worked on making pseudocode dynamic instead of hardcoded.
 
 25/10/18
 
-**11:00-11:35**
-Completed pseudocode implementation.
+**11:00-13:00**
+Completed pseudocode implementation and improved skipping to end of animation.

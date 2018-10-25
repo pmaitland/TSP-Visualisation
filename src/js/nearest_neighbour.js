@@ -13,7 +13,8 @@ var nnPseudocode = [
   "  Find the vertex nearest the current vertex which has not been visited",
   "  Set the current vertex to this vertex",
   "  Mark the new current vertex as visited and add it to the tour",
-  "Return to the starting vertex and add it to the tour again"
+  "Return to the starting vertex and add it to the tour again",
+  "Finished"
 ];
 
 /**
@@ -24,9 +25,6 @@ function nearestNeighbour(distances) {
   startingVertex = Math.floor(Math.random() * (distances.length));
   currentVertex  = startingVertex,
   finalTour      = [startingVertex],
-
-  console.log(startingVertex);
-
   stepsTaken = [];
   animationSteps = [];
 
@@ -57,8 +55,10 @@ function nearestNeighbour(distances) {
 
   animationSteps.push(new AtLastVertexStep(6, currentVertex, startingVertex));
   tourLength += distances[currentVertex][startingVertex];
+  finalTour.push(startingVertex);
   animationSteps.push(new IncreaseTourLengthStep(6, distances[currentVertex][startingVertex], tourLength));
 
+  animationSteps.push(new FinishedStep(7, finalTour, tourLength));
   return animationSteps;
 }
 

@@ -53,6 +53,7 @@ function setup() {
 	}
 
   displayDistanceMatrix();
+  noLoop();
 }
 
 function windowResized() {
@@ -65,6 +66,7 @@ function windowResized() {
  */
 function draw() {
   background("#fff");
+  console.log(currentAnimationStep);
 
   drawAnimationEdges();
   drawEdges();

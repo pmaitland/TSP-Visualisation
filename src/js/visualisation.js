@@ -85,18 +85,14 @@ function restartAnimation() {
   }
 
   clearElementChildren("stepLog");
+  redraw();
 }
 
 function endAnimation() {
+  jumpLogToEnd(currentAnimationStep);
+  currentAnimationStep = stepsTaken.length - 1;
+  stepForwardAnimation();
   playingAnimation = false;
-
-  let startingStep = currentAnimationStep - 1;
-  if (startingStep < 0) {
-    startingStep = 0;
-  }
-  for (let step in animationSteps.slice(startingStep)) {
-    stepForwardAnimation();
-  }
 }
 
 function playAnimation() {
@@ -158,6 +154,7 @@ function stepForwardAnimation() {
         for (let vertex of vertices) {
           if (vertex.id == currentStep.lastVertex) {
             vertex.isAt = false;
+            vertex.isPartOfTour = true;
           } else if (vertex.id == currentStep.newVertex) {
             vertex.isAt = true;
             vertex.isNearest = false;
@@ -188,6 +185,22 @@ function stepForwardAnimation() {
             edgesToNearest.push([currentStep.currentVertex, vertex.id]);
           }
         }
+        break;
+
+      case FinishedStep:
+        edgesToNearest = [];
+        edgesInTour = [];
+
+        for (let vertex of vertices) {
+          vertex.isAt = false;
+          vertex.isNearest = false;
+          vertex.isPartOfTour = true;
+        }
+
+        for (let i = 0; i < currentStep.finalTour.length; i++) {
+          edgesInTour.push([currentStep.finalTour[i], currentStep.finalTour[(i+1) % (currentStep.finalTour.length - 1)]]);
+        }
+        break;
 
       default:
         break;
@@ -242,6 +255,7 @@ function stepBackwardAnimation() {
         for (let vertex of vertices) {
           if (vertex.id == currentStep.lastVertex) {
             vertex.isAt = true;
+            vertex.isPartOfTour = false;
           } else if (vertex.id == currentStep.newVertex) {
             vertex.isAt = false;
             vertex.isNearest = true;
@@ -262,6 +276,7 @@ function stepBackwardAnimation() {
           }
         }
         edgesInTour.pop();
+        edgesInTour.pop();
         edgesToNearest = [];
         break;
 
@@ -272,6 +287,22 @@ function stepBackwardAnimation() {
             vertex.isNearest = false;
           }
         }
+        break;
+
+      case FinishedStep:
+        edgesToNearest = [];
+        edgesInTour = [];
+
+        for (let vertex of vertices) {
+          vertex.isAt = false;
+          vertex.isNearest = false;
+          vertex.isPartOfTour = true;
+        }
+
+        for (let i = 0; i < currentStep.finalTour.length; i++) {
+          edgesInTour.push([currentStep.finalTour[i], currentStep.finalTour[(i+1) % (currentStep.finalTour.length - 1)]]);
+        }
+        break;
 
       default:
         break;
@@ -301,6 +332,12 @@ function removeStepFromLog() {
   // called twice to remove text AND break
   log.removeChild(log.lastChild);
   log.removeChild(log.lastChild);
+}
+
+function jumpLogToEnd(startingStep) {
+  for (let step of stepsTaken.slice(startingStep, stepsTaken.length - 1)) {
+    showStepInLog(step.toString());
+  }
 }
 
 function showPseudocode(algorithm) {

@@ -35,6 +35,7 @@ button {
 
 #configurationHolder {
   width: 33%;
+  overflow: auto;
   border-left: 1px solid;
 }
 
