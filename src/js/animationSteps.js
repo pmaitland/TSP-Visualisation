@@ -1,6 +1,15 @@
 
-class AtVertexStep {
-  constructor(vertex) {
+class AnimationStep {
+  constructor(pseudocodeLine) {
+    this.pseudocodeLine = pseudocodeLine;
+  }
+
+  toString() {}
+}
+
+class AtVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex) {
+    super(pseudocodeLine);
     this.vertex = vertex;
   }
 
@@ -9,8 +18,9 @@ class AtVertexStep {
   }
 }
 
-class NearestVertexStep {
-  constructor(currentVertex, nearestVertex) {
+class NearestVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, currentVertex, nearestVertex) {
+    super(pseudocodeLine);
     this.currentVertex = currentVertex;
     this.nearestVertex = nearestVertex;
   }
@@ -20,8 +30,9 @@ class NearestVertexStep {
   }
 }
 
-class AddToTourStep {
-  constructor(vertex) {
+class AddToTourStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex) {
+    super(pseudocodeLine);
     this.vertex = vertex;
   }
 
@@ -30,8 +41,9 @@ class AddToTourStep {
   }
 }
 
-class ChangeCurrentVertexStep {
-  constructor(lastVertex, newVertex) {
+class ChangeCurrentVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, lastVertex, newVertex) {
+    super(pseudocodeLine);
     this.lastVertex = lastVertex;
     this.newVertex = newVertex;
   }
@@ -41,8 +53,9 @@ class ChangeCurrentVertexStep {
   }
 }
 
-class IncreaseTourLengthStep {
-  constructor(length, totalLength) {
+class IncreaseTourLengthStep extends AnimationStep {
+  constructor(pseudocodeLine, length, totalLength) {
+    super(pseudocodeLine);
     this.length = length;
     this.totalLength = totalLength;
   }
@@ -52,8 +65,9 @@ class IncreaseTourLengthStep {
   }
 }
 
-class AtLastVertexStep {
-  constructor(lastVertex, startingVertex) {
+class AtLastVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, lastVertex, startingVertex) {
+    super(pseudocodeLine);
     this.lastVertex = lastVertex;
     this.startingVertex = startingVertex;
   }
@@ -63,23 +77,14 @@ class AtLastVertexStep {
   }
 }
 
-class FindingNearestUnvisitedVertexStep {
-  constructor(currentVertex, unvisitedVertices) {
+class FindingNearestUnvisitedVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, currentVertex, unvisitedVertices) {
+    super(pseudocodeLine);
     this.currentVertex = currentVertex;
     this.unvisitedVertices = unvisitedVertices;
   }
 
   toString() {
     return "Finding the vertex nearest vertex " + this.currentVertex + " which is still unvisited";
-  }
-}
-
-class FinalTourFoundStep {
-  constructor(tour) {
-    this.tour = tour;
-  }
-
-  toString() {
-    return "Final tour found";
   }
 }

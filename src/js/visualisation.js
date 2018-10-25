@@ -23,6 +23,8 @@ var vertices = [],
 
 var selectedVertex = null;
 
+var pseudocodeHighlightColour = "#f4e04d";
+
 function displayDistanceMatrix() {
 
   // get distance matrix element from HTML
@@ -82,20 +84,17 @@ function restartAnimation() {
     vertex.isPartOfTour = false;
   }
 
-  let log = document.getElementById("stepLog")
-  while (log.firstChild) {
-    log.removeChild(log.firstChild);
-  }
+  clearElementChildren("stepLog");
 }
 
 function endAnimation() {
   playingAnimation = false;
 
-  let stepStartingFrom = currentAnimationStep - 1;
-  if (stepStartingFrom < 0) {
-    stepStartingFrom = 0;
+  let startingStep = currentAnimationStep - 1;
+  if (startingStep < 0) {
+    startingStep = 0;
   }
-  for (let step in animationSteps.slice(stepStartingFrom)) {
+  for (let step in animationSteps.slice(startingStep)) {
     stepForwardAnimation();
   }
 }
@@ -196,6 +195,7 @@ function stepForwardAnimation() {
 
     currentAnimationStep++;
     showStepInLog(currentStep.toString());
+    highlightPseudocode(currentStep.pseudocodeLine);
 
     redraw();
   }
@@ -278,6 +278,7 @@ function stepBackwardAnimation() {
     }
 
     removeStepFromLog();
+    highlightPseudocode(currentStep.pseudocodeLine);
     currentAnimationStep--;
 
     redraw();
@@ -302,8 +303,49 @@ function removeStepFromLog() {
   log.removeChild(log.lastChild);
 }
 
+function showPseudocode(algorithm) {
+  var pseudocode = document.getElementById("pseudocode");
+  clearElementChildren("pseudocode");
+
+  switch (algorithm) {
+    case "nn":
+      for (let line of nnPseudocode) {
+        var lineDiv = document.createElement("DIV"),
+            text = document.createTextNode(line);
+
+        lineDiv.appendChild(text);
+        pseudocode.appendChild(lineDiv);
+      }
+      break;
+
+    default:
+      break;
+  }
+
+}
+
+function highlightPseudocode(lineNumber) {
+  var pseudocode = document.getElementById("pseudocode");
+
+  for (let i = 0; i < pseudocode.children.length; i++) {
+    if (i == lineNumber) {
+      pseudocode.children[i].style.backgroundColor = pseudocodeHighlightColour;
+    } else {
+      pseudocode.children[i].style.backgroundColor = 'white';
+    }
+  }
+}
+
+function clearElementChildren(id) {
+  let el = document.getElementById(id);
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+}
+
 function solveWithNearestNeighbour() {
   stepsTaken = nearestNeighbour(distances);
+  showPseudocode("nn");
   playingAnimation = true;
   playAnimation();
 }

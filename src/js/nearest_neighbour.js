@@ -1,16 +1,32 @@
 
-var startingVertex   = 0, // must be >= 0 and <= m
-    currentVertex    = startingVertex,
-    finalTour        = [startingVertex],
-    tourLength       = 0,
-    stepsTaken       = [],
-    animationSteps   = [];
+var startingVertex, // must be >= 0 and <= m
+    currentVertex,
+    finalTour,
+    tourLength     = 0,
+    stepsTaken     = [],
+    animationSteps = [];
+
+var nnPseudocode = [
+  "Start at any vertex",
+  "Mark the current vertex as visited and add it to the tour",
+  "While there is an unvisited vertex",
+  "  Find the vertex nearest the current vertex which has not been visited",
+  "  Set the current vertex to this vertex",
+  "  Mark the new current vertex as visited and add it to the tour",
+  "Return to the starting vertex and add it to the tour again"
+];
 
 /**
   Builds and displays a list of vertices in the order they are visited when
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour(distances) {
+  startingVertex = Math.floor(Math.random() * (distances.length));
+  currentVertex  = startingVertex,
+  finalTour      = [startingVertex],
+
+  console.log(startingVertex);
+
   stepsTaken = [];
   animationSteps = [];
 
@@ -19,30 +35,30 @@ function nearestNeighbour(distances) {
     distances[i][i] = Infinity;
   }
 
-  animationSteps.push(new AtVertexStep(currentVertex));
-  animationSteps.push(new AddToTourStep(currentVertex));
+  animationSteps.push(new AtVertexStep(0, currentVertex));
+  animationSteps.push(new AddToTourStep(1, currentVertex));
 
   for (let i = 0; i < distances.length - 1; i++) {
     let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex);
-    animationSteps.push(new NearestVertexStep(currentVertex, nearestNeighbour));
+    animationSteps.push(new NearestVertexStep(3, currentVertex, nearestNeighbour));
+
+    animationSteps.push(new ChangeCurrentVertexStep(4, currentVertex, nearestNeighbour));
 
     tourLength += distances[currentVertex][nearestNeighbour]
-    animationSteps.push(new IncreaseTourLengthStep(distances[currentVertex][nearestNeighbour], tourLength));
+    animationSteps.push(new IncreaseTourLengthStep(5, distances[currentVertex][nearestNeighbour], tourLength));
 
-    animationSteps.push(new ChangeCurrentVertexStep(currentVertex, nearestNeighbour));
+    finalTour.push(nearestNeighbour);
+    animationSteps.push(new AddToTourStep(5, nearestNeighbour));
+
     currentVertex = nearestNeighbour;
 
-    animationSteps.push(new AtVertexStep(currentVertex));
-
-    finalTour.push(currentVertex);
-    animationSteps.push(new AddToTourStep(currentVertex));
+    animationSteps.push(new AtVertexStep(5, currentVertex));
   }
 
-  animationSteps.push(new AtLastVertexStep(currentVertex, startingVertex));
+  animationSteps.push(new AtLastVertexStep(6, currentVertex, startingVertex));
   tourLength += distances[currentVertex][startingVertex];
-  animationSteps.push(new IncreaseTourLengthStep(distances[currentVertex][startingVertex], tourLength));
+  animationSteps.push(new IncreaseTourLengthStep(6, distances[currentVertex][startingVertex], tourLength));
 
-  animationSteps.push(new FinalTourFoundStep(finalTour));
   return animationSteps;
 }
 
@@ -65,6 +81,6 @@ function findNearestUnvisitedNeighbour(v) {
     }
   }
 
-  animationSteps.push(new FindingNearestUnvisitedVertexStep(currentVertex, unvisitedVertices));
+  animationSteps.push(new FindingNearestUnvisitedVertexStep(3, currentVertex, unvisitedVertices));
   return nearest;
 }

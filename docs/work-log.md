@@ -220,5 +220,19 @@ Began updating visualisation to show new animation step.
 **13:00-13:50**
 Updated visualisation to show the new step and began implementing buttons to jump to the start/end of the animation.
 
-**15:05-15:30**
-Finished implementing buttons to jump to the start/end of the animation.
+**15:05-17:10**
+Finished implementing buttons to jump to the start/end of the animation and added hardcoded pseudocode for nearest neighbour.
+
+---
+
+24/10/18
+
+**13:35-13:50**
+Worked on making pseudocode dynamic instead of hardcoded.
+
+---
+
+25/10/18
+
+**11:00-11:35**
+Completed pseudocode implementation.
