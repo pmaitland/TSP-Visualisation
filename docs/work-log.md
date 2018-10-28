@@ -236,3 +236,23 @@ Worked on making pseudocode dynamic instead of hardcoded.
 
 **11:00-13:00**
 Completed pseudocode implementation and improved skipping to end of animation.
+
+**18:30-20:05**
+Split configuration pane between tabs and began accepting user input for non-euclidean space.
+
+---
+
+26/10/18
+
+**16:00-16:30**
+Reduced distance matrix to a triangle.
+
+---
+
+28/10/18
+
+**10:50-11:55**
+Improved how the animation makes use of vertices and allowed vertex labels to be edited through the distance matrix.
+
+**15:15-15:50**
+Allowed distances between vertices to be edited through the distance matrix.

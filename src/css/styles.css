@@ -3,6 +3,7 @@ html, body {
 }
 
 body {
+  font-family: Courier;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -26,41 +27,77 @@ th, td {
 }
 
 button {
+  font-family: Courier;
   margin-left: 2%;
 }
 
 #canvasHolder {
-  width: 67%;
+  width: 67vw;
 }
 
 #configurationHolder {
-  width: 33%;
+  width: 33vw;
+  padding: 0%;
   overflow: auto;
-  border-left: 1px solid;
 }
 
 #distanceMatrixWrapper {
-  margin: 2%;
   overflow: auto;
   overflow-y: auto;
-  /*width: 95%;
-  height: 100px;*/
+  width: 33vw;
+  height: 33vw;
 }
 
-#distanceMatrix {}
+#distanceMatrix {
 }
 
 #nnButton {
-  margin: 2%;
+
 }
 
 #stepLog {
   height: 100px;
   overflow: auto;
-  margin: 2%;
   border: 1px solid;
 }
 
 #pseudocode {
-  margin: 2%;
+
+}
+
+.tabsHolder {
+   overflow: hidden;
+   border: 1px solid #ccc;
+   background-color: #f1f1f1;
+   display: flex;
+   flex-wrap: wrap;
+}
+
+.tabsHolder button {
+   background-color: inherit;
+   float: left;
+   border: none;
+   outline: none;
+   cursor: pointer;
+   padding: 14px 16px;
+   transition: 0.3s;
+}
+
+.tabsHolder button:hover {
+   background-color: #ddd;
+}
+
+.tabsHolder button.active {
+   background-color: #ccc;
+}
+
+.tab {
+  min-width: 31%;
+  flex: 1 1 auto;
+}
+
+.tabcontent {
+   display: none;
+   border: 1px solid #ccc;
+   border-top: none;
 }

@@ -14,7 +14,7 @@ class AtVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "At vertex " + this.vertex;
+    return "At vertex " + this.vertex.label;
   }
 }
 
@@ -26,7 +26,7 @@ class NearestVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Nearest vertex to " + this.currentVertex + " is vertex " + this.nearestVertex;
+    return "Nearest vertex to " + this.currentVertex.label + " is vertex " + this.nearestVertex.label;
   }
 }
 
@@ -37,7 +37,7 @@ class AddToTourStep extends AnimationStep {
   }
 
   toString() {
-    return "Added vertex " + this.vertex + " to the tour";
+    return "Added vertex " + this.vertex.label + " to the tour";
   }
 }
 
@@ -49,7 +49,7 @@ class ChangeCurrentVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Changed current vertex from vertex " + this.lastVertex + " to vertex " + this.newVertex;
+    return "Changed current vertex from vertex " + this.lastVertex.label + " to vertex " + this.newVertex.label;
   }
 }
 
@@ -73,7 +73,7 @@ class AtLastVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Vertex " + this.lastVertex + " is the last vertex. Returning to vertex " + this.startingVertex;
+    return "Vertex " + this.lastVertex.label + " is the last vertex. Returning to vertex " + this.startingVertex.label;
   }
 }
 
@@ -85,7 +85,7 @@ class FindingNearestUnvisitedVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Finding the vertex nearest vertex " + this.currentVertex + " which is still unvisited";
+    return "Finding the vertex nearest vertex " + this.currentVertex.label + " which is still unvisited";
   }
 }
 

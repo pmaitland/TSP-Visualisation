@@ -5,31 +5,52 @@ var stepsTaken,
     edgesInTour = [],
     edgesToNearest = [];
 
-var distances = [
-  [ 0, 24, 28,  44, 91, 16,  38,  1, 84, 23],
-  [24,  0, 83,  27, 67, 99,  82, 79, 65, 58],
-  [28, 83,  0,  85, 39, 75,  59,  8, 86, 33],
-  [44, 27, 85,   0, 72, 29, 100, 98, 41, 54],
-  [91, 67, 39,  72,  0, 32,  17, 76, 90, 45],
-  [16, 99, 75,  29, 32,  0,   4, 95, 93, 47],
-  [38, 82, 59, 100, 17,  4,   0, 19,  7, 31],
-  [ 1, 79,  8,  98, 76, 95,  19,  0, 37, 13],
-  [84, 65, 86,  41, 90, 93,   7, 37,  0, 77],
-  [23, 58, 33,  54, 45, 47,  31, 13, 77,  0]
-];
-
-var vertices = [],
-    vertexCount = distances.length;
+var distances = [],
+    vertices = [],
+    vertexCount = 3;
 
 var selectedVertex = null;
 
 var pseudocodeHighlightColour = "#f4e04d";
+
+window.onload = function() {
+  document.getElementById("defaultTab").click();
+  document.getElementsByTagName("input")[0].value = vertexCount;
+  changeVertexCount();
+}
+
+function changeVertexCount() {
+  vertices = [];
+  vertexCount = document.getElementsByTagName("input")[0].value;
+
+  changeVertexCountCanvas();
+  resetDistances();
+  displayDistanceMatrix();
+  redraw();
+}
+
+function resetDistances() {
+  distances = [];
+  for (let vertex of vertices) {
+    var d = [];
+    for (let vertex of vertices) {
+      d.push(1);
+    }
+    distances.push(d);
+  }
+}
 
 function displayDistanceMatrix() {
 
   // get distance matrix element from HTML
   var distanceMatrix = document.getElementById("distanceMatrix");
 
+  // delete all cells in the distance matrix
+  while(distanceMatrix.hasChildNodes()) {
+     distanceMatrix.removeChild(distanceMatrix.firstChild);
+  }
+
+  // create a row to hold vertex labels
   var labelRow = distanceMatrix.insertRow(0),
       row, cell;
 
@@ -37,28 +58,34 @@ function displayDistanceMatrix() {
   labelRow.insertCell(0)
 
   // fill the top row with vertex labels
-  for (let vertex of vertices) {
-    cell = labelRow.insertCell(vertex.id + 1);
+  for (let i = vertexCount-1; i > 0; i--) {
+    let vertex = vertices[i];
+    cell = labelRow.insertCell(vertexCount - i);
     cell.setAttribute("contenteditable", true);
-    cell.id = vertex.id + "label";
+    cell.classList.add(vertex.id + "label");
     cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
     cell.innerHTML = vertex.label;
   }
 
   // create a row for every vertex
-  for (let i = 0; i < vertexCount; i++) {
+  for (let i = 0; i < vertexCount - 1; i++) {
     row = distanceMatrix.insertRow(i + 1);
 
     // insert the vertex label in the first cell of its row
     cell = row.insertCell(0);
     cell.setAttribute("contenteditable", true);
+    cell.classList.add(vertices[i].id + "label");
+    cell.addEventListener("blur", function(){editVertexLabel(vertices[i].id, this.innerHTML)});
     cell.innerHTML = vertices[i].label;
 
     // fill the rest of the row with distances to other vertices
-    for (let j = 0; j < vertexCount; j++) {
+    for (let j = 0; j < vertexCount - (i+1); j++) {
+      let vertexId = vertexCount - (j+1);
       cell = row.insertCell(j + 1);
       cell.setAttribute("contenteditable", true);
-      cell.innerHTML = distances[i][j];
+      cell.classList.add("v" + i.toString() + "v" + vertexId.toString() + "distance");
+      cell.addEventListener("blur", function(){editDistance(i, vertexId, this.innerHTML)});
+      cell.innerHTML = distances[i][vertexId];
     }
   }
 
@@ -68,7 +95,20 @@ function editVertexLabel(vertexID, newLabel) {
   for (let vertex of vertices) {
     if (vertex.id == vertexID) {
       vertex.label = newLabel;
+      let labelCells = document.getElementsByClassName(vertex.id + "label");
+      for (let cell of labelCells) {
+        cell.innerHTML = newLabel;
+      }
     }
+  }
+}
+
+function editDistance(v1, v2, newDistance) {
+  distances[v1][v2] = parseInt(newDistance, 10);
+  distances[v2][v1] = parseInt(newDistance, 10);
+  let cells = document.getElementsByClassName("v" + v1.toString() + "v" + v2.toString() + "distance");
+  for (let cell of cells) {
+    cell.innerHTML = newDistance;
   }
 }
 
@@ -121,46 +161,28 @@ function stepForwardAnimation() {
     switch (currentStep.constructor) {
 
       case AtVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.vertex) {
-            vertex.isAt = true;
-            vertex.isPartOfTour = true;
-          }
-        }
+        currentStep.vertex.isAt = true;
+        currentStep.vertex.isPartOfTour = true;
         break;
 
       case NearestVertexStep:
         for (let vertex of vertices) {
           vertex.isNearest = false;
-          if (vertex.id == currentStep.currentVertex) {
-            vertex1 = vertex;
-          } else if (vertex.id == currentStep.nearestVertex) {
-            vertex.isNearest = true;
-            vertex2 = vertex;
-          }
         }
-        edgesToNearest = [[currentStep.currentVertex, currentStep.nearestVertex]];
+        currentStep.nearestVertex.isNearest = true;
+        edgesToNearest = [[currentStep.currentVertex.id, currentStep.nearestVertex.id]];
         break;
 
       case AddToTourStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.vertex) {
-            vertex.isPartOfTour = true;
-          }
-        }
+        currentStep.vertex.isPartOfTour = true;
         break;
 
       case ChangeCurrentVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.lastVertex) {
-            vertex.isAt = false;
-            vertex.isPartOfTour = true;
-          } else if (vertex.id == currentStep.newVertex) {
-            vertex.isAt = true;
-            vertex.isNearest = false;
-          }
-        }
-        edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
+        currentStep.lastVertex.isAt = false;
+        currentStep.lastVertex.isPartOfTour = true;
+        currentStep.newVertex.isAt = true;
+        currentStep.newVertex.isNearest = false;
+        edgesInTour.push([currentStep.lastVertex.id, currentStep.newVertex.id]);
         edgesToNearest = [];
         break;
 
@@ -168,12 +190,8 @@ function stepForwardAnimation() {
       break;
 
       case AtLastVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.lastVertex) {
-            vertex.isAt = false;
-          }
-        }
-        edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
+        currentStep.lastVertex.isAt = false;
+        edgesInTour.push([currentStep.lastVertex.id, currentStep.startingVertex.id]);
         edgesToNearest = [];
         break;
 
@@ -182,7 +200,7 @@ function stepForwardAnimation() {
         for (let vertex of vertices) {
           if (currentStep.unvisitedVertices.includes(vertex.id)) {
             vertex.isNearest = true;
-            edgesToNearest.push([currentStep.currentVertex, vertex.id]);
+            edgesToNearest.push([currentStep.currentVertex.id, vertex.id]);
           }
         }
         break;
@@ -222,59 +240,39 @@ function stepBackwardAnimation() {
     switch (currentStep.constructor) {
 
       case AtVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.vertex) {
-
-          }
-        }
         break;
 
       case NearestVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.nearestVertex) {
-            vertex.isNearest = false;
-          }
+        currentStep.nearestVertex.isNearest = false;
 
-          let previousStep = animationSteps[currentAnimationStep - 2];
+        let previousStep = animationSteps[currentAnimationStep - 2];
+        for (let vertex of vertices) {
           if (previousStep.unvisitedVertices.includes(vertex.id)) {
             vertex.isNearest = true;
-            edgesToNearest.push([previousStep.currentVertex, vertex.id]);
+            edgesToNearest.push([previousStep.currentVertex.id, vertex.id]);
           }
         }
         break;
 
       case AddToTourStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.vertex) {
-            vertex.isPartOfTour = false;
-          }
-        }
+        currentStep.vertex.isPartOfTour = false;
         break;
 
       case ChangeCurrentVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.lastVertex) {
-            vertex.isAt = true;
-            vertex.isPartOfTour = false;
-          } else if (vertex.id == currentStep.newVertex) {
-            vertex.isAt = false;
-            vertex.isNearest = true;
-            vertex.isPartOfTour = false;
-          }
-        }
+        currentStep.lastVertex.isAt = true;
+        currentStep.lastVertex.isPartOfTour = false;
+        currentStep.newVertex.isAt = false;
+        currentStep.newVertex.isNearest = true;
+        currentStep.newVertex.isPartOfTour = false;
         edgesInTour.splice(-1, 1);
-        edgesToNearest = [[currentStep.lastVertex, currentStep.newVertex]];
+        edgesToNearest = [[currentStep.lastVertex.id, currentStep.newVertex.id]];
         break;
 
       case IncreaseTourLengthStep:
       break;
 
       case AtLastVertexStep:
-        for (let vertex of vertices) {
-          if (vertex.id == currentStep.lastVertex) {
-            vertex.isAt = true;
-          }
-        }
+        currentStep.lastVertex.isAt = true;
         edgesInTour.pop();
         edgesInTour.pop();
         edgesToNearest = [];
@@ -314,6 +312,27 @@ function stepBackwardAnimation() {
 
     redraw();
   }
+}
+
+function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabContent, tablinks;
+
+    // Get all elements with class="tabContent" and hide them
+    tabContent = document.getElementsByClassName("tabContent");
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tabs = document.getElementsByClassName("tab");
+    for (i = 0; i < tabs.length; i++) {
+        tabs[i].className = tabs[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
 function showStepInLog(stepString) {
@@ -381,7 +400,7 @@ function clearElementChildren(id) {
 }
 
 function solveWithNearestNeighbour() {
-  stepsTaken = nearestNeighbour(distances);
+  stepsTaken = nearestNeighbour(distances, vertices);
   showPseudocode("nn");
   playingAnimation = true;
   playAnimation();

@@ -21,27 +21,43 @@
 
   <div id="configurationHolder">
 
-    <h3>Distance Matrix</h3>
-    <div id="distanceMatrixWrapper">
-      <table id="distanceMatrix">
-      </table>
+    <div class="tabsHolder">
+      <button id="defaultTab" class="tab" onclick="openTab(event, 'input')">Input</button>
+      <button class="tab" onclick="openTab(event, 'algorithms')">Algorithms</button>
+      <button class="tab" onclick="openTab(event, 'output')">Output</button>
     </div>
 
-    <button id="nnButton" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
+    <div id="input" class="tabContent">
+      Number of vertices: <input type="number" name="vertexCount" onblur="changeVertexCount()">
 
-    <div id="stepLog">
+      <h3>Distance Matrix</h3>
+      <div id="distanceMatrixWrapper">
+        <table id="distanceMatrix">
+        </table>
+      </div>
     </div>
 
-    <div id="animationControls">
-      <button onClick="resumeAnimation()">Play</button>
-      <button onClick="pauseAnimation()">Pause</button>
-      <button onClick="stepForwardAnimation()">Step Forward</button>
-      <button onClick="stepBackwardAnimation()">Step Backward</button>
-      <button onClick="restartAnimation()">Restart</button>
-      <button onClick="endAnimation()">End</button>
+    <div id="algorithms" class="tabContent">
+      <button id="nnButton" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
+
+      <div id="stepLog">
+      </div>
+
+      <div id="animationControls">
+        <button onClick="resumeAnimation()">Play</button>
+        <button onClick="pauseAnimation()">Pause</button>
+        <button onClick="stepForwardAnimation()">Step Forward</button>
+        <button onClick="stepBackwardAnimation()">Step Backward</button>
+        <button onClick="restartAnimation()">Restart</button>
+        <button onClick="endAnimation()">End</button>
+      </div>
+
+      <div id="pseudocode">
+      </div>
     </div>
 
-    <div id="pseudocode">
+    <div id="output" class="tabContent">
+
     </div>
 
   </div>

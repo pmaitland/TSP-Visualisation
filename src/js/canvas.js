@@ -35,6 +35,27 @@ function setup() {
   canvas.parent("canvasHolder");
   canvas.style('display', 'block');
 
+  noLoop();
+}
+
+function windowResized() {
+  canvasWidth = windowWidth * (2 / 3);
+  resizeCanvas(canvasWidth, windowHeight);
+}
+
+/**
+  Called once every loop.
+ */
+function draw() {
+  background("#fff");
+
+  drawAnimationEdges();
+  drawEdges();
+  drawEdgeWeights();
+  drawVertices();
+}
+
+function changeVertexCountCanvas() {
   for (let i = 0; i < vertexCount; i++) {
 		var r = Math.min(canvasWidth, windowHeight) * (1 / 3),
 				angle = (i / (vertexCount / 2)) * Math.PI,
@@ -49,29 +70,8 @@ function setup() {
       radius: radius,
       label: i.toString()
     });
-
 	}
-
-  displayDistanceMatrix();
-  noLoop();
-}
-
-function windowResized() {
-  canvasWidth = windowWidth * (2 / 3);
-  resizeCanvas(canvasWidth, windowHeight);
-}
-
-/**
-  Called once every loop.
- */
-function draw() {
-  background("#fff");
-  console.log(currentAnimationStep);
-
-  drawAnimationEdges();
-  drawEdges();
-  drawEdgeWeights();
-  drawVertices();
+  redraw();
 }
 
 /**
