@@ -80,15 +80,6 @@ button {
    outline: none;
    cursor: pointer;
    padding: 14px 16px;
-   transition: 0.3s;
-}
-
-.tabsHolder button:hover {
-   background-color: #ddd;
-}
-
-.tabsHolder button.active {
-   background-color: #ccc;
 }
 
 .tab {

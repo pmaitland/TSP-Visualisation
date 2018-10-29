@@ -126,6 +126,7 @@ Continued with nearest neighbour in JavaScript.
 ## Week 4
 
 08/10/18
+
 **11:00-12:00**
 Added tracking of steps taken to nearest neighbour implementation.
 
@@ -256,3 +257,16 @@ Improved how the animation makes use of vertices and allowed vertex labels to be
 
 **15:15-15:50**
 Allowed distances between vertices to be edited through the distance matrix.
+
+## Week 7
+
+29/10/18
+
+**14:15-14:50**
+Prepared for supervisor meeting.
+
+**15:00-15:30**
+[Supervisor Meeting](./meetings/18-10-29.md)
+
+**16:15-16:30**
+Wrote up summary of supervisor meeting.

@@ -10,8 +10,8 @@ var nnPseudocode = [
   "Start at any vertex",
   "Mark the current vertex as visited and add it to the tour",
   "While there is an unvisited vertex",
-  "  Find the vertex nearest the current vertex which has not been visited",
-  "  Set the current vertex to this vertex",
+  "  Find the nearest, unvisited vertex to the current vertex",
+  "  Set the current vertex to this nearest vertex",
   "  Mark the new current vertex as visited and add it to the tour",
   "Return to the starting vertex and add it to the tour again",
   "Finished"

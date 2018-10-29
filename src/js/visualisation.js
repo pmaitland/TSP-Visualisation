@@ -55,7 +55,7 @@ function displayDistanceMatrix() {
       row, cell;
 
   // leave the top-left cell empty
-  labelRow.insertCell(0)
+  labelRow.insertCell(0);
 
   // fill the top row with vertex labels
   for (let i = vertexCount-1; i > 0; i--) {
@@ -230,6 +230,7 @@ function stepForwardAnimation() {
 
     redraw();
   }
+  console.log("nice");
 }
 
 function stepBackwardAnimation() {
@@ -273,8 +274,9 @@ function stepBackwardAnimation() {
 
       case AtLastVertexStep:
         currentStep.lastVertex.isAt = true;
-        edgesInTour.pop();
-        edgesInTour.pop();
+        while (edgesInTour.length > vertexCount - 1) {
+          edgesInTour.pop();
+        }
         edgesToNearest = [];
         break;
 
@@ -307,7 +309,7 @@ function stepBackwardAnimation() {
     }
 
     removeStepFromLog();
-    highlightPseudocode(currentStep.pseudocodeLine);
+    highlightPseudocode(animationSteps[currentAnimationStep - 2].pseudocodeLine);
     currentAnimationStep--;
 
     redraw();
