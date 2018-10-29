@@ -7,14 +7,13 @@ var startingVertex, // must be >= 0 and <= m
     animationSteps = [];
 
 var nnPseudocode = [
-  "Start at any vertex",
-  "Mark the current vertex as visited and add it to the tour",
-  "While there is an unvisited vertex",
-  "  Find the nearest, unvisited vertex to the current vertex",
-  "  Set the current vertex to this nearest vertex",
-  "  Mark the new current vertex as visited and add it to the tour",
-  "Return to the starting vertex and add it to the tour again",
-  "Finished"
+  "start at a vertex v",
+  "mark v as visited and add v to tour",
+  "while there exists an unvisited vertex",
+  "  w = nearest unvisited vertex to v",
+  "  v = w",
+  "  set v as visited and add v to tour",
+  "finished"
 ];
 
 /**
@@ -58,7 +57,7 @@ function nearestNeighbour(distances, vertices) {
   finalTour.push(startingVertex);
   animationSteps.push(new IncreaseTourLengthStep(6, distances[currentVertex][startingVertex], tourLength));
 
-  animationSteps.push(new FinishedStep(7, finalTour, tourLength));
+  animationSteps.push(new FinishedStep(6, finalTour, tourLength));
   return animationSteps;
 }
 

@@ -62,7 +62,7 @@ button {
 }
 
 #pseudocode {
-
+  white-space: pre-wrap;
 }
 
 .tabsHolder {

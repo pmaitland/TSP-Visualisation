@@ -268,5 +268,5 @@ Prepared for supervisor meeting.
 **15:00-15:30**
 [Supervisor Meeting](./meetings/18-10-29.md)
 
-**16:15-16:30**
-Wrote up summary of supervisor meeting.
+**16:15-16:50**
+Wrote up summary of supervisor meeting and updated nearest neighbour pseudocode.
