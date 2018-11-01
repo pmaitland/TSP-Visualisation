@@ -58,9 +58,9 @@ function displayDistanceMatrix() {
   labelRow.insertCell(0);
 
   // fill the top row with vertex labels
-  for (let i = vertexCount-1; i > 0; i--) {
+  for (let i = 0; i < vertexCount; i++) {
     let vertex = vertices[i];
-    cell = labelRow.insertCell(vertexCount - i);
+    cell = labelRow.insertCell(i+1);
     cell.setAttribute("contenteditable", true);
     cell.classList.add(vertex.id + "label");
     cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
@@ -68,8 +68,8 @@ function displayDistanceMatrix() {
   }
 
   // create a row for every vertex
-  for (let i = 0; i < vertexCount - 1; i++) {
-    row = distanceMatrix.insertRow(i + 1);
+  for (let i = 0; i < vertexCount; i++) {
+    let row = distanceMatrix.insertRow(i+1);
 
     // insert the vertex label in the first cell of its row
     cell = row.insertCell(0);
@@ -79,13 +79,22 @@ function displayDistanceMatrix() {
     cell.innerHTML = vertices[i].label;
 
     // fill the rest of the row with distances to other vertices
-    for (let j = 0; j < vertexCount - (i+1); j++) {
-      let vertexId = vertexCount - (j+1);
-      cell = row.insertCell(j + 1);
-      cell.setAttribute("contenteditable", true);
-      cell.classList.add("v" + i.toString() + "v" + vertexId.toString() + "distance");
-      cell.addEventListener("blur", function(){editDistance(i, vertexId, this.innerHTML)});
-      cell.innerHTML = distances[i][vertexId];
+    for (let j = 0; j < vertexCount; j++) {
+      var distanceCell = row.insertCell(j+1);
+
+      if (i == j) {
+        distanceCell.innerHTML = 0;
+      } else {
+        if (i < j) {
+          distanceCell.classList.add("v" + i.toString() + "v" + j.toString() + "distance");
+          distanceCell.addEventListener("blur", function(){editDistance(i, j, this.innerHTML)});
+        } else {
+          distanceCell.classList.add("v" + j.toString() + "v" + i.toString() + "distance");
+          distanceCell.addEventListener("blur", function(){editDistance(j, i, this.innerHTML)});
+        }
+        distanceCell.innerHTML = distances[i][j];
+        distanceCell.setAttribute("contenteditable", true);
+      }
     }
   }
 

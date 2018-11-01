@@ -270,3 +270,10 @@ Prepared for supervisor meeting.
 
 **16:15-16:50**
 Wrote up summary of supervisor meeting and updated nearest neighbour pseudocode.
+
+---
+
+01/11/18
+
+**11:00-11:40**
+Changed distance matrix back to the full square.
