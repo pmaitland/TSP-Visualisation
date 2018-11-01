@@ -23,7 +23,8 @@ function changeVertexCount() {
   vertices = [];
   vertexCount = document.getElementsByTagName("input")[0].value;
 
-  changeVertexCountCanvas();
+  createVertices();
+  updateCanvasLayout();
   resetDistances();
   displayDistanceMatrix();
   redraw();

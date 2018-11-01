@@ -275,5 +275,5 @@ Wrote up summary of supervisor meeting and updated nearest neighbour pseudocode.
 
 01/11/18
 
-**11:00-11:40**
-Changed distance matrix back to the full square.
+**11:00-12:25**
+Changed distance matrix back to the full square and allowed canvas to update when window is resized.

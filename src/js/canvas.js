@@ -35,12 +35,15 @@ function setup() {
   canvas.parent("canvasHolder");
   canvas.style('display', 'block');
 
+  createVertices();
+
   noLoop();
 }
 
 function windowResized() {
   canvasWidth = windowWidth * (2 / 3);
   resizeCanvas(canvasWidth, windowHeight);
+  updateCanvasLayout();
 }
 
 /**
@@ -55,21 +58,23 @@ function draw() {
   drawVertices();
 }
 
-function changeVertexCountCanvas() {
+function createVertices() {
   for (let i = 0; i < vertexCount; i++) {
-		var r = Math.min(canvasWidth, windowHeight) * (1 / 3),
-				angle = (i / (vertexCount / 2)) * Math.PI,
-				x = (r * Math.cos(angle)) + r * (3 / 2),
-				y = (r * Math.sin(angle)) + r * (3 / 2),
-        radius = 25;
+    vertices.push({ id: i, label: i });
+  }
+}
 
-		vertices.push({
-      id: i,
-      x: x,
-      y: y,
-      radius: radius,
-      label: i.toString()
-    });
+function updateCanvasLayout() {
+  for (let vertex of vertices) {
+		var r = Math.min(canvasWidth, windowHeight) * (7/16),
+				angle = (vertex.id / (vertexCount / 2)) * Math.PI,
+				x = (r * Math.cos(angle)) + (canvasWidth / 2),
+				y = (r * Math.sin(angle)) + (windowHeight / 2),
+        radius = 15;
+
+    vertex.x = x;
+    vertex.y = y;
+    vertex.radius = radius;
 	}
   redraw();
 }
