@@ -43,7 +43,9 @@ function setup() {
 function windowResized() {
   canvasWidth = windowWidth * (2 / 3);
   resizeCanvas(canvasWidth, windowHeight);
-  updateCanvasLayout();
+  if (!inEuclideanSpace) {
+    updateCanvasLayout();
+  }
 }
 
 /**
@@ -54,8 +56,8 @@ function draw() {
 
   drawAnimationEdges();
   drawEdges();
-  drawEdgeWeights();
   drawVertices();
+  drawEdgeWeights();
 }
 
 function createVertices() {
@@ -193,7 +195,7 @@ function mousePressed() {
     }
   }
 
-  if (!isSelecting && mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
+  if (inEuclideanSpace && !isSelecting && mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
     var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
     if (id == -Infinity) {
       id = 0;
@@ -217,7 +219,6 @@ function mousePressed() {
     }
     vertexCount++;
 
-    addToDistances(v);
     displayDistanceMatrix();
   }
   redraw();

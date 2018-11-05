@@ -44,20 +44,6 @@ function resetDistances() {
   }
 }
 
-function addToDistances(vertex) {
-  var matrix = document.getElementById("distanceMatrix");
-
-  if (vertexCount == 0) {
-    matrix.insertRow(0);
-  } else {
-    for (let row in matrix.rows.length) {
-      console.log(row);
-
-      matrix.rows[row].insertCell(0);
-    }
-  }
-}
-
 function displayDistanceMatrix() {
 
   // get distance matrix element from HTML
@@ -73,13 +59,18 @@ function displayDistanceMatrix() {
       row, cell;
 
   // leave the top-left cell empty
-  labelRow.insertCell(0);
+  let emptyCell = labelRow.insertCell(0);
+  emptyCell.style.backgroundColor = '#bbb';
+  emptyCell.style.textAlign = 'right';
+
 
   // fill the top row with vertex labels
   for (let i = 0; i < vertexCount; i++) {
     let vertex = vertices[i];
     cell = labelRow.insertCell(i+1);
     cell.setAttribute("contenteditable", true);
+    cell.style.backgroundColor = '#bbb';
+    cell.style.textAlign = 'right';
     cell.classList.add(vertex.id + "label");
     cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
     cell.innerHTML = vertex.label;
@@ -92,6 +83,8 @@ function displayDistanceMatrix() {
     // insert the vertex label in the first cell of its row
     cell = row.insertCell(0);
     cell.setAttribute("contenteditable", true);
+    cell.style.backgroundColor = '#bbb';
+    cell.style.textAlign = 'right';
     cell.classList.add(vertices[i].id + "label");
     cell.addEventListener("blur", function(){editVertexLabel(vertices[i].id, this.innerHTML)});
     cell.innerHTML = vertices[i].label;
@@ -113,6 +106,7 @@ function displayDistanceMatrix() {
         distanceCell.innerHTML = distances[i][j];
         distanceCell.setAttribute("contenteditable", true);
       }
+      distanceCell.style.textAlign = 'right';
     }
   }
 
