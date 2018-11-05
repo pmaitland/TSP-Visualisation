@@ -104,7 +104,9 @@ function displayDistanceMatrix() {
           distanceCell.addEventListener("blur", function(){editDistance(j, i, this.innerHTML)});
         }
         distanceCell.innerHTML = distances[i][j];
-        distanceCell.setAttribute("contenteditable", true);
+        if (!inEuclideanSpace) {
+          distanceCell.setAttribute("contenteditable", true);
+        }
       }
       distanceCell.style.textAlign = 'right';
     }

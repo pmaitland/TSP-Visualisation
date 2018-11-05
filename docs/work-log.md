@@ -295,5 +295,5 @@ Continued implementing euclidean space.
 **12:00-13:00**
 Continued implementing euclidean space.
 
-**14:00-14:30**
-Improved look of distance matrix.
+**14:00-14:50**
+Improved look of distance matrix and prepared for supervisor meeting.
