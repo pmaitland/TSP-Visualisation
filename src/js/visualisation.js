@@ -7,7 +7,7 @@ var stepsTaken,
 
 var distances = [],
     vertices = [],
-    vertexCount = 3;
+    vertexCount = 0;
 
 var selectedVertex = null;
 
@@ -19,7 +19,6 @@ window.onload = function() {
   document.getElementById("defaultTab").click();
   document.getElementById("defaultSpace").click();
   document.getElementById("vertexCount").value = vertexCount;
-  changeVertexCount();
 }
 
 function changeVertexCount() {
@@ -383,14 +382,14 @@ function changeSpace(evt, space) {
   document.getElementById(space).style.display = "block";
   evt.currentTarget.className += " active";
 
-  if (space == 'euclidean') {
+  if (space == 'euclidean' && !inEuclideanSpace) {
     inEuclideanSpace = true;
     vertices = [];
     vertexCount = 0;
     resetDistances();
     displayDistanceMatrix();
     redraw();
-  } else {
+  } else if (space == 'nonEuclidean') {
     inEuclideanSpace = false;
     document.getElementById("vertexCount").value = 3;
     changeVertexCount();

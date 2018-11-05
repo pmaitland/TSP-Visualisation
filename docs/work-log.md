@@ -297,3 +297,9 @@ Continued implementing euclidean space.
 
 **14:00-14:50**
 Improved look of distance matrix and prepared for supervisor meeting.
+
+**15:00-15:50**
+[Supervisor Meeting](./meetings/18-11-05.md)
+
+**16:00-16:30**
+Wrote up summary of supervisor meeting.
