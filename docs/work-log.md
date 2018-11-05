@@ -275,5 +275,22 @@ Wrote up summary of supervisor meeting and updated nearest neighbour pseudocode.
 
 01/11/18
 
-**11:00-12:25**
-Changed distance matrix back to the full square and allowed canvas to update when window is resized.
+**11:00-13:00**
+Changed distance matrix back to the full square, allowed canvas to update when window is resized, and added tabs to change between euclidean and non-euclidean space.
+
+---
+
+02/11/18
+
+**18:30-19:00**
+Began implementing euclidean space.
+
+**19:30-20:15**
+Continued implementing euclidean space.
+
+---
+
+05/11/18
+
+**12:00-13:00**
+Continued implementing euclidean space.

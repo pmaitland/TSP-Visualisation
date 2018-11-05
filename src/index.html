@@ -28,7 +28,20 @@
     </div>
 
     <div id="input" class="tabContent">
-      Number of vertices: <input type="number" onblur="changeVertexCount()">
+      <div class="tabsHolder">
+        <button id="defaultSpace" class="spaceTab" onclick="changeSpace(event, 'euclidean')">Euclidean Space</button>
+        <button class="spaceTab" onclick="changeSpace(event, 'nonEuclidean')">Non-Euclidean Space</button>
+      </div>
+
+      <div id="euclidean" class="spaceTabContent">
+
+      </div>
+
+      <div id="nonEuclidean" class="spaceTabContent">
+        Number of vertices: <input type="number" id="vertexCount" onblur="changeVertexCount()">
+
+
+      </div>
 
       <h3>Distance Matrix</h3>
       <div id="distanceMatrixWrapper">

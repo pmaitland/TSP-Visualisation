@@ -11,17 +11,20 @@ var distances = [],
 
 var selectedVertex = null;
 
+var inEuclideanSpace = true;
+
 var pseudocodeHighlightColour = "#f4e04d";
 
 window.onload = function() {
   document.getElementById("defaultTab").click();
-  document.getElementsByTagName("input")[0].value = vertexCount;
+  document.getElementById("defaultSpace").click();
+  document.getElementById("vertexCount").value = vertexCount;
   changeVertexCount();
 }
 
 function changeVertexCount() {
   vertices = [];
-  vertexCount = document.getElementsByTagName("input")[0].value;
+  vertexCount = document.getElementById("vertexCount").value;
 
   createVertices();
   updateCanvasLayout();
@@ -38,6 +41,20 @@ function resetDistances() {
       d.push(1);
     }
     distances.push(d);
+  }
+}
+
+function addToDistances(vertex) {
+  var matrix = document.getElementById("distanceMatrix");
+
+  if (vertexCount == 0) {
+    matrix.insertRow(0);
+  } else {
+    for (let row in matrix.rows.length) {
+      console.log(row);
+
+      matrix.rows[row].insertCell(0);
+    }
   }
 }
 
@@ -240,7 +257,6 @@ function stepForwardAnimation() {
 
     redraw();
   }
-  console.log("nice");
 }
 
 function stepBackwardAnimation() {
@@ -345,6 +361,44 @@ function openTab(evt, tabName) {
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+function distanceBetween(v1, v2) {
+  return Math.round(Math.hypot((v2.x - v1.x), (v2.y - v1.y)));
+}
+
+function changeSpace(evt, space) {
+  // Declare all variables
+  var i, content, links;
+
+  // Get all elements with class="spaceTabContent" and hide them
+  content = document.getElementsByClassName("spaceTabContent");
+  for (i = 0; i < content.length; i++) {
+      content[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tabs = document.getElementsByClassName("spaceTab");
+  for (i = 0; i < tabs.length; i++) {
+      tabs[i].className = tabs[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(space).style.display = "block";
+  evt.currentTarget.className += " active";
+
+  if (space == 'euclidean') {
+    inEuclideanSpace = true;
+    vertices = [];
+    vertexCount = 0;
+    resetDistances();
+    displayDistanceMatrix();
+    redraw();
+  } else {
+    inEuclideanSpace = false;
+    document.getElementById("vertexCount").value = 3;
+    changeVertexCount();
+  }
 }
 
 function showStepInLog(stepString) {

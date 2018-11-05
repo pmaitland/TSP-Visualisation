@@ -87,6 +87,11 @@ button {
   flex: 1 1 auto;
 }
 
+.spaceTab {
+  min-width: 31%;
+  flex: 1 1 auto;
+}
+
 .tabcontent {
    display: none;
    border: 1px solid #ccc;

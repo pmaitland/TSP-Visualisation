@@ -180,6 +180,7 @@ function drawVertices() {
   Detect if the mouse is clicking on a vertex.
  */
 function mousePressed() {
+  var isSelecting = false;
   // deselect the selected vertex
   selectedVertex = null;
 
@@ -188,7 +189,36 @@ function mousePressed() {
     if (mouseX > v.x - v.radius && mouseX < v.x + v.radius
       && mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
       selectedVertex = v.id;
+      isSelecting = true;
     }
+  }
+
+  if (!isSelecting && mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
+    var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
+    if (id == -Infinity) {
+      id = 0;
+    }
+
+    var v = {
+      id: id,
+      label: id,
+      x: mouseX,
+      y: mouseY,
+      radius: 15
+    };
+
+    vertices.push(v);
+    distances.push([]);
+    for (let i = 0; i < vertexCount; i++) {
+      let distance = distanceBetween(v, vertices[i]);
+      distances[i][id] = distance;
+      distances[id][i] = distance;
+      distances[id][id] = 0;
+    }
+    vertexCount++;
+
+    addToDistances(v);
+    displayDistanceMatrix();
   }
   redraw();
 }
