@@ -29,15 +29,18 @@ function changeVertexCount() {
   updateCanvasLayout();
   resetDistances();
   displayDistanceMatrix();
-  redraw();
 }
 
 function resetDistances() {
   distances = [];
-  for (let vertex of vertices) {
-    var d = [];
-    for (let vertex of vertices) {
-      d.push(1);
+  for (let i = 0; i < vertices.length; i++) {
+    let d = [];
+    for (let j = 0; j < vertices.length; j++) {
+      if (i == j) {
+        d.push(0);
+      } else {
+        d.push(1);
+      }
     }
     distances.push(d);
   }
@@ -147,7 +150,6 @@ function restartAnimation() {
   }
 
   clearElementChildren("stepLog");
-  redraw();
 }
 
 function endAnimation() {
@@ -249,8 +251,6 @@ function stepForwardAnimation() {
     currentAnimationStep++;
     showStepInLog(currentStep.toString());
     highlightPseudocode(currentStep.pseudocodeLine);
-
-    redraw();
   }
 }
 
@@ -332,8 +332,6 @@ function stepBackwardAnimation() {
     removeStepFromLog();
     highlightPseudocode(animationSteps[currentAnimationStep - 2].pseudocodeLine);
     currentAnimationStep--;
-
-    redraw();
   }
 }
 
@@ -386,9 +384,10 @@ function changeSpace(evt, space) {
     inEuclideanSpace = true;
     vertices = [];
     vertexCount = 0;
+    edgesInTour = [];
+    edgesToNearest = [];
     resetDistances();
     displayDistanceMatrix();
-    redraw();
   } else if (space == 'nonEuclidean') {
     inEuclideanSpace = false;
     document.getElementById("vertexCount").value = 3;
@@ -457,6 +456,33 @@ function clearElementChildren(id) {
   let el = document.getElementById(id);
   while (el.firstChild) {
     el.removeChild(el.firstChild);
+  }
+}
+
+function updateMousePosition() {
+  var x = document.getElementById("mouseCoordsX"),
+      y = document.getElementById("mouseCoordsY");
+
+  x.innerHTML = "X: " + Math.round(mouseX);
+  y.innerHTML = "Y: " + Math.round(mouseY);
+}
+
+function randomiseNonEuclideanDistances() {
+  var table = document.getElementById("distanceMatrix");
+
+  var min = document.getElementById("minNonEuclideanDistance").value,
+      max = document.getElementById("maxNonEuclideanDistance").value;
+
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  for (let i = 1; i < table.rows.length; i++) {
+    for (let j = 1; j < table.rows[i].cells.length; j++) {
+      if (i > j) {
+        let distance = Math.floor(Math.random() * (max - min + 1)) + min;
+        editDistance(j-1, i-1, distance);
+      }
+    }
   }
 }
 

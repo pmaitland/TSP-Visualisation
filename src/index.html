@@ -34,13 +34,17 @@
       </div>
 
       <div id="euclidean" class="spaceTabContent">
-
+        <div id="mouseCoords">
+          <div id="mouseCoordsX"></div>
+          <div id="mouseCoordsY"></div>
+        </div>
       </div>
 
       <div id="nonEuclidean" class="spaceTabContent">
         Number of vertices: <input type="number" id="vertexCount" onblur="changeVertexCount()">
-
-
+        Minimum distance: <input type="number" id="minNonEuclideanDistance">
+        Maximum distance: <input type="number" id="maxNonEuclideanDistance">
+        <button id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Randomise Distances</button>
       </div>
 
       <h3>Distance Matrix</h3>

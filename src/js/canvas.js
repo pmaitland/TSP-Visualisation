@@ -36,8 +36,6 @@ function setup() {
   canvas.style('display', 'block');
 
   createVertices();
-
-  noLoop();
 }
 
 function windowResized() {
@@ -58,6 +56,10 @@ function draw() {
   drawEdges();
   drawVertices();
   drawEdgeWeights();
+
+  if (mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
+    updateMousePosition();
+  }
 }
 
 function createVertices() {
@@ -78,7 +80,6 @@ function updateCanvasLayout() {
     vertex.y = y;
     vertex.radius = radius;
 	}
-  redraw();
 }
 
 /**
@@ -221,5 +222,4 @@ function mousePressed() {
 
     displayDistanceMatrix();
   }
-  redraw();
 }

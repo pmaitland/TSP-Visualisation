@@ -303,3 +303,10 @@ Improved look of distance matrix and prepared for supervisor meeting.
 
 **16:00-16:30**
 Wrote up summary of supervisor meeting.
+
+---
+
+06/11/18
+
+**12:30-13:00**
+Allowed the randomisation of distances in non-euclidean space.
