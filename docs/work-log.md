@@ -288,7 +288,7 @@ Began implementing euclidean space.
 **19:30-20:15**
 Continued implementing euclidean space.
 
----
+## Week 8
 
 05/11/18
 
@@ -310,3 +310,63 @@ Wrote up summary of supervisor meeting.
 
 **12:30-13:00**
 Allowed the randomisation of distances in non-euclidean space.
+
+## Week 9
+
+12/11/18
+
+**14:15-14:50**
+Prepared for supervisor meeting.
+
+**15:00-15:35**
+Supervisor Meeting
+
+---
+
+15/11/18
+
+**16:30-17:00**
+Started implementing branch and bound.
+
+**18:30-20:00**
+Continued with branch and bound.
+
+---
+
+16/11/18
+
+**14:00-15:00**
+Continued with branch and bound.
+
+**23:00-00:40**
+Continued with branch and bound.
+
+---
+
+17/11/18
+
+**19:10-21:00**
+Continued with branch and bound.
+
+---
+
+18/11/18
+
+**11:30-13:30**
+Continued with branch and bound.
+
+**14:00-15:45**
+Continued with branch and bound.
+
+**18:00-20:00**
+Implemented brute force and attempted to fix branch and bound.
+
+## Week 10
+
+19/11/18
+
+**14:30-14:55**
+Prepared for supervisor meeting.
+
+**15:00-15:30**
+Supervisor Meeting.

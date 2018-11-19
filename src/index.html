@@ -13,6 +13,8 @@
   <script type="text/javascript" src="./js/canvas.js"></script>
   <script type="text/javascript" src="./js/animationSteps.js"></script>
   <script type="text/javascript" src="./js/nearest_neighbour.js"></script>
+  <script type="text/javascript" src="./js/branch_and_bound.js"></script>
+  <script type="text/javascript" src="./js/brute_force.js"></script>
   <script type="text/javascript" src="./js/visualisation.js"></script>
 </head>
 
@@ -56,6 +58,8 @@
 
     <div id="algorithms" class="tabContent">
       <button id="nnButton" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
+      <button id="bnbButton" onclick="solveWithBranchAndBound();">Branch and Bound</button>
+      <button id="bfButton" onclick="solveWithBruteForce();">Brute Force</button>
 
       <div id="stepLog">
       </div>

@@ -492,3 +492,15 @@ function solveWithNearestNeighbour() {
   playingAnimation = true;
   playAnimation();
 }
+
+function solveWithBranchAndBound() {
+  stepsTaken = branchAndBound(distances, vertices);
+  playingAnimation = true;
+  playAnimation();
+}
+
+function solveWithBruteForce() {
+  stepsTaken = bruteForce(distances, vertices);
+  playingAnimation = true;
+  playAnimation();
+}
