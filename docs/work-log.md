@@ -370,3 +370,8 @@ Prepared for supervisor meeting.
 
 **15:00-15:30**
 Supervisor Meeting.
+
+---
+
+**21:00-22:15**
+Developed method for validating branch and bound implementation generating instances and comparing the result to brute force.

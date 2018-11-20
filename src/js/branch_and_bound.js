@@ -30,8 +30,6 @@ function choose(i) {
 
   if (i >= numCities) {
 
-    console.log(currentTour);
-
     currentTourLength += distance(currentTour[numCities-1], currentTour[0]);
 
     if (bestTourLength == -1 || currentTourLength < bestTourLength) {
