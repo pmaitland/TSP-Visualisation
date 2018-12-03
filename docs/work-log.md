@@ -373,5 +373,51 @@ Supervisor Meeting.
 
 ---
 
+20/11/18
+
 **21:00-22:15**
 Developed method for validating branch and bound implementation generating instances and comparing the result to brute force.
+
+---
+
+21/11/18
+
+**11:00-12:00**
+Implemented creation of spanning tree for approximation with minimum spanning tree.
+
+**22:30-23:10**
+Continued with approximation.
+
+---
+
+25/11/18
+
+**22:00-23:00**
+Continued with approximation.
+
+## Week 11
+
+29/11/18
+
+**17:00-17:40**
+Added distances markings to euclidean space and continued with approximation.
+
+---
+
+30/11/18
+
+**14:15-14:55**
+Supervisor meeting.
+
+**15:20-17:00**
+Continued with approximation.
+
+## Week 12
+
+03/12/18
+
+**11:05-12:15**
+Continued with approximation.
+
+**13:40-14:50**
+Continued with approximation and fixed stepping forward in other algorithms.

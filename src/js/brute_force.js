@@ -14,7 +14,16 @@ function bruteForce(distances, vertices) {
 
   bestTour.push(bestTour[0]);
 
-  animationSteps.push(new FinishedStep(6, bestTour, btLength));
+  let tour = [];
+
+  for (let v of bestTour) {
+    for (let vertex of vertices) {
+      if (vertex.id == v)
+        tour.push(vertex);
+    }
+  }
+
+  animationSteps.push(new FinishedStep(6, tour, btLength));
   return animationSteps;
 }
 

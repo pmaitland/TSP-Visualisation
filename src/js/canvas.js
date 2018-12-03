@@ -10,20 +10,22 @@ var vertexStrokeWeight = 2,
 
 // COLOURS
 // creating graph
-var vertexColour = "#fff",
-    selectedVertexColour = "#fff"
-    vertexBorderColour = "#000",
+var vertexColour         = "#fff",
+    selectedVertexColour = "#fff",
+    vertexBorderColour   = "#000",
 
-    edgeColour = "#000",
+    edgeColour       = "#000",
     edgeWeightColour = "#000",
 
 // animating
-    currentVertexColour = "#f4e04d",
-    nearestVertexColour = "#7bd389",
+    currentVertexColour    = "#f4e04d",
+    nearestVertexColour    = "#7bd389",
     partOfTourVertexColour = "#778da9",
+    partOfTreeVertexColour = "#ff7c1d",
 
-    neartestEdgeColour = "#7bd389",
-    partOfTourEdgeColour = "#778da9";
+    neartestEdgeColour   = "#7bd389",
+    partOfTourEdgeColour = "#778da9",
+    partOfTreeEdgeColour = "#ff7c1d";
 
 /**
   Called once at the very beginning.
@@ -34,6 +36,8 @@ function setup() {
   var canvas = createCanvas(canvasWidth, windowHeight);
   canvas.parent("canvasHolder");
   canvas.style('display', 'block');
+
+  noLoop();
 
   createVertices();
 }
@@ -51,8 +55,11 @@ function windowResized() {
  */
 function draw() {
   background("#fff");
+  if (inEuclideanSpace)
+    drawDistanceMarkings();
 
   drawAnimationEdges();
+  drawCurvedEdges();
   drawEdges();
   drawVertices();
   drawEdgeWeights();
@@ -80,6 +87,22 @@ function updateCanvasLayout() {
     vertex.y = y;
     vertex.radius = radius;
 	}
+}
+
+function drawDistanceMarkings() {
+  stroke("#c8c7c7");
+
+  for (let i = 0; i < canvasWidth; i += 10) {
+    if (i % 100 == 0) strokeWeight(2)
+    else strokeWeight(1);
+    line(i, 0, i, windowHeight);
+  }
+
+  for (let i = 0; i < windowHeight; i += 10) {
+    if (i % 100 == 0) strokeWeight(2)
+    else strokeWeight(1);
+    line(0, i, canvasWidth, i);
+  }
 }
 
 /**
@@ -116,39 +139,65 @@ function drawEdgeWeights() {
 }
 
 function drawAnimationEdges() {
-  var vertex1, vertex2;
-
-  for (let edge of edgesInTour) {
-    for (let vertex of vertices) {
-      if (vertex.id == edge[0]) {
-        vertex1 = vertex;
-      } else if (vertex.id == edge[1]) {
-        vertex2 = vertex;
-      }
-    }
-    stroke(partOfTourEdgeColour);
-    strokeWeight(animatedEdgeStrokeWeight);
-    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
-  }
+  var v1, v2;
 
   for (let edge of edgesToNearest) {
-    for (let vertex of vertices) {
-      if (vertex.id == edge[0]) {
-        vertex1 = vertex;
-      } else if (vertex.id == edge[1]) {
-        vertex2 = vertex;
-      }
-    }
+    v1 = edge[0];
+    v2 = edge[1];
+
     stroke(neartestEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    line(vertex1.x, vertex1.y, vertex2.x, vertex2.y);
+    line(v1.x, v1.y, v2.x, v2.y);
 
     fill(edgeWeightColour);
     strokeWeight(1);
     textSize(16);
-    text(distances[vertex1.id][vertex2.id], (vertex1.x + vertex2.x) / 2, (vertex1.y + vertex2.y) /2);
+    text(distances[v1.id][v2.id], (v1.x + v2.x) / 2, (v1.y + v2.y) /2);
   }
 
+  for (let edge of edgesInTree) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(partOfTreeEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
+  }
+
+  for (let edge of edgesInTour) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(partOfTourEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
+  }
+}
+
+function drawCurvedEdges() {
+  for (let i = 0; i < curvedEdges.length; i++) {
+
+    let edge = curvedEdges[i];
+
+    let v1 = edge[0],
+        v2 = edge[1];
+
+    let c = {x: v1.x, y: v2.y};
+
+    let x1 = c.x,
+        y1 = c.y,
+        x2 = v1.x,
+        y2 = v1.y,
+        x3 = v2.x,
+        y3 = v2.y,
+        x4 = c.x,
+        y4 = c.y;
+
+    noFill();
+    stroke(edgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    curve(x1, y1, x2, y2, x3, y3, x4, y4);
+  }
 }
 
 /**
@@ -164,15 +213,14 @@ function drawVertices() {
       strokeWeight(selectedVertexStrokeWeight);
     }
 
-    if (vertex.isNearest) {
+    if (vertex.isInTree)
+      fill(partOfTreeVertexColour);
+    if (vertex.isNearest)
       fill(nearestVertexColour);
-    }
-    if (vertex.isPartOfTour) {
+    if (vertex.isPartOfTour)
       fill(partOfTourVertexColour);
-    }
-    if (vertex.isAt) {
+    if (vertex.isAt)
       fill(currentVertexColour);
-    }
 
     stroke(vertexBorderColour);
     ellipse(vertex.x, vertex.y, vertex.radius);
@@ -189,8 +237,8 @@ function mousePressed() {
 
   for (let v of vertices) {
     // check to see if the mouse has clicked the vertex
-    if (mouseX > v.x - v.radius && mouseX < v.x + v.radius
-      && mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
+    if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
+        mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
       selectedVertex = v.id;
       isSelecting = true;
     }
@@ -222,4 +270,6 @@ function mousePressed() {
 
     displayDistanceMatrix();
   }
+
+  redraw();
 }

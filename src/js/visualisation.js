@@ -3,6 +3,8 @@ var stepsTaken,
     currentAnimationStep = 0,
     playingAnimation = false,
     edgesInTour = [],
+    edgesInTree = [],
+    curvedEdges = [],
     edgesToNearest = [];
 
 var distances = [],
@@ -19,7 +21,7 @@ window.onload = function() {
   document.getElementById("defaultTab").click();
   document.getElementById("defaultSpace").click();
   document.getElementById("vertexCount").value = vertexCount;
-}
+};
 
 function changeVertexCount() {
   vertices = [];
@@ -147,6 +149,7 @@ function restartAnimation() {
     vertex.isAt = false;
     vertex.isNearest = false;
     vertex.isPartOfTour = false;
+    vertex.inTree = false;
   }
 
   clearElementChildren("stepLog");
@@ -194,11 +197,18 @@ function stepForwardAnimation() {
           vertex.isNearest = false;
         }
         currentStep.nearestVertex.isNearest = true;
-        edgesToNearest = [[currentStep.currentVertex.id, currentStep.nearestVertex.id]];
+        edgesToNearest = [[currentStep.currentVertex, currentStep.nearestVertex]];
         break;
 
-      case AddToTourStep:
+      case AddVertexToTourStep:
         currentStep.vertex.isPartOfTour = true;
+        break;
+
+      case AddEdgeToTourStep:
+        currentStep.vertex1.isPartOfTour = true;
+        currentStep.vertex1.isAt = false;
+        currentStep.vertex2.isAt = true;
+        edgesInTour.push([currentStep.vertex1, currentStep.vertex2]);
         break;
 
       case ChangeCurrentVertexStep:
@@ -206,7 +216,7 @@ function stepForwardAnimation() {
         currentStep.lastVertex.isPartOfTour = true;
         currentStep.newVertex.isAt = true;
         currentStep.newVertex.isNearest = false;
-        edgesInTour.push([currentStep.lastVertex.id, currentStep.newVertex.id]);
+        edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
         edgesToNearest = [];
         break;
 
@@ -215,16 +225,17 @@ function stepForwardAnimation() {
 
       case AtLastVertexStep:
         currentStep.lastVertex.isAt = false;
-        edgesInTour.push([currentStep.lastVertex.id, currentStep.startingVertex.id]);
+        currentStep.lastVertex.isPartOfTour = true;
+        edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
         edgesToNearest = [];
         break;
 
       case FindingNearestUnvisitedVertexStep:
         edgesToNearest = [];
         for (let vertex of vertices) {
-          if (currentStep.unvisitedVertices.includes(vertex.id)) {
+          if (currentStep.unvisitedVertices.includes(vertex)) {
             vertex.isNearest = true;
-            edgesToNearest.push([currentStep.currentVertex.id, vertex.id]);
+            edgesToNearest.push([currentStep.currentVertex, vertex]);
           }
         }
         break;
@@ -232,16 +243,26 @@ function stepForwardAnimation() {
       case FinishedStep:
         edgesToNearest = [];
         edgesInTour = [];
+        edgesInTree = [];
+        curvedEdges = [];
 
         for (let vertex of vertices) {
           vertex.isAt = false;
           vertex.isNearest = false;
           vertex.isPartOfTour = true;
+          vertex.isInTree = false;
         }
 
         for (let i = 0; i < currentStep.finalTour.length; i++) {
           edgesInTour.push([currentStep.finalTour[i], currentStep.finalTour[(i+1) % (currentStep.finalTour.length - 1)]]);
         }
+        break;
+
+      case MinSpanTreeStep:
+        for (let i = 0; i < currentStep.edges.length; i++)
+          edgesInTree.push(currentStep.edges[i]);
+        for (let v of vertices)
+          v.isInTree = true;
         break;
 
       default:
@@ -251,6 +272,7 @@ function stepForwardAnimation() {
     currentAnimationStep++;
     showStepInLog(currentStep.toString());
     highlightPseudocode(currentStep.pseudocodeLine);
+    redraw();
   }
 }
 
@@ -332,6 +354,7 @@ function stepBackwardAnimation() {
     removeStepFromLog();
     highlightPseudocode(animationSteps[currentAnimationStep - 2].pseudocodeLine);
     currentAnimationStep--;
+    redraw();
   }
 }
 
@@ -397,7 +420,7 @@ function changeSpace(evt, space) {
 
 function showStepInLog(stepString) {
   var log  = document.getElementById("stepLog"),
-      step = document.createTextNode(stepString)
+      step = document.createTextNode(stepString),
       br   = document.createElement("br");
 
   log.appendChild(step);
@@ -501,6 +524,12 @@ function solveWithBranchAndBound() {
 
 function solveWithBruteForce() {
   stepsTaken = bruteForce(distances, vertices);
+  playingAnimation = true;
+  playAnimation();
+}
+
+function solveWithApproxMinSpanTree() {
+  stepsTaken = approxMinSpanTree(distances, vertices);
   playingAnimation = true;
   playAnimation();
 }

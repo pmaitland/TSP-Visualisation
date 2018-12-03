@@ -14,7 +14,7 @@ class AtVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "At vertex " + this.vertex.label;
+    return `At vertex ${this.vertex.label}`;
   }
 }
 
@@ -26,18 +26,30 @@ class NearestVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Nearest vertex to " + this.currentVertex.label + " is vertex " + this.nearestVertex.label;
+    return `Nearest vertex to ${this.currentVertex.label} is vertex ${this.nearestVertex.label}`;
   }
 }
 
-class AddToTourStep extends AnimationStep {
+class AddVertexToTourStep extends AnimationStep {
   constructor(pseudocodeLine, vertex) {
     super(pseudocodeLine);
     this.vertex = vertex;
   }
 
   toString() {
-    return "Added vertex " + this.vertex.label + " to the tour";
+    return `Added vertex ${this.vertex.label} to the tour`;
+  }
+}
+
+class AddEdgeToTourStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex1, vertex2) {
+    super(pseudocodeLine);
+    this.vertex1 = vertex1;
+    this.vertex2 = vertex2;
+  }
+
+  toString() {
+    return `Added vertex ${this.vertex2.label} to the tour`;
   }
 }
 
@@ -49,7 +61,7 @@ class ChangeCurrentVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Changed current vertex from vertex " + this.lastVertex.label + " to vertex " + this.newVertex.label;
+    return `Changed current vertex from vertex ${this.lastVertex.label} to vertex ${this.newVertex.label}`;
   }
 }
 
@@ -61,7 +73,7 @@ class IncreaseTourLengthStep extends AnimationStep {
   }
 
   toString() {
-    return "Increased tour length by " + this.length + ". Current tour length is " + this.totalLength;
+    return `Increased tour length by ${this.length}. Current tour length is ${this.totalLength}`;
   }
 }
 
@@ -73,7 +85,7 @@ class AtLastVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Vertex " + this.lastVertex.label + " is the last vertex. Returning to vertex " + this.startingVertex.label;
+    return `Vertex ${this.lastVertex.label} is the last vertex. Returning to vertex ${this.startingVertex.label}.`;
   }
 }
 
@@ -85,7 +97,7 @@ class FindingNearestUnvisitedVertexStep extends AnimationStep {
   }
 
   toString() {
-    return "Finding the vertex nearest vertex " + this.currentVertex.label + " which is still unvisited";
+    return `Finding the vertex nearest vertex ${this.currentVertex.label} which is still unvisited`;
   }
 }
 
@@ -97,6 +109,18 @@ class FinishedStep extends AnimationStep {
   }
 
   toString() {
-    return "Final tour found. Length of tour is " + this.tourLength;
+    return `Final tour found. Length of tour is ${this.tourLength}.`;
+  }
+}
+
+class MinSpanTreeStep extends AnimationStep {
+  constructor(pseudocodeLine, edges, treeWeight) {
+    super(pseudocodeLine);
+    this.edges = edges;
+    this.treeWeight = treeWeight;
+  }
+
+  toString() {
+    return `Found minimum weight spanning tree with weight ${this.treeWeight}.`;
   }
 }
