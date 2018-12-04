@@ -17,6 +17,8 @@ var vertexColour         = "#fff",
     edgeColour       = "#000",
     edgeWeightColour = "#000",
 
+    distanceMarkingsColour = "#c8c7c7",
+
 // animating
     currentVertexColour    = "#f4e04d",
     nearestVertexColour    = "#7bd389",
@@ -36,8 +38,6 @@ function setup() {
   var canvas = createCanvas(canvasWidth, windowHeight);
   canvas.parent("canvasHolder");
   canvas.style('display', 'block');
-
-  noLoop();
 
   createVertices();
 }
@@ -90,7 +90,7 @@ function updateCanvasLayout() {
 }
 
 function drawDistanceMarkings() {
-  stroke("#c8c7c7");
+  stroke(distanceMarkingsColour);
 
   for (let i = 0; i < canvasWidth; i += 10) {
     if (i % 100 == 0) strokeWeight(2)
@@ -270,6 +270,4 @@ function mousePressed() {
 
     displayDistanceMatrix();
   }
-
-  redraw();
 }

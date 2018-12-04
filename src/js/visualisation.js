@@ -17,9 +17,13 @@ var inEuclideanSpace = true;
 
 var pseudocodeHighlightColour = "#f4e04d";
 
+var stepLogColour1 = "#fff",
+    stepLogColour2 = "#eee",
+    stepLogUsingColour1 = true;
+
 window.onload = function() {
-  document.getElementById("defaultTab").click();
-  document.getElementById("defaultSpace").click();
+  document.getElementById("inputTab").click();
+  document.getElementById("euclideanSpace").click();
   document.getElementById("vertexCount").value = vertexCount;
 };
 
@@ -169,15 +173,11 @@ function playAnimation() {
   }
 }
 
-function resumeAnimation() {
-  if (!playingAnimation) {
-    playingAnimation = true;
+function togglePauseAnimation() {
+  playingAnimation = !playingAnimation;
+  if (playingAnimation) {
     playAnimation();
   }
-}
-
-function pauseAnimation() {
-  playingAnimation = false;
 }
 
 function stepForwardAnimation() {
@@ -272,7 +272,6 @@ function stepForwardAnimation() {
     currentAnimationStep++;
     showStepInLog(currentStep.toString());
     highlightPseudocode(currentStep.pseudocodeLine);
-    redraw();
   }
 }
 
@@ -354,7 +353,6 @@ function stepBackwardAnimation() {
     removeStepFromLog();
     highlightPseudocode(animationSteps[currentAnimationStep - 2].pseudocodeLine);
     currentAnimationStep--;
-    redraw();
   }
 }
 
@@ -372,6 +370,20 @@ function openTab(evt, tabName) {
     tabs = document.getElementsByClassName("tab");
     for (i = 0; i < tabs.length; i++) {
         tabs[i].className = tabs[i].className.replace(" active", "");
+    }
+
+    if (tabName == "input") {
+      document.getElementById("inputTab").style.backgroundColor = "#c7c7c7";
+      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
+      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+    } else if (tabName == "algorithms") {
+      document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
+      document.getElementById("algorithmsTab").style.backgroundColor = "#c7c7c7";
+      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+    } else if (tabName == "output") {
+      document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
+      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
+      document.getElementById("outputTab").style.backgroundColor = "#c7c7c7";
     }
 
     // Show the current tab, and add an "active" class to the button that opened the tab
@@ -399,6 +411,14 @@ function changeSpace(evt, space) {
       tabs[i].className = tabs[i].className.replace(" active", "");
   }
 
+  if (space == "euclidean") {
+    document.getElementById("euclideanSpace").style.backgroundColor = "#c7c7c7";
+    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#f1f1f1";
+  } else if (space == "nonEuclidean") {
+    document.getElementById("euclideanSpace").style.backgroundColor = "#f1f1f1";
+    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#c7c7c7";
+  }
+
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(space).style.display = "block";
   evt.currentTarget.className += " active";
@@ -419,11 +439,21 @@ function changeSpace(evt, space) {
 }
 
 function showStepInLog(stepString) {
-  var log  = document.getElementById("stepLog"),
-      step = document.createTextNode(stepString),
-      br   = document.createElement("br");
+  var log     = document.getElementById("stepLog"),
+      stepDiv = document.createElement("div"),
+      step    = document.createTextNode(stepString),
+      br      = document.createElement("br");
 
-  log.appendChild(step);
+  stepDiv.style.float = "left";
+  stepDiv.style.width = "100%";
+  stepDiv.appendChild(step);
+  if (stepLogUsingColour1)
+    stepDiv.style.backgroundColor = stepLogColour1;
+  else
+    stepDiv.style.backgroundColor = stepLogColour2;
+  stepLogUsingColour1 = !stepLogUsingColour1;
+
+  log.appendChild(stepDiv);
   log.appendChild(br);
   log.scrollTop = log.scrollHeight;
 }

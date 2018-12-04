@@ -123,7 +123,7 @@ function reduceEuclideanTour() {
   penultimateInTour = finalTour[finalTour.length - 2];
 
   finalTour.push(finalTour[0]);
-  finalTourLength += distances[lastInTour.id][penultimateInTour.id];
+  finalTourLength += distances[finalTour[0].id][finalTour[finalTour.length-2].id];
   animationSteps.push(new AtLastVertexStep(0, finalTour[finalTour.length-2], finalTour[0]));
 
   return [finalTour, finalTourLength];

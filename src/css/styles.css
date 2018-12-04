@@ -1,9 +1,10 @@
+
 html, body {
   height: 100%;
 }
 
 body {
-  font-family: Courier;
+  font-family: monospace;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -27,18 +28,26 @@ th, td {
 }
 
 button {
-  font-family: Courier;
-  margin-left: 2%;
+  font-family: monospace;
 }
 
 #canvasHolder {
-  width: 67vw;
+  width: 66.6666666666666666666666666vw;
 }
 
 #configurationHolder {
-  width: 33vw;
-  padding: 0%;
+  width: 33.3333333333333333333333333vw;
   overflow: auto;
+  border-left: 1px solid #c8c7c7;
+}
+
+#algorithmButtons {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.algorithmButton {
+  margin: 0 5px 5px 5px;
 }
 
 #distanceMatrixWrapper {
@@ -46,28 +55,33 @@ button {
   overflow-y: auto;
   width: 33vw;
   height: 33vw;
-}
-
-#distanceMatrix {
-}
-
-#nnButton {
-
+  margin: 0 5px 5px 5px;
 }
 
 #stepLog {
   height: 100px;
   overflow: auto;
   border: 1px solid;
+  margin: 0 5px 5px 5px;
 }
 
 #pseudocode {
   white-space: pre-wrap;
+  margin: 0 5px 5px 5px;
+}
+
+#animationControls {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+}
+
+.animationControl {
+  margin: 0 5px 5px 5px;
 }
 
 .tabsHolder {
    overflow: hidden;
-   border: 1px solid #ccc;
+
    background-color: #f1f1f1;
    display: flex;
    flex-wrap: wrap;
@@ -76,7 +90,20 @@ button {
 .tabsHolder button {
    background-color: inherit;
    float: left;
-   border: none;
+   border: 1px solid #ccc;
+   border-left: none;
+   border-top: none;
+   outline: none;
+   cursor: pointer;
+   padding: 14px 16px;
+}
+
+.tabsHolder button:hover {
+   background-color: #bbb;
+   float: left;
+   border: 1px solid #ccc;
+   border-left: none;
+   border-top: none;
    outline: none;
    cursor: pointer;
    padding: 14px 16px;
