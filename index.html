@@ -6,19 +6,24 @@
 <head>
   <title>TSP Visualisation</title>
 
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./src/css/styles.css">
 
-  <script src="./js/p5/p5.min.js"></script>
-  <script src="./js/p5/p5.dom.min.js"></script>
-  <script type="text/javascript" src="./js/canvas.js"></script>
-  <script type="text/javascript" src="./js/animationSteps.js"></script>
+  <script src="./src/js/p5/p5.min.js"></script>
+  <script src="./src/js/p5/p5.dom.min.js"></script>
 
-  <script type="text/javascript" src="./js/approx_min_span_tree.js"></script>
-  <script type="text/javascript" src="./js/branch_and_bound.js"></script>
-  <script type="text/javascript" src="./js/brute_force.js"></script>
-  <script type="text/javascript" src="./js/nearest_neighbour.js"></script>
+  <script type="text/javascript" src="./src/js/canvas.js"></script>
+  <script type="text/javascript" src="./src/js/animationSteps.js"></script>
+  <script type="text/javascript" src="./src/js/min_span_tree.js"></script>
 
-  <script type="text/javascript" src="./js/visualisation.js"></script>
+  <script type="text/javascript" src="./src/js/matching.js"></script>
+
+  <script type="text/javascript" src="./src/js/christofides.js"></script>
+  <script type="text/javascript" src="./src/js/approx_min_span_tree.js"></script>
+  <script type="text/javascript" src="./src/js/branch_and_bound.js"></script>
+  <script type="text/javascript" src="./src/js/brute_force.js"></script>
+  <script type="text/javascript" src="./src/js/nearest_neighbour.js"></script>
+
+  <script type="text/javascript" src="./src/js/visualisation.js"></script>
 </head>
 
 <body>
@@ -40,8 +45,8 @@
 
       <div id="euclidean" class="spaceTabContent">
         <div id="mouseCoords">
-          <div id="mouseCoordsX"></div>
-          <div id="mouseCoordsY"></div>
+          <div id="mouseCoordsX">X: 0</div>
+          <div id="mouseCoordsY">Y: 0</div>
         </div>
       </div>
 
@@ -69,6 +74,8 @@
         <button id="bnbButton" class="algorithmButton" onclick="solveWithBranchAndBound();">Branch and Bound</button>
         <button id="bfButton" class="algorithmButton" onclick="solveWithBruteForce();">Brute Force</button>
         <button id="amstButton" class="algorithmButton" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
+        <button id="chrisButton" class="algorithmButton" onclick="solveWithChristofides();">Christofides</button>
+
       </div>
 
       <h3>Animation Control</h3>
