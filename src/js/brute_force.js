@@ -1,6 +1,6 @@
 var bestTour, btLength;
 
-function bruteForce(distances, vertices) {
+function bruteForce() {
 
   bestTour = [];
   btLength = -1;
@@ -10,7 +10,7 @@ function bruteForce(distances, vertices) {
   for (let v of vertices)
     ids.push(v.id);
 
-  generatePermutations(ids, ids.length);
+  generateBruteForcePermutations(ids, ids.length);
 
   bestTour.push(bestTour[0]);
 
@@ -23,11 +23,15 @@ function bruteForce(distances, vertices) {
     }
   }
 
-  animationSteps.push(new FinishedStep(6, tour, btLength));
-  return animationSteps;
+  stepsTaken.push(new FinishedStep(6, tour, btLength));
+
+  return {
+    tour: tour,
+    tourLength: btLength
+  };
 }
 
-function generatePermutations(a, n) {
+function generateBruteForcePermutations(a, n) {
 
   if (n == 1) {
     checkIfBestTour(a);
@@ -35,7 +39,7 @@ function generatePermutations(a, n) {
   }
 
   for (let i = 0; i < (n - 1); i++) {
-      generatePermutations(a, n-1);
+      generateBruteForcePermutations(a, n-1);
 
       if (n % 2 == 0) {
         let e = a[n-1];
@@ -48,7 +52,7 @@ function generatePermutations(a, n) {
       }
   }
 
-  generatePermutations(a, n-1);
+  generateBruteForcePermutations(a, n-1);
 }
 
 function checkIfBestTour(t) {

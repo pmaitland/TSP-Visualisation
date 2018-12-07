@@ -169,7 +169,7 @@ Separated the configuration box from the canvas and implemented rough animation 
 
 11/10/18
 
-**14:30-13:50**
+**14:30-15:50**
 Added log of steps to html.
 
 ## Week 5
@@ -419,5 +419,52 @@ Continued with approximation.
 **11:05-12:15**
 Continued with approximation.
 
-**13:40-14:50**
-Continued with approximation and fixed stepping forward in other algorithms.
+**13:40-18:00**
+Continued with approximation. Fixed stepping forward in other algorithms. Alternated background colour of lines in step log. Improved CSS of configuration tab.
+
+---
+
+04/12/18
+
+**10:10-11:45**
+Looked into Blossom algorithm for use in Christofides.
+
+**15:45-16:20**
+Began implementing Christofides.
+
+---
+
+05/12/18
+
+**09:45-12:00**
+Continued with Christofides. Removed code related to curved edges. Allowed dashed edges to be drawn.
+
+**13:15-13:50**
+Continued with Christofides.
+
+**14:20-16:50**
+Continued with Christofides. Found an implementation of [Blossom algorithm](https://github.com/jimbdooley/Edmond-s-Blossom-Algorithm/blob/master/blossom.js).
+
+**22:55-23:55**
+Looked into Christofides more. Did some minor refactoring.
+
+---
+
+06/12/18
+
+**10:00-12:00**
+Add vertex labels to non-euclidean space. Looked at implementations of matching for Christofides on GitHub.
+
+**13:30-16:20**
+Made changes to CSS. Added displaying of algorithm result in 'Results' tab.
+
+07/12/18
+
+**10:00-11:30**
+Tried to convince self implementation of tree traversal was correct.
+
+**14:00-14:50**
+Supervisor meeting.
+
+**16:00-16:10**
+Removed unused Christofides code.

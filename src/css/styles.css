@@ -75,16 +75,33 @@ button {
   grid-template-columns: 20% 20% 20% 20% 20%;
 }
 
+#results {
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+#mouseCoords {
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+#mouseCoordsX {
+  padding-right: 5px;
+  display: inline;
+  float: left;
+}
+
 .animationControl {
   margin: 0 5px 5px 5px;
 }
 
 .tabsHolder {
    overflow: hidden;
-
    background-color: #f1f1f1;
    display: flex;
    flex-wrap: wrap;
+   position: sticky;
+   top: 0;
 }
 
 .tabsHolder button {
@@ -112,6 +129,7 @@ button {
 .tab {
   min-width: 31%;
   flex: 1 1 auto;
+  overflow: auto;
 }
 
 .spaceTab {

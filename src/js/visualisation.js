@@ -4,8 +4,8 @@ var stepsTaken,
     playingAnimation = false,
     edgesInTour = [],
     edgesInTree = [],
-    curvedEdges = [],
-    edgesToNearest = [];
+    edgesToNearest = [],
+    edgesInMatching = [];
 
 var distances = [],
     vertices = [],
@@ -20,6 +20,8 @@ var pseudocodeHighlightColour = "#f4e04d";
 var stepLogColour1 = "#fff",
     stepLogColour2 = "#eee",
     stepLogUsingColour1 = true;
+
+var timeout = 0;
 
 window.onload = function() {
   document.getElementById("inputTab").click();
@@ -147,13 +149,16 @@ function restartAnimation() {
   currentAnimationStep = 0;
   playingAnimation = false;
   edgesInTour = [];
+  edgesInTree = [];
+  edgesInMatching = [];
   edgesToNearest = [];
 
   for (let vertex of vertices) {
     vertex.isAt = false;
     vertex.isNearest = false;
     vertex.isPartOfTour = false;
-    vertex.inTree = false;
+    vertex.isInTree = false;
+    vertex.isOddDegree = false;
   }
 
   clearElementChildren("stepLog");
@@ -169,7 +174,7 @@ function endAnimation() {
 function playAnimation() {
   if (playingAnimation) {
     stepForwardAnimation();
-    setTimeout(playAnimation, 1000);
+    timeout = setTimeout(playAnimation, 1000);
   }
 }
 
@@ -181,9 +186,9 @@ function togglePauseAnimation() {
 }
 
 function stepForwardAnimation() {
-  if (currentAnimationStep < animationSteps.length) {
+  if (currentAnimationStep < stepsTaken.length) {
 
-    currentStep = animationSteps[currentAnimationStep];
+    currentStep = stepsTaken[currentAnimationStep];
 
     switch (currentStep.constructor) {
 
@@ -244,7 +249,7 @@ function stepForwardAnimation() {
         edgesToNearest = [];
         edgesInTour = [];
         edgesInTree = [];
-        curvedEdges = [];
+        edgesInMatching = [];
 
         for (let vertex of vertices) {
           vertex.isAt = false;
@@ -265,6 +270,16 @@ function stepForwardAnimation() {
           v.isInTree = true;
         break;
 
+      case OddDegreeVerticesStep:
+        for (let v of currentStep.vertices)
+          v.isOddDegree = true;
+        break;
+
+      case MinimumMatchingStep:
+        for (let e of currentStep.edges)
+          edgesInMatching.push(e);
+        break;
+
       default:
         break;
     }
@@ -278,7 +293,7 @@ function stepForwardAnimation() {
 function stepBackwardAnimation() {
   if (currentAnimationStep > 0) {
 
-    currentStep = animationSteps[currentAnimationStep - 1];
+    currentStep = stepsTaken[currentAnimationStep - 1];
 
     switch (currentStep.constructor) {
 
@@ -288,7 +303,7 @@ function stepBackwardAnimation() {
       case NearestVertexStep:
         currentStep.nearestVertex.isNearest = false;
 
-        let previousStep = animationSteps[currentAnimationStep - 2];
+        let previousStep = stepsTaken[currentAnimationStep - 2];
         for (let vertex of vertices) {
           if (previousStep.unvisitedVertices.includes(vertex.id)) {
             vertex.isNearest = true;
@@ -351,7 +366,7 @@ function stepBackwardAnimation() {
     }
 
     removeStepFromLog();
-    highlightPseudocode(animationSteps[currentAnimationStep - 2].pseudocodeLine);
+    highlightPseudocode(stepsTaken[currentAnimationStep - 2].pseudocodeLine);
     currentAnimationStep--;
   }
 }
@@ -423,12 +438,15 @@ function changeSpace(evt, space) {
   document.getElementById(space).style.display = "block";
   evt.currentTarget.className += " active";
 
+  vertices = [];
+  vertexCount = 0;
+  edgesInTour = [],
+  edgesInTree = [],
+  edgesToNearest = [],
+  edgesInMatching = [];
+
   if (space == 'euclidean' && !inEuclideanSpace) {
     inEuclideanSpace = true;
-    vertices = [];
-    vertexCount = 0;
-    edgesInTour = [];
-    edgesToNearest = [];
     resetDistances();
     displayDistanceMatrix();
   } else if (space == 'nonEuclidean') {
@@ -479,7 +497,7 @@ function showPseudocode(algorithm) {
   switch (algorithm) {
     case "nn":
       for (let line of nnPseudocode) {
-        var lineDiv = document.createElement("DIV"),
+        var lineDiv = document.createElement("div"),
             text = document.createTextNode(line);
 
         lineDiv.appendChild(text);
@@ -518,6 +536,13 @@ function updateMousePosition() {
 
   x.innerHTML = "X: " + Math.round(mouseX);
   y.innerHTML = "Y: " + Math.round(mouseY);
+
+  for (let v of vertices) {
+    if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
+        mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
+      drawVertexLabel(v);
+    }
+  }
 }
 
 function randomiseNonEuclideanDistances() {
@@ -539,27 +564,128 @@ function randomiseNonEuclideanDistances() {
   }
 }
 
+function showResults(results) {
+  var resultsDiv = document.getElementById("results");
+
+  var resultDiv = document.createElement("div"),
+
+      algNameDiv = document.createElement("div"),
+      algNameBold = document.createElement("b"),
+      algName = document.createTextNode(results.algName),
+
+      tourLengthDiv = document.createElement("div"),
+      tourLength = document.createTextNode("Tour length: " + results.tourLength),
+
+      elapsedTimeDiv = document.createElement("div"),
+      elapsedTime = document.createTextNode("Elapsed time: " + results.elapsedTime + " ms"),
+
+      tourDiv = document.createElement("div"),
+      tourText = document.createTextNode("Tour: "),
+      tour,
+
+      br = document.createElement("br");
+
+  var tourString = results.tour[0].label;
+  for (let v of results.tour.slice(1)) {
+    tourString = tourString + " → " + v.label;
+  }
+  tour = document.createTextNode(tourString);
+
+  algNameBold.appendChild(algName);
+  algNameDiv.appendChild(algNameBold);
+  resultDiv.appendChild(algNameDiv);
+
+  tourLengthDiv.appendChild(tourLength);
+  resultDiv.appendChild(tourLengthDiv);
+
+  elapsedTimeDiv.appendChild(elapsedTime)
+  resultDiv.appendChild(elapsedTimeDiv);
+
+  tourDiv.appendChild(tourText);
+  tourDiv.appendChild(tour);
+  resultDiv.appendChild(tourDiv);
+
+  resultsDiv.appendChild(resultDiv);
+  resultsDiv.appendChild(br);
+}
+
 function solveWithNearestNeighbour() {
-  stepsTaken = nearestNeighbour(distances, vertices);
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = nearestNeighbour();
+  let t1 = performance.now();
+  result.algName = "Nearest Neighbour";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
   showPseudocode("nn");
+  clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
 }
 
 function solveWithBranchAndBound() {
-  stepsTaken = branchAndBound(distances, vertices);
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = branchAndBound();
+  let t1 = performance.now();
+  result.algName = "Branch and Bound";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
+  clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
 }
 
 function solveWithBruteForce() {
-  stepsTaken = bruteForce(distances, vertices);
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = bruteForce();
+  let t1 = performance.now()
+  result.algName = "Brute Force";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
+  clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
 }
 
 function solveWithApproxMinSpanTree() {
-  stepsTaken = approxMinSpanTree(distances, vertices);
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = approxMinSpanTree();
+  let t1 = performance.now();
+  result.algName = "Approx Min Span Tree";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
+  clearTimeout(timeout);
+  playingAnimation = true;
+  playAnimation();
+}
+
+function solveWithChristofides() {
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = christofides();
+  let t1 = performance.now();
+  result.algName = "Christofides";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
+  clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
 }

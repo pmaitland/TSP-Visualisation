@@ -124,3 +124,25 @@ class MinSpanTreeStep extends AnimationStep {
     return `Found minimum weight spanning tree with weight ${this.treeWeight}.`;
   }
 }
+
+class OddDegreeVerticesStep extends AnimationStep {
+  constructor(pseudocodeLine, vertices) {
+    super(pseudocodeLine);
+    this.vertices = vertices;
+  }
+
+  toString() {
+    return `Found vertices with odd degree.`;
+  }
+}
+
+class MinimumMatchingStep extends AnimationStep {
+  constructor(pseudocodeLine, edges) {
+    super(pseudocodeLine);
+    this.edges = edges;
+  }
+
+  toString() {
+    return `Found minimum weight matching of odd degree vertices.`;
+  }
+}

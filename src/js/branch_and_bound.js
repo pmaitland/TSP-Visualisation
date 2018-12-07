@@ -2,7 +2,7 @@
 var currentTour, bestTour, unvisited;
 var currentTourLength, bestTourLength, numCities;
 
-function branchAndBound(distances, vertices) {
+function branchAndBound() {
 
   for (let i = 0; i < vertices.length -1; i++)
     distances[i][i] = Infinity;
@@ -31,8 +31,12 @@ function branchAndBound(distances, vertices) {
     }
   }
 
-  animationSteps.push(new FinishedStep(6, tour, bestTourLength));
-  return animationSteps;
+  stepsTaken.push(new FinishedStep(6, tour, bestTourLength));
+
+  return {
+    tour: tour,
+    tourLength: bestTourLength
+  };
 }
 
 function choose(i) {

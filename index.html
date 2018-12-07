@@ -15,8 +15,6 @@
   <script type="text/javascript" src="./src/js/animationSteps.js"></script>
   <script type="text/javascript" src="./src/js/min_span_tree.js"></script>
 
-  <script type="text/javascript" src="./src/js/matching.js"></script>
-
   <script type="text/javascript" src="./src/js/christofides.js"></script>
   <script type="text/javascript" src="./src/js/approx_min_span_tree.js"></script>
   <script type="text/javascript" src="./src/js/branch_and_bound.js"></script>
@@ -32,9 +30,9 @@
   <div id="configurationHolder">
 
     <div class="tabsHolder">
-      <button id="inputTab" class="tab" onclick="openTab(event, 'input')">Input</button>
+      <button id="inputTab" class="tab" onclick="openTab(event, 'input')">Graph</button>
       <button id="algorithmsTab" class="tab" onclick="openTab(event, 'algorithms')">Algorithms</button>
-      <button id="outputTab" class="tab" onclick="openTab(event, 'output')">Output</button>
+      <button id="outputTab" class="tab" onclick="openTab(event, 'output')">Results</button>
     </div>
 
     <div id="input" class="tabContent">
@@ -75,7 +73,6 @@
         <button id="bfButton" class="algorithmButton" onclick="solveWithBruteForce();">Brute Force</button>
         <button id="amstButton" class="algorithmButton" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
         <button id="chrisButton" class="algorithmButton" onclick="solveWithChristofides();">Christofides</button>
-
       </div>
 
       <h3>Animation Control</h3>
@@ -97,6 +94,9 @@
     </div>
 
     <div id="output" class="tabContent">
+
+      <div id="results">
+      </div>
 
     </div>
 
