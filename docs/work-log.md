@@ -468,3 +468,14 @@ Supervisor meeting.
 
 **16:00-16:10**
 Removed unused Christofides code.
+
+**16:50-17:10**
+Started improving visualisation of backtracking in approx min span tree.
+
+## Week 13
+
+**10:05-12:00**
+Continued with backtracking.
+
+**13:30-14:15**
+Continued with backtracking.

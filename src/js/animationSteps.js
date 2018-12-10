@@ -85,7 +85,7 @@ class AtLastVertexStep extends AnimationStep {
   }
 
   toString() {
-    return `Vertex ${this.lastVertex.label} is the last vertex. Returning to vertex ${this.startingVertex.label}.`;
+    return `Vertex ${this.lastVertex.label} is the last vertex. Returning to vertex ${this.startingVertex.label}`;
   }
 }
 
@@ -109,7 +109,7 @@ class FinishedStep extends AnimationStep {
   }
 
   toString() {
-    return `Final tour found. Length of tour is ${this.tourLength}.`;
+    return `Final tour found. Length of tour is ${this.tourLength}`;
   }
 }
 
@@ -121,7 +121,7 @@ class MinSpanTreeStep extends AnimationStep {
   }
 
   toString() {
-    return `Found minimum weight spanning tree with weight ${this.treeWeight}.`;
+    return `Found minimum weight spanning tree with weight ${this.treeWeight}`;
   }
 }
 
@@ -132,7 +132,7 @@ class OddDegreeVerticesStep extends AnimationStep {
   }
 
   toString() {
-    return `Found vertices with odd degree.`;
+    return `Found vertices with odd degree`;
   }
 }
 
@@ -143,6 +143,51 @@ class MinimumMatchingStep extends AnimationStep {
   }
 
   toString() {
-    return `Found minimum weight matching of odd degree vertices.`;
+    return `Found minimum weight matching of odd degree vertices`;
+  }
+}
+
+class BacktrackingStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex) {
+    super(pseudocodeLine);
+    this.vertex = vertex;
+  }
+
+  toString() {
+    return `Backtracking to vertex ${this.vertex.label}`;
+  }
+}
+
+class NoUnvisitedNeighboursStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex) {
+    super(pseudocodeLine);
+    this.vertex = vertex;
+  }
+
+  toString() {
+    return `Vertex ${this.vertex.label} has no unvisited neighbours`;
+  }
+}
+
+class EdgeBetweenNonAdjacentVerticesStep extends AnimationStep {
+  constructor(pseudocodeLine, currentVertex, mate) {
+    super(pseudocodeLine);
+    this.currentVertex = currentVertex;
+    this.mate = mate;
+  }
+
+  toString() {
+    return `Finished backtracking. Added vertex ${this.currentVertex.label} to the tour by connecting it with vertex ${this.mate.label}`;
+  }
+}
+
+class StartingVertexStep extends AnimationStep {
+  constructor(pseudocodeLine, vertex) {
+    super(pseudocodeLine);
+    this.vertex = vertex;
+  }
+
+  toString() {
+    return `Starting at vertex ${this.vertex.label}`;
   }
 }

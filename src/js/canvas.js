@@ -23,10 +23,11 @@ var vertexColour         = "#fff",
 // animating
     currentVertexColour    = "#f4e04d",
     nearestVertexColour    = "#7bd389",
+    startingVertexColour   = "#43638b",
     partOfTourVertexColour = "#778da9",
     partOfTreeVertexColour = "#ff7c1d",
     oddDegreeVertexColour  = "#e817b4",
-    //"#e84747",
+    waitingVertexColour    = "#e84747",
 
     neartestEdgeColour       = "#7bd389",
     partOfTourEdgeColour     = "#778da9",
@@ -265,6 +266,10 @@ function drawVertices() {
       fill(oddDegreeVertexColour);
     if (vertex.isPartOfTour)
       fill(partOfTourVertexColour);
+    if (vertex.isStart)
+      fill(startingVertexColour);
+    if (vertex.isWaiting)
+      fill(waitingVertexColour);
     if (vertex.isAt)
       fill(currentVertexColour);
 

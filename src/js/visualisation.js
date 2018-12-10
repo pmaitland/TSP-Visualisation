@@ -210,8 +210,11 @@ function stepForwardAnimation() {
         break;
 
       case AddEdgeToTourStep:
+        for (let v of vertices) {
+          if (v.id != currentStep.vertex2.id)
+            v.isAt = false;
+        }
         currentStep.vertex1.isPartOfTour = true;
-        currentStep.vertex1.isAt = false;
         currentStep.vertex2.isAt = true;
         edgesInTour.push([currentStep.vertex1, currentStep.vertex2]);
         break;
@@ -256,6 +259,8 @@ function stepForwardAnimation() {
           vertex.isNearest = false;
           vertex.isPartOfTour = true;
           vertex.isInTree = false;
+          vertex.isWaiting = false;
+          vertex.isStart = false;
         }
 
         for (let i = 0; i < currentStep.finalTour.length; i++) {
@@ -278,6 +283,34 @@ function stepForwardAnimation() {
       case MinimumMatchingStep:
         for (let e of currentStep.edges)
           edgesInMatching.push(e);
+        break;
+
+      case BacktrackingStep:
+        for (let v of vertices) {
+          if (v.id != currentStep.vertex.id)
+            v.isAt = false;
+        }
+        currentStep.vertex.isAt = true;
+        break;
+
+      case NoUnvisitedNeighboursStep:
+        currentStep.vertex.isWaiting = true;
+        break;
+
+      case EdgeBetweenNonAdjacentVerticesStep:
+        for (let v of vertices) {
+          if (v.id != currentStep.currentVertex.id)
+            v.isAt = false;
+        }
+        currentStep.mate.isPartOfTour = true;
+        currentStep.mate.isWaiting = false;
+        currentStep.currentVertex.isAt = true;
+        edgesInTour.push([currentStep.mate, currentStep.currentVertex]);
+        break;
+
+      case StartingVertexStep:
+        currentStep.vertex.isStart = true;
+        currentStep.vertex.isAt = true;
         break;
 
       default:
