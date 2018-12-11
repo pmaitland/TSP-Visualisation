@@ -21,18 +21,21 @@ var vertexColour         = "#fff",
     distanceMarkingsColour = "#c8c7c7",
 
 // animating
-    currentVertexColour    = "#f4e04d",
-    nearestVertexColour    = "#7bd389",
-    startingVertexColour   = "#43638b",
-    partOfTourVertexColour = "#778da9",
-    partOfTreeVertexColour = "#ff7c1d",
-    oddDegreeVertexColour  = "#e817b4",
-    waitingVertexColour    = "#e84747",
+    currentVertexColour            = "#f4e04d",
+    nearestVertexColour            = "#7bd389",
+    startingVertexColour           = "#43638b",
+    partOfTourVertexColour         = "#778da9",
+    partOfTreeVertexColour         = "#ff7c1d",
+    oddDegreeVertexColour          = "#e817b4",
+    waitingVertexColour            = "#e84747",
+    partOfEulerianTourVertexColour = "#43638b",
 
-    neartestEdgeColour       = "#7bd389",
-    partOfTourEdgeColour     = "#778da9",
-    partOfTreeEdgeColour     = "#ff7c1d",
-    partofMatchingEdgeColour = "#e817b4";
+    neartestEdgeColour           = "#7bd389",
+    partOfTourEdgeColour         = "#778da9",
+    partOfTreeEdgeColour         = "#ff7c1d",
+    partofMatchingEdgeColour     = "#e817b4",
+    partOfEulerianTourEdgeColour = "#43638b",
+    shortcutEdgeColour           = "#778da9";
 
 /**
   Called once at the very beginning.
@@ -230,6 +233,82 @@ function drawAnimationEdges() {
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
   }
+
+  // eulerian tour edges
+  for (let edge of edgesInEulerianTour) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(partOfEulerianTourEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
+
+    push();
+    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
+    translate(v2.x, v2.y);
+    rotate(angle-HALF_PI);
+    var offset = v1.radius;
+    fill(partOfEulerianTourEdgeColour);
+    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
+    pop();
+  }
+
+  // shortcut edges
+  for (let edge of edgesWhichShortcut) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    let leftVertex;
+    if (v1.x < v2.x) leftVertex = v1;
+    else leftVertex = v2;
+
+    let topVertex;
+    if (v1.y < v2.y) topVertex = v1;
+    else topVertex = v2;
+
+    let distanceBetweenVertices = distanceBetween(v1, v2);
+    let xDistance = Math.abs(v1.x - v2.x);
+    let yDistance = Math.abs(v1.y - v2.y);
+    let numberOfDashes = distanceBetweenVertices / (dashLength * 2);
+    let dx = xDistance / numberOfDashes;
+    let dy = yDistance / numberOfDashes;
+
+    let xValues = [];
+    if (leftVertex.id == v1.id) {
+      for (let i = 0; i < numberOfDashes; i++) {
+        xValues.push(leftVertex.x + i*dx);
+      }
+    } else {
+      for (let i = numberOfDashes - 1; i >= 0; i--) {
+        xValues.push(leftVertex.x + i*dx);
+      }
+    }
+
+    let yValues = [];
+    if (topVertex.id == v1.id) {
+      for (let i = 0; i < numberOfDashes; i++) {
+        yValues.push(topVertex.y + i*dy);
+      }
+    } else {
+      for (let i = numberOfDashes - 1; i >= 0; i--) {
+        yValues.push(topVertex.y + i*dy);
+      }
+    }
+
+    stroke(shortcutEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    for (let i = 0; i < numberOfDashes; i+=2)
+      line(xValues[i], yValues[i], xValues[i+1], yValues[i+1]);
+
+    push();
+    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
+    translate(v2.x, v2.y);
+    rotate(angle-HALF_PI);
+    var offset = v1.radius;
+    fill(partOfEulerianTourEdgeColour);
+    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
+    pop();
+  }
 }
 
 function drawAnimationEdgeWeights() {
@@ -272,6 +351,8 @@ function drawVertices() {
       fill(waitingVertexColour);
     if (vertex.isAt)
       fill(currentVertexColour);
+    if (vertex.isPartOfEulerianTour)
+      fill(partOfEulerianTourVertexColour);
 
     stroke(vertexBorderColour);
     ellipse(vertex.x, vertex.y, vertex.radius);
@@ -282,7 +363,7 @@ function drawVertexLabel(v) {
   fill(vertexLabelColour);
   strokeWeight(1);
   textSize(16);
-  text(v.label, v.x - v.radius / 2, v.y - v.radius);
+  text(v.label, v.x - v.radius / 2 + 3, v.y - v.radius);
 }
 
 function drawNonEuclideanVertexLabels() {

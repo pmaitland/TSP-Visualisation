@@ -5,7 +5,9 @@ var stepsTaken,
     edgesInTour = [],
     edgesInTree = [],
     edgesToNearest = [],
-    edgesInMatching = [];
+    edgesInMatching = [],
+    edgesInEulerianTour = [],
+    edgesWhichShortcut = [];
 
 var distances = [],
     vertices = [],
@@ -152,6 +154,8 @@ function restartAnimation() {
   edgesInTree = [];
   edgesInMatching = [];
   edgesToNearest = [];
+  edgesInEulerianTour = [];
+  edgesWhichShortcut = [];
 
   for (let vertex of vertices) {
     vertex.isAt = false;
@@ -159,6 +163,9 @@ function restartAnimation() {
     vertex.isPartOfTour = false;
     vertex.isInTree = false;
     vertex.isOddDegree = false;
+    vertex.isWaiting = false;
+    vertex.isStart = false;
+    vertex.isPartOfEulerianTour = false;
   }
 
   clearElementChildren("stepLog");
@@ -249,18 +256,23 @@ function stepForwardAnimation() {
         break;
 
       case FinishedStep:
-        edgesToNearest = [];
         edgesInTour = [];
         edgesInTree = [];
         edgesInMatching = [];
+        edgesToNearest = [];
+        edgesInEulerianTour = [];
+        edgesWhichShortcut = [];
 
         for (let vertex of vertices) {
           vertex.isAt = false;
           vertex.isNearest = false;
-          vertex.isPartOfTour = true;
           vertex.isInTree = false;
+          vertex.isOddDegree = false;
           vertex.isWaiting = false;
           vertex.isStart = false;
+          vertex.isPartOfEulerianTour = false;
+
+          vertex.isPartOfTour = true;
         }
 
         for (let i = 0; i < currentStep.finalTour.length; i++) {
@@ -311,6 +323,19 @@ function stepForwardAnimation() {
       case StartingVertexStep:
         currentStep.vertex.isStart = true;
         currentStep.vertex.isAt = true;
+        break;
+
+      case EulerianTourStep:
+        edgesInMatching = [];
+        for (let edge of currentStep.edges)
+          edgesInEulerianTour.push(edge);
+        for (let vertex of vertices)
+          vertex.isPartOfEulerianTour = true;
+        break;
+
+      case TakeShortcutsStep:
+        for (let edge of currentStep.edges)
+          edgesWhichShortcut.push(edge);
         break;
 
       default:

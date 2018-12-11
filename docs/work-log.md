@@ -474,8 +474,18 @@ Started improving visualisation of backtracking in approx min span tree.
 
 ## Week 13
 
+10/12/18
+
 **10:05-12:00**
 Continued with backtracking.
 
-**13:30-14:15**
-Continued with backtracking.
+**13:30-17:05**
+Continued with backtracking and started improving visualisation of Christofides.
+
+11/12/18
+
+**11:20-13:20**
+Continued with improving Christofides.
+
+**14:30-16:30**
+Fixed generation of Euclidean cycle in Christofides.

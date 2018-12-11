@@ -191,3 +191,25 @@ class StartingVertexStep extends AnimationStep {
     return `Starting at vertex ${this.vertex.label}`;
   }
 }
+
+class EulerianTourStep extends AnimationStep {
+  constructor(pseudocodeLine, edges) {
+    super(pseudocodeLine);
+    this.edges = edges;
+  }
+
+  toString() {
+    return `Found Eulerian tour`;
+  }
+}
+
+class TakeShortcutsStep extends AnimationStep {
+  constructor(pseudocodeLine, edges) {
+    super(pseudocodeLine);
+    this.edges = edges;
+  }
+
+  toString() {
+    return `Taking shortcuts to avoid visiting vertices more than once`;
+  }
+}
