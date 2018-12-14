@@ -1,6 +1,8 @@
 
 var canvasWidth;
 
+var vertexRadius = 15;
+
 // line weights
 var vertexStrokeWeight = 2,
     selectedVertexStrokeWeight = 4,
@@ -35,7 +37,7 @@ var vertexColour         = "#fff",
     partOfTreeEdgeColour         = "#ff7c1d",
     partofMatchingEdgeColour     = "#e817b4",
     partOfEulerianTourEdgeColour = "#43638b",
-    shortcutEdgeColour           = "#778da9";
+    shortcutEdgeColour           = "#e84747";
 
 /**
   Called once at the very beginning.
@@ -93,7 +95,7 @@ function updateCanvasLayout() {
 				y = (r * Math.sin(angle)) + (windowHeight / 2),
         nonEuclideanLabelX = ((r + 20) * Math.cos(angle)) + (canvasWidth / 2),
 				nonEuclideanLabelY = ((r + 20) * Math.sin(angle)) + (windowHeight / 2),
-        radius = 15;
+        radius = vertexRadius;
 
     vertex.x = x;
     vertex.y = y;
@@ -166,53 +168,57 @@ function drawAnimationEdges() {
   }
 
   // matching edges
-  let dashLength = 4;
   for (let edge of edgesInMatching) {
     v1 = edge[0];
     v2 = edge[1];
 
-    let leftVertex;
-    if (v1.x < v2.x) leftVertex = v1;
-    else leftVertex = v2;
+    stroke(partofMatchingEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    drawingContext.setLineDash([10, 5]);
+    line(v1.x, v1.y, v2.x, v2.y);
+  }
+  drawingContext.setLineDash([]);
 
-    let topVertex;
-    if (v1.y < v2.y) topVertex = v1;
-    else topVertex = v2;
+  // curved matching edges
+  for (let edge of edgesInMatchingCurved) {
+    v1 = edge[0];
+    v2 = edge[1];
 
-    let distanceBetweenVertices = distanceBetween(v1, v2);
-    let xDistance = Math.abs(v1.x - v2.x);
-    let yDistance = Math.abs(v1.y - v2.y);
-    let numberOfDashes = distanceBetweenVertices / (dashLength * 2);
-    let dx = xDistance / numberOfDashes;
-    let dy = yDistance / numberOfDashes;
-
-    let xValues = [];
-    if (leftVertex.id == v1.id) {
-      for (let i = 0; i < numberOfDashes; i++) {
-        xValues.push(leftVertex.x + i*dx);
-      }
+    let leftMost;
+    let rightMost;
+    if (v1.x <= v2.x) {
+      leftMost = v1;
+      rightMost = v2;
     } else {
-      for (let i = numberOfDashes - 1; i >= 0; i--) {
-        xValues.push(leftVertex.x + i*dx);
-      }
+      leftMost = v2;
+      rightMost = v1;
     }
 
-    let yValues = [];
-    if (topVertex.id == v1.id) {
-      for (let i = 0; i < numberOfDashes; i++) {
-        yValues.push(topVertex.y + i*dy);
-      }
+    let upMost;
+    let downMost;
+    if (v1.y <= v2.y) {
+      upMost = v1;
+      downMost = v2;
     } else {
-      for (let i = numberOfDashes - 1; i >= 0; i--) {
-        yValues.push(topVertex.y + i*dy);
-      }
+      upMost = v2;
+      downMost = v1;
     }
+
+    let c1 = {
+      x: leftMost.x + Math.abs(v1.x - v2.x),
+      y: upMost.y
+    }
+    let c2 = {
+      x: rightMost.x - Math.abs(v1.x - v2.x),
+      y: downMost.y
+    };
 
     stroke(partofMatchingEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    for (let i = 0; i < numberOfDashes; i+=2)
-      line(xValues[i], yValues[i], xValues[i+1], yValues[i+1]);
+    drawingContext.setLineDash([10, 5]);
+    curve(c1.x, c1.y, v1.x, v1.y, v2.x, v2.y, c2.x, c2.y);
   }
+  drawingContext.setLineDash([]);
 
   // tour edges
   for (let edge of edgesInTour) {
@@ -258,47 +264,11 @@ function drawAnimationEdges() {
     v1 = edge[0];
     v2 = edge[1];
 
-    let leftVertex;
-    if (v1.x < v2.x) leftVertex = v1;
-    else leftVertex = v2;
-
-    let topVertex;
-    if (v1.y < v2.y) topVertex = v1;
-    else topVertex = v2;
-
-    let distanceBetweenVertices = distanceBetween(v1, v2);
-    let xDistance = Math.abs(v1.x - v2.x);
-    let yDistance = Math.abs(v1.y - v2.y);
-    let numberOfDashes = distanceBetweenVertices / (dashLength * 2);
-    let dx = xDistance / numberOfDashes;
-    let dy = yDistance / numberOfDashes;
-
-    let xValues = [];
-    if (leftVertex.id == v1.id) {
-      for (let i = 0; i < numberOfDashes; i++) {
-        xValues.push(leftVertex.x + i*dx);
-      }
-    } else {
-      for (let i = numberOfDashes - 1; i >= 0; i--) {
-        xValues.push(leftVertex.x + i*dx);
-      }
-    }
-
-    let yValues = [];
-    if (topVertex.id == v1.id) {
-      for (let i = 0; i < numberOfDashes; i++) {
-        yValues.push(topVertex.y + i*dy);
-      }
-    } else {
-      for (let i = numberOfDashes - 1; i >= 0; i--) {
-        yValues.push(topVertex.y + i*dy);
-      }
-    }
-
     stroke(shortcutEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    for (let i = 0; i < numberOfDashes; i+=2)
-      line(xValues[i], yValues[i], xValues[i+1], yValues[i+1]);
+    drawingContext.setLineDash([10, 5]);
+    line(v1.x, v1.y, v2.x, v2.y);
+    drawingContext.setLineDash([]);
 
     push();
     var angle = atan2(v1.y - v2.y, v1.x - v2.x);
@@ -393,29 +363,6 @@ function mousePressed() {
   }
 
   if (inEuclideanSpace && !isSelecting && mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
-    var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
-    if (id == -Infinity) {
-      id = 0;
-    }
-
-    var v = {
-      id: id,
-      label: id,
-      x: mouseX,
-      y: mouseY,
-      radius: 15
-    };
-
-    vertices.push(v);
-    distances.push([]);
-    for (let i = 0; i < vertexCount; i++) {
-      let distance = distanceBetween(v, vertices[i]);
-      distances[i][id] = distance;
-      distances[id][i] = distance;
-    }
-    distances[id][id] = 0;
-    vertexCount++;
-
-    displayDistanceMatrix();
+    createNewVertex(mouseX, mouseY);
   }
 }

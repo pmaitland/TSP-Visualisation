@@ -137,9 +137,10 @@ class OddDegreeVerticesStep extends AnimationStep {
 }
 
 class MinimumMatchingStep extends AnimationStep {
-  constructor(pseudocodeLine, edges) {
+  constructor(pseudocodeLine, edges, sharedEdges) {
     super(pseudocodeLine);
     this.edges = edges;
+    this.sharedEdges = sharedEdges;
   }
 
   toString() {

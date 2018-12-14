@@ -1,10 +1,12 @@
 
+var tree;
+
 var bestMatching = [],
     bestMatchingWeight = Infinity;
 
 function christofides() {
 
-  var tree = minSpanTree();
+  tree = minSpanTree();
   stepsTaken.push(new MinSpanTreeStep(0, tree.edges, tree.weight));
 
   var oddDegreeVertexIds = [];
@@ -25,32 +27,23 @@ function christofides() {
 
   // GREEDY PAIRING
   var matchings = [];
-  var oddVertices = Array.from(oddDegreeVertices);
-  while (oddVertices.length > 0) {
-    let v = oddVertices[0];
-    let distanceToNearest = Infinity;
-    let nearest;
+  var sharedMatchings = [];
 
-    for (let u of oddVertices) {
-      if (!(v.id == u.id) && distances[v.id][u.id] < distanceToNearest) {
-        distanceToNearest = distances[v.id][u.id];
-        nearest = u;
-      }
-    }
+  matchings = minimumWeightMatching(oddDegreeVertices);
 
-    matchings.push([v, nearest]);
-    oddVertices.splice(oddVertices.indexOf(v), 1);
-    oddVertices.splice(oddVertices.indexOf(nearest), 1);
-  }
+  console.log("s", sharedMatchings);
+  console.log("m", matchings);
 
-  stepsTaken.push(new MinimumMatchingStep(0, matchings));
+  stepsTaken.push(new MinimumMatchingStep(0, matchings, sharedMatchings));
+
+  matchings = matchings.concat(sharedMatchings);
 
   for (let m of matchings) {
     adj[m[0].id].push(m[1]);
     adj[m[1].id].push(m[0]);
   }
 
-  var tour = findEulerianTour(vertices[0]);
+  var tour = findEulerianTour(vertices[Math.floor(Math.random() * vertices.length)]);
   let tourAsEdges = [];
   for (let i = 0; i < tour.length-1; i++)
     tourAsEdges.push([tour[i], tour[i+1]]);
@@ -67,13 +60,97 @@ function christofides() {
   stepsTaken.push(new FinishedStep(0, finalTour, tourLength));
 
   return {
-    tour: tour,
+    tour: finalTour,
     tourLength: tourLength
   };
 }
 
+function minimumWeightMatching(verticesToMatch) {
+  var solver = window.solver,
+      results,
+      model = {
+        "optimize": "distance",
+        "opType": "min",
+        "constraints": {
+        },
+        "variables": {
+        },
+        "ints": {
+        }
+    };
+
+  model.constraints.matchingSize = {"equal": verticesToMatch.length / 2};
+
+  for (let v of verticesToMatch) {
+    let vertexString = "v" + v.id.toString() + "picked";
+    model.constraints[vertexString] = {"equal": 1};
+    model.variables
+  }
+
+  for (let i = 0; i < verticesToMatch.length - 1; i++) {
+    let v1String = "v" + verticesToMatch[i].id.toString() + "picked";
+    for (let j = i + 1; j < verticesToMatch.length; j++) {
+      let v2String = "v" + verticesToMatch[j].id.toString() + "picked";
+
+      let constraintFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id + "picked";
+      model.constraints[constraintFieldName] = {"max": 1};
+
+      let variableFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id;
+      model.variables[variableFieldName] = {
+        "distance": distances[verticesToMatch[i].id][verticesToMatch[j].id],
+        "matchingSize": 1
+      }
+      model.variables[variableFieldName][constraintFieldName] = 1;
+      model.variables[variableFieldName][v1String] = 1;
+      model.variables[variableFieldName][v2String] = 1;
+
+      model.ints[variableFieldName] = 1;
+    }
+  }
+
+  console.log(model);
+
+  results = solver.Solve(model);
+  console.log(results);
+
+  let chosenMatchings = [];
+  for (let result of Object.keys(results)) {
+    if (results[result] === 1) {
+      let split = result.split("v");
+      chosenMatchings.push([split[1], split[2]]);
+    }
+  }
+
+  console.log(chosenMatchings);
+
+  var matchings = [];
+  for (let matching of chosenMatchings) {
+    let v1, v2;
+    for (let v of vertices) {
+      if (matching[0] == v.id) v1 = v;
+      else if (matching[1] == v.id) v2 = v;
+    }
+    matchings.push([v1, v2]);
+  }
+
+  return matchings;
+
+}
+
+function includedInTree(v1, v2) {
+  var u1, u2;
+  for (let edge of tree.edges) {
+    u1 = edge[0];
+    u2 = edge[1];
+
+    if ((v1.id == u1.id && v2.id == u2.id) || (v1.id == u2.id && v2.id == u1.id))
+      return true;
+  }
+  return false;
+}
+
 function findEulerianTour(v) {
-  var eTour = [];
+  var eCycle = [];
   var currentVertex = v;
 
   var edgesToTravel = [];
@@ -103,7 +180,7 @@ function findEulerianTour(v) {
   let subTour = [];
 
   let numEdges = Math.floor(edgesToTravel.length / 2);
-  while (eTour.length < numEdges) {
+  while (eCycle.length < numEdges) {
     let nextVertex;
 
     if (typeof currentVertex == "undefined") {
@@ -111,23 +188,23 @@ function findEulerianTour(v) {
       var leadingVertex = subTour[0];
 
       let indexOfLeadingVertexInTour = 0;
-      for (let i = 0; i < eTour.length; i++) {
-        if (eTour[i].id == leadingVertex.id) {
+      for (let i = 0; i < eCycle.length; i++) {
+        if (eCycle[i].id == leadingVertex.id) {
           indexOfLeadingVertexInTour = i;
           break;
         }
       }
 
       for (let i = subTour.length-1; i >= 0; i--) {
-        eTour.splice(indexOfLeadingVertexInTour, 0, subTour[i]);
+        eCycle.splice(indexOfLeadingVertexInTour, 0, subTour[i]);
       }
 
-      if (eTour.length >= numEdges) return eTour;
+      if (eCycle.length >= numEdges) return eCycle;
 
       subTour = [];
 
       loop1:
-      for (let vertex of eTour) {
+      for (let vertex of eCycle) {
         loop2:
         for (let edge of edgesToTravel) {
           if (vertex.id == edge[0]) {
@@ -156,7 +233,7 @@ function findEulerianTour(v) {
     }
     currentVertex = nextVertex;
   }
-  return eTour;
+  return eCycle;
 }
 
 function takeShortcuts(vertices) {
@@ -164,25 +241,23 @@ function takeShortcuts(vertices) {
   var shortcuts = [];
   var shortcutStart, shortcutEnd;
 
-  var eulerianTour = [];
-  for (let v of vertices)
-    eulerianTour.push(v);
-
   for (let v of vertices) {
     if (!tour.includes(v)) {
       tour.push(v);
     } else {
       shortcutStart = tour[tour.length-1];
       for (let u of vertices) {
-        if (!tour.includes(u))
+        if (!tour.includes(u)) {
           shortcutEnd = u;
           break;
+        }
       }
       if (typeof shortcutEnd == "undefined")
         shortcutEnd = tour[0];
       shortcuts.push([shortcutStart, shortcutEnd]);
     }
   }
+
   if (shortcuts.length > 0)
     stepsTaken.push(new TakeShortcutsStep(0, shortcuts));
   return tour;

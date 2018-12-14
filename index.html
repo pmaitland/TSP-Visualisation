@@ -11,6 +11,8 @@
   <script src="./src/js/p5/p5.min.js"></script>
   <script src="./src/js/p5/p5.dom.min.js"></script>
 
+  <script type="text/javascript" src="./src/js/javascript-lp-solver/src/solver.js"></script>
+
   <script type="text/javascript" src="./src/js/canvas.js"></script>
   <script type="text/javascript" src="./src/js/animationSteps.js"></script>
   <script type="text/javascript" src="./src/js/min_span_tree.js"></script>
@@ -46,6 +48,10 @@
           <div id="mouseCoordsX">X: 0</div>
           <div id="mouseCoordsY">Y: 0</div>
         </div>
+
+        <h3>Randomise Vertices</h3>
+        <div>Number of vertices: <input type="number" id="randomiseVerticesCount"></div>
+        <button onclick="randomiseVertices()">Randomise</button>
       </div>
 
       <div id="nonEuclidean" class="spaceTabContent">

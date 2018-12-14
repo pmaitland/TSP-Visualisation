@@ -458,6 +458,8 @@ Add vertex labels to non-euclidean space. Looked at implementations of matching 
 **13:30-16:20**
 Made changes to CSS. Added displaying of algorithm result in 'Results' tab.
 
+---
+
 07/12/18
 
 **10:00-11:30**
@@ -482,10 +484,48 @@ Continued with backtracking.
 **13:30-17:05**
 Continued with backtracking and started improving visualisation of Christofides.
 
+---
+
 11/12/18
 
 **11:20-13:20**
 Continued with improving Christofides.
 
-**14:30-16:30**
-Fixed generation of Euclidean cycle in Christofides.
+**14:30-17:10**
+Fixed generation of Euclidean cycle in Christofides and allowed vertices to be placed randomly in euclidean space.
+
+---
+
+12/12/18
+
+**11:00-12:10**
+Wrote status report.
+
+**13:25-15:20**
+Continued writing status report fixed Christofides shortcuts.
+
+**17:00-18:00**
+Made changes to Christofides colours. Changed how dashed lines with aims to improve visualisation of dashed lines in Christofides.
+
+**20:30-21:30**
+Worked on curved lines in minimum weight matching.
+
+---
+
+13/12/18
+
+**09:50-12:00**
+Tried to get javascript-lp-solver to work.
+
+**13:20-16:20**
+Implemented minimum weight matching using javascript-lp-solver.
+
+**16:40-16:55**
+Started visualising minimum weight matching.
+
+---
+
+14/12/18
+
+**00:50-01:00**
+Updated Christofides visualisation to use linear programming matchings.

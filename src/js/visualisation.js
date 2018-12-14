@@ -6,6 +6,7 @@ var stepsTaken,
     edgesInTree = [],
     edgesToNearest = [],
     edgesInMatching = [],
+    edgesInMatchingCurved = [],
     edgesInEulerianTour = [],
     edgesWhichShortcut = [];
 
@@ -153,6 +154,7 @@ function restartAnimation() {
   edgesInTour = [];
   edgesInTree = [];
   edgesInMatching = [];
+  edgesInMatchingCurved = [];
   edgesToNearest = [];
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
@@ -259,6 +261,7 @@ function stepForwardAnimation() {
         edgesInTour = [];
         edgesInTree = [];
         edgesInMatching = [];
+        edgesInMatchingCurved = [];
         edgesToNearest = [];
         edgesInEulerianTour = [];
         edgesWhichShortcut = [];
@@ -295,6 +298,8 @@ function stepForwardAnimation() {
       case MinimumMatchingStep:
         for (let e of currentStep.edges)
           edgesInMatching.push(e);
+        for (let e of currentStep.sharedEdges)
+          edgesInMatchingCurved.push(e);
         break;
 
       case BacktrackingStep:
@@ -327,6 +332,7 @@ function stepForwardAnimation() {
 
       case EulerianTourStep:
         edgesInMatching = [];
+        edgesInMatchingCurved = [];
         for (let edge of currentStep.edges)
           edgesInEulerianTour.push(edge);
         for (let vertex of vertices)
@@ -600,6 +606,51 @@ function updateMousePosition() {
         mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
       drawVertexLabel(v);
     }
+  }
+}
+
+function createNewVertex(x, y) {
+  var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
+  if (id == -Infinity) {
+    id = 0;
+  }
+
+  var v = {
+    id: id,
+    label: id,
+    x: x,
+    y: y,
+    radius: vertexRadius
+  };
+
+  vertices.push(v);
+  distances.push([]);
+  for (let i = 0; i < vertexCount; i++) {
+    let distance = distanceBetween(v, vertices[i]);
+    distances[i][id] = distance;
+    distances[id][i] = distance;
+  }
+  distances[id][id] = 0;
+  vertexCount++;
+
+  displayDistanceMatrix();
+}
+
+function randomiseVertices() {
+  var count = document.getElementById("randomiseVerticesCount").value;
+
+  vertices = [];
+  vertexCount = 0;
+
+  let xMin = 0 + (vertexRadius / 2),
+      xMax = canvasWidth - (vertexRadius / 2),
+      yMin = 0 + (vertexRadius / 2),
+      yMax = windowHeight - (vertexRadius / 2);
+
+  for (let i = 0; i < count; i++) {
+    let x = Math.floor(Math.random() * (xMax - xMin + 1)) + xMin;
+        y = Math.floor(Math.random() * (yMax - yMin + 1)) + yMin;
+    createNewVertex(x, y);
   }
 }
 
