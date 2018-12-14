@@ -1,0 +1,9 @@
+/docs/status_report/**
+
+/src/js/javascript-lp-solver/benchmark
+/src/js/javascript-lp-solver/prod
+/src/js/javascript-lp-solver/test
+/src/js/javascript-lp-solver/.npmignore
+/src/js/javascript-lp-solver/bower.json
+/src/js/javascript-lp-solver/gruntfile.js
+/src/js/javascript-lp-solver/package.json
