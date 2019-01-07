@@ -4,7 +4,7 @@ function approxMinSpanTree() {
   var tree = minSpanTree();
   stepsTaken.push(new MinSpanTreeStep(0, tree.edges, tree.weight));
 
-  var tour = depthFirstSearch(vertices[0]);
+  var tour = depthFirstSearch(vertices[Math.floor(Math.random() * vertices.length + 1)]);
 
   var tourLength = 0;
   for (let i = 0; i < tour.length-1; i++)

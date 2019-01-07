@@ -68,11 +68,10 @@ function depthFirstSearch(v) {
   stack.push(v);
 
   while (stack.length > 0) {
-    if (visited.length == vertices.length)
-      break;
     let u = stack.pop();
     if (visited.includes(u.id)) {
-      stepsTaken.push(new BacktrackingStep(0, u));
+      if ((u.id != v.id && vertices.length == visited.length) || (u.id == v.id && vertices.length != visited.length) || (u.id != v.id && vertices.length != visited.length))
+        stepsTaken.push(new BacktrackingStep(0, u));
     } else {
       visited.push(u.id);
 
@@ -87,7 +86,7 @@ function depthFirstSearch(v) {
           if (!visited.includes(n.id))
            hasUnvisitedNeighbours = true;
         }
-        if (!hasUnvisitedNeighbours && visited.length < vertices.length)
+        if (!hasUnvisitedNeighbours)
           stepsTaken.push(new NoUnvisitedNeighboursStep(0, u));
       } else {
         stepsTaken.push(new StartingVertexStep(0, u));
@@ -96,11 +95,34 @@ function depthFirstSearch(v) {
 
       tour.push(u);
       for (let w of adj[u.id]) {
-        stack.push(w);
+        if (visited.includes(w.id))
+          stack.push(w);
+      }
+      for (let w of adj[u.id]) {
+        if (!visited.includes(w.id))
+          stack.push(w);
       }
     }
   }
-  stepsTaken.push(new AtLastVertexStep(0, tour[tour.length-1], tour[0]));
+
+  let areAdjacent = false;
+  for (let a of adj[tour[0].id]) {
+    if (a.id == tour[tour.length-1].id) areAdjacent = true;
+  }
+
+  if (areAdjacent)
+    stepsTaken.push(new AddEdgeToTourStep(0, tour[0], tour[tour.length-1]));
+  else
+    stepsTaken.push(new EdgeBetweenNonAdjacentVerticesStep(0, tour[0], tour[tour.length-1]));
   tour.push(tour[0]);
+
   return tour;
+}
+
+function allAdjacentVisited(visited, v) {
+  allVisited = true;
+  for (let a of adj[v]) {
+    if (!visited.includes(a.id)) allVisited = false;
+  }
+  return allVisited;
 }

@@ -8,7 +8,8 @@ var stepsTaken,
     edgesInMatching = [],
     edgesInMatchingCurved = [],
     edgesInEulerianTour = [],
-    edgesWhichShortcut = [];
+    edgesWhichShortcut = []
+    edgesBetweenNonAdjacent = [];
 
 var distances = [],
     vertices = [],
@@ -322,7 +323,7 @@ function stepForwardAnimation() {
         currentStep.mate.isPartOfTour = true;
         currentStep.mate.isWaiting = false;
         currentStep.currentVertex.isAt = true;
-        edgesInTour.push([currentStep.mate, currentStep.currentVertex]);
+        edgesWhichShortcut.push([currentStep.mate, currentStep.currentVertex]);
         break;
 
       case StartingVertexStep:

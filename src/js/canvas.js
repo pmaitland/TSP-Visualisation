@@ -37,7 +37,8 @@ var vertexColour         = "#fff",
     partOfTreeEdgeColour         = "#ff7c1d",
     partofMatchingEdgeColour     = "#e817b4",
     partOfEulerianTourEdgeColour = "#43638b",
-    shortcutEdgeColour           = "#e84747";
+    shortcutEdgeColour           = "#e84747",
+    edgeBetweenNonAdjacentColour = "#43638b";
 
 /**
   Called once at the very beginning.
@@ -278,6 +279,16 @@ function drawAnimationEdges() {
     fill(partOfEulerianTourEdgeColour);
     triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
     pop();
+  }
+
+  // edges between non adjacent
+  for (let edge of edgesBetweenNonAdjacent) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(edgeBetweenNonAdjacentColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
   }
 }
 

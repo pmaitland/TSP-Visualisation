@@ -529,3 +529,28 @@ Started visualising minimum weight matching.
 
 **00:50-01:00**
 Updated Christofides visualisation to use linear programming matchings.
+
+**13:05-13:40**
+Fixed shortcuts in Christofides.
+
+**14:00-14:35**
+Supervisor meeting.
+
+## Week 14
+
+## Week 15
+
+## Week 16
+
+## Week 17
+
+07/01/18
+
+**10:10-10:50**
+Improved visualisation of approx min span tree.
+
+**11:20-12:00**
+Continued improving approx min span tree.
+
+**14:10-16:00**
+Continued improving approx min span tree.
