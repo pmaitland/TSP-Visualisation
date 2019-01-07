@@ -554,3 +554,6 @@ Continued improving approx min span tree.
 
 **14:10-16:00**
 Continued improving approx min span tree.
+
+**16:30-17:25**
+Allowed final tours to be viewed from results page.

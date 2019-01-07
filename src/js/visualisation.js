@@ -259,29 +259,7 @@ function stepForwardAnimation() {
         break;
 
       case FinishedStep:
-        edgesInTour = [];
-        edgesInTree = [];
-        edgesInMatching = [];
-        edgesInMatchingCurved = [];
-        edgesToNearest = [];
-        edgesInEulerianTour = [];
-        edgesWhichShortcut = [];
-
-        for (let vertex of vertices) {
-          vertex.isAt = false;
-          vertex.isNearest = false;
-          vertex.isInTree = false;
-          vertex.isOddDegree = false;
-          vertex.isWaiting = false;
-          vertex.isStart = false;
-          vertex.isPartOfEulerianTour = false;
-
-          vertex.isPartOfTour = true;
-        }
-
-        for (let i = 0; i < currentStep.finalTour.length; i++) {
-          edgesInTour.push([currentStep.finalTour[i], currentStep.finalTour[(i+1) % (currentStep.finalTour.length - 1)]]);
-        }
+        showTour(currentStep.finalTour);
         break;
 
       case MinSpanTreeStep:
@@ -693,6 +671,9 @@ function showResults(results) {
       tourText = document.createTextNode("Tour: "),
       tour,
 
+      showTourButton = document.createElement("button")
+      showTourButtonText = document.createTextNode("Display Tour"),
+
       br = document.createElement("br");
 
   var tourString = results.tour[0].label;
@@ -715,8 +696,41 @@ function showResults(results) {
   tourDiv.appendChild(tour);
   resultDiv.appendChild(tourDiv);
 
+  showTourButton.onclick = function() { showTour(results.tour) };
+  showTourButton.appendChild(showTourButtonText);
+  resultDiv.appendChild(showTourButton);
+
   resultsDiv.appendChild(resultDiv);
   resultsDiv.appendChild(br);
+}
+
+function showTour(tour) {
+  playingAnimation = false;
+  currentAnimationStep = stepsTaken.length - 1;
+
+  edgesInTour = [];
+  edgesInTree = [];
+  edgesInMatching = [];
+  edgesInMatchingCurved = [];
+  edgesToNearest = [];
+  edgesInEulerianTour = [];
+  edgesWhichShortcut = [];
+
+  for (let vertex of vertices) {
+    vertex.isAt = false;
+    vertex.isNearest = false;
+    vertex.isInTree = false;
+    vertex.isOddDegree = false;
+    vertex.isWaiting = false;
+    vertex.isStart = false;
+    vertex.isPartOfEulerianTour = false;
+
+    vertex.isPartOfTour = true;
+  }
+
+  for (let i = 0; i < tour.length; i++) {
+    edgesInTour.push([tour[i], tour[(i+1) % (tour.length - 1)]]);
+  }
 }
 
 function solveWithNearestNeighbour() {
