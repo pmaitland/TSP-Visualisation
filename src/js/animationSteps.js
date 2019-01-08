@@ -204,13 +204,24 @@ class EulerianTourStep extends AnimationStep {
   }
 }
 
-class TakeShortcutsStep extends AnimationStep {
-  constructor(pseudocodeLine, edges) {
+class TakeShortcutStep extends AnimationStep {
+  constructor(pseudocodeLine, edge) {
     super(pseudocodeLine);
-    this.edges = edges;
+    this.edge = edge;
   }
 
   toString() {
-    return `Taking shortcuts to avoid visiting vertices more than once`;
+    return `Added vertex ${this.edge[1].label} to the tour by taking a shortcut from vertex ${this.edge[0].label}`;
+  }
+}
+
+class TraverseEdgeInEulerianTourStep extends AnimationStep {
+  constructor(pseudocodeLine, edge) {
+    super(pseudocodeLine);
+    this.edge = edge;
+  }
+
+  toString() {
+    return `Added vertex ${this.edge[1].label} to the tour`;
   }
 }

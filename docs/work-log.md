@@ -557,3 +557,22 @@ Continued improving approx min span tree.
 
 **16:30-17:25**
 Allowed final tours to be viewed from results page.
+
+**17:45-17:55**
+Worked on fixing Christofides shortcuts.
+
+---
+
+08/01/18
+
+**10:10-10:25**
+Prepared for supervsor meeting.
+
+**10:30-11:05**
+Supervisor meeting.
+
+**15:00-16:05**
+Fixed Christofides shortcuts.
+
+**16:30-17:25**
+Improved Christofides visualisation.

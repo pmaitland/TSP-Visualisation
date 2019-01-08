@@ -25,7 +25,6 @@ function christofides() {
   for (let v of oddDegreeVertices)
     vertexIds.push(v.id);
 
-  // GREEDY PAIRING
   var matchings = [];
   var sharedMatchings = [];
 
@@ -48,6 +47,7 @@ function christofides() {
   for (let i = 0; i < tour.length-1; i++)
     tourAsEdges.push([tour[i], tour[i+1]]);
   tourAsEdges.push([tour[tour.length-1], tour[0]]);
+
   stepsTaken.push(new EulerianTourStep(0, tourAsEdges));
 
   var finalTour = takeShortcuts(tour);
@@ -236,29 +236,48 @@ function findEulerianTour(v) {
   return eCycle;
 }
 
-function takeShortcuts(vertices) {
+function takeShortcuts(eTour) {
   var tour = [];
   var shortcuts = [];
-  var shortcutStart, shortcutEnd;
 
-  for (let v of vertices) {
-    if (!tour.includes(v)) {
+  console.log(eTour);
+
+  for (let v of eTour) {
+    if (!tour.includes(v))
       tour.push(v);
-    } else {
-      shortcutStart = tour[tour.length-1];
-      for (let u of vertices) {
-        if (!tour.includes(u)) {
-          shortcutEnd = u;
-          break;
-        }
-      }
-      if (typeof shortcutEnd == "undefined")
-        shortcutEnd = tour[0];
-      shortcuts.push([shortcutStart, shortcutEnd]);
+  }
+
+  stepsTaken.push(new StartingVertexStep(0, tour[0]));
+
+  for (let i = 0; i < tour.length - 1; i++) {
+    let currentV = tour[i],
+        nextV = tour[i+1],
+        edge = [currentV, nextV];
+
+    if (eTour[eTour.indexOf(currentV) + 1] != nextV)
+      stepsTaken.push(new TakeShortcutStep(0, edge));
+    else
+      stepsTaken.push(new TraverseEdgeInEulerianTourStep(0, edge));
+  }
+
+  let currentV = tour[tour.length - 1],
+      nextV = tour[0],
+      edge = [currentV, nextV];
+
+  console.log(adj[currentV.id]);
+
+  let adjacent = false;
+  for (let a of adj[currentV.id]) {
+    if (nextV.id == a.id) {
+      adjacent = true;
+      break;
     }
   }
 
-  if (shortcuts.length > 0)
-    stepsTaken.push(new TakeShortcutsStep(0, shortcuts));
+  if (adjacent)
+    stepsTaken.push(new TraverseEdgeInEulerianTourStep(0, edge));
+  else
+    stepsTaken.push(new TakeShortcutStep(0, edge));
+
   return tour;
 }

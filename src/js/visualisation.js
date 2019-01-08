@@ -305,6 +305,7 @@ function stepForwardAnimation() {
         break;
 
       case StartingVertexStep:
+        currentStep.vertex.isPartOfEulerianTour = false;
         currentStep.vertex.isStart = true;
         currentStep.vertex.isAt = true;
         break;
@@ -318,9 +319,46 @@ function stepForwardAnimation() {
           vertex.isPartOfEulerianTour = true;
         break;
 
-      case TakeShortcutsStep:
-        for (let edge of currentStep.edges)
-          edgesWhichShortcut.push(edge);
+      case TakeShortcutStep:
+        let shortcut = currentStep.edge;
+
+        edgesWhichShortcut.push(shortcut);
+
+        for (let v of vertices) {
+          if (v.id == shortcut[0].id) {
+            v.isAt = false;
+            v.isPartOfTour = true;
+          }
+          if (v.id == shortcut[1].id) {
+            v.isAt = true;
+            v.isPartOfEulerianTour = false;
+          }
+        }
+        break;
+
+      case TraverseEdgeInEulerianTourStep:
+        let edge = currentStep.edge,
+            edgeToDelete;
+        for (let e of edgesInEulerianTour) {
+          if (e[0].id == edge[0].id && e[1].id == edge[1].id) {
+            edgeToDelete = e;
+            break;
+          }
+        }
+        edgesInEulerianTour.splice(edgesInEulerianTour.indexOf(edgeToDelete), 1);
+
+        edgesInTour.push(edge);
+
+        for (let v of vertices) {
+          if (v.id == edge[0].id) {
+            v.isAt = false;
+            v.isPartOfTour = true;
+          }
+          if (v.id == edge[1].id) {
+            v.isAt = true;
+            v.isPartOfEulerianTour = false;
+          }
+        }
         break;
 
       default:

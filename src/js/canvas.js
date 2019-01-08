@@ -25,19 +25,19 @@ var vertexColour         = "#fff",
 // animating
     currentVertexColour            = "#f4e04d",
     nearestVertexColour            = "#7bd389",
-    startingVertexColour           = "#43638b",
+    startingVertexColour           = "#203958",
     partOfTourVertexColour         = "#778da9",
     partOfTreeVertexColour         = "#ff7c1d",
     oddDegreeVertexColour          = "#e817b4",
     waitingVertexColour            = "#e84747",
-    partOfEulerianTourVertexColour = "#43638b",
+    partOfEulerianTourVertexColour = "#e84747",
 
     neartestEdgeColour           = "#7bd389",
     partOfTourEdgeColour         = "#778da9",
     partOfTreeEdgeColour         = "#ff7c1d",
     partofMatchingEdgeColour     = "#e817b4",
-    partOfEulerianTourEdgeColour = "#43638b",
-    shortcutEdgeColour           = "#e84747",
+    partOfEulerianTourEdgeColour = "#e84747",
+    shortcutEdgeColour           = "#778da9",
     edgeBetweenNonAdjacentColour = "#43638b";
 
 /**
@@ -221,6 +221,25 @@ function drawAnimationEdges() {
   }
   drawingContext.setLineDash([]);
 
+  // eulerian tour edges
+  for (let edge of edgesInEulerianTour) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(partOfEulerianTourEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
+
+    push();
+    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
+    translate(v2.x, v2.y);
+    rotate(angle-HALF_PI);
+    var offset = v1.radius;
+    fill(partOfEulerianTourEdgeColour);
+    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
+    pop();
+  }
+
   // tour edges
   for (let edge of edgesInTour) {
     v1 = edge[0];
@@ -239,25 +258,6 @@ function drawAnimationEdges() {
     stroke(neartestEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
-  }
-
-  // eulerian tour edges
-  for (let edge of edgesInEulerianTour) {
-    v1 = edge[0];
-    v2 = edge[1];
-
-    stroke(partOfEulerianTourEdgeColour);
-    strokeWeight(animatedEdgeStrokeWeight);
-    line(v1.x, v1.y, v2.x, v2.y);
-
-    push();
-    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
-    translate(v2.x, v2.y);
-    rotate(angle-HALF_PI);
-    var offset = v1.radius;
-    fill(partOfEulerianTourEdgeColour);
-    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
-    pop();
   }
 
   // shortcut edges
