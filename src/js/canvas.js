@@ -337,6 +337,10 @@ function drawVertices() {
 
     stroke(vertexBorderColour);
     ellipse(vertex.x, vertex.y, vertex.radius);
+
+    if (showVertexLabels == 2) {
+      drawVertexLabel(vertex);
+    }
   }
 }
 

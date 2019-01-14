@@ -5,23 +5,27 @@
 
 <head>
   <title>TSP Visualisation</title>
+  <link id="favicon" rel="shortcut icon" href="assets/favicons/favicon0.ico" />
 
   <link rel="stylesheet" href="./src/css/styles.css">
 
+  <!-- p5.js: https://p5js.org/ -->
   <script src="./src/js/p5/p5.min.js"></script>
   <script src="./src/js/p5/p5.dom.min.js"></script>
 
+  <!-- jsLPSolver: https://www.npmjs.com/package/javascript-lp-solver -->
   <script type="text/javascript" src="./src/js/javascript-lp-solver/src/solver.js"></script>
 
   <script type="text/javascript" src="./src/js/canvas.js"></script>
   <script type="text/javascript" src="./src/js/animationSteps.js"></script>
   <script type="text/javascript" src="./src/js/min_span_tree.js"></script>
 
-  <script type="text/javascript" src="./src/js/christofides.js"></script>
-  <script type="text/javascript" src="./src/js/approx_min_span_tree.js"></script>
+  <script type="text/javascript" src="./src/js/nearest_neighbour.js"></script>
   <script type="text/javascript" src="./src/js/branch_and_bound.js"></script>
   <script type="text/javascript" src="./src/js/brute_force.js"></script>
-  <script type="text/javascript" src="./src/js/nearest_neighbour.js"></script>
+  <script type="text/javascript" src="./src/js/approx_min_span_tree.js"></script>
+  <script type="text/javascript" src="./src/js/christofides.js"></script>
+  <script type="text/javascript" src="./src/js/integer_programming.js"></script>
 
   <script type="text/javascript" src="./src/js/visualisation.js"></script>
 </head>
@@ -31,6 +35,8 @@
 
   <div id="configurationHolder">
 
+    <div id="configuration">
+
     <div class="tabsHolder">
       <button id="inputTab" class="tab" onclick="openTab(event, 'input')">Graph</button>
       <button id="algorithmsTab" class="tab" onclick="openTab(event, 'algorithms')">Algorithms</button>
@@ -38,7 +44,7 @@
     </div>
 
     <div id="input" class="tabContent">
-      <div class="tabsHolder">
+      <div id="spaceTabHolder" class="tabsHolder">
         <button id="euclideanSpace" class="spaceTab" onclick="changeSpace(event, 'euclidean')">Euclidean Space</button>
         <button id="nonEuclideanSpace" class="spaceTab" onclick="changeSpace(event, 'nonEuclidean')">Non-Euclidean Space</button>
       </div>
@@ -79,6 +85,7 @@
         <button id="bfButton" class="algorithmButton" onclick="solveWithBruteForce();">Brute Force</button>
         <button id="amstButton" class="algorithmButton" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
         <button id="chrisButton" class="algorithmButton" onclick="solveWithChristofides();">Christofides</button>
+        <button id="ipButton" class="algorithmButton" onclick="solveWithIntegerProgramming();">Integer Programming</button>
       </div>
 
       <h3>Animation Control</h3>
@@ -105,8 +112,18 @@
       </div>
 
     </div>
-
   </div>
+
+  <div id="configFooter">
+    <div>Show vertex labels: </div>
+    <select value="on hover">
+      <option onclick="changeShowLabels('never')">never</option>
+      <option selected onclick="changeShowLabels('hover')">on hover</option>
+      <option onclick="changeShowLabels('always')">always</option>
+    </select>
+  </div>
+</div>
+
 </body>
 
 </html>

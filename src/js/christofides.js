@@ -30,8 +30,8 @@ function christofides() {
 
   matchings = minimumWeightMatching(oddDegreeVertices);
 
-  console.log("s", sharedMatchings);
-  console.log("m", matchings);
+  // console.log("s", sharedMatchings);
+  // console.log("m", matchings);
 
   stepsTaken.push(new MinimumMatchingStep(0, matchings, sharedMatchings));
 
@@ -71,12 +71,9 @@ function minimumWeightMatching(verticesToMatch) {
       model = {
         "optimize": "distance",
         "opType": "min",
-        "constraints": {
-        },
-        "variables": {
-        },
-        "ints": {
-        }
+        "constraints": {},
+        "variables": {},
+        "ints": {}
     };
 
   model.constraints.matchingSize = {"equal": verticesToMatch.length / 2};
@@ -84,7 +81,6 @@ function minimumWeightMatching(verticesToMatch) {
   for (let v of verticesToMatch) {
     let vertexString = "v" + v.id.toString() + "picked";
     model.constraints[vertexString] = {"equal": 1};
-    model.variables
   }
 
   for (let i = 0; i < verticesToMatch.length - 1; i++) {
@@ -108,10 +104,10 @@ function minimumWeightMatching(verticesToMatch) {
     }
   }
 
-  console.log(model);
+  // console.log(model);
 
   results = solver.Solve(model);
-  console.log(results);
+  // console.log(results);
 
   let chosenMatchings = [];
   for (let result of Object.keys(results)) {
@@ -121,7 +117,7 @@ function minimumWeightMatching(verticesToMatch) {
     }
   }
 
-  console.log(chosenMatchings);
+  // console.log(chosenMatchings);
 
   var matchings = [];
   for (let matching of chosenMatchings) {
@@ -240,7 +236,7 @@ function takeShortcuts(eTour) {
   var tour = [];
   var shortcuts = [];
 
-  console.log(eTour);
+  // console.log(eTour);
 
   for (let v of eTour) {
     if (!tour.includes(v))
@@ -264,7 +260,7 @@ function takeShortcuts(eTour) {
       nextV = tour[0],
       edge = [currentV, nextV];
 
-  console.log(adj[currentV.id]);
+  // console.log(adj[currentV.id]);
 
   let adjacent = false;
   for (let a of adj[currentV.id]) {

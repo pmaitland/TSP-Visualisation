@@ -20,6 +20,7 @@ var nnPseudocode = [
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour() {
+  // console.log(vertices);
   startingVertex = vertices[Math.floor(Math.random() * (distances.length))];
   currentVertex  = startingVertex,
   finalTour      = [startingVertex],

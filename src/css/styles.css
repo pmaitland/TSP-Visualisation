@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 
 html, body {
   height: 100%;
@@ -32,13 +35,27 @@ button {
 }
 
 #canvasHolder {
-  width: 66.6666666666666666666666666vw;
+  width: 66.7%;
 }
 
 #configurationHolder {
-  width: 33.3333333333333333333333333vw;
-  overflow: auto;
+  width: 33.3%;
+  height: 100%;
+  overflow: none;
   border-left: 1px solid #c8c7c7;
+}
+
+#configuration {
+  height: 92.5%;
+}
+
+#configFooter {
+  overflow: hidden;
+  background-color: #f1f1f1;
+  display: flex;
+  flex-wrap: wrap;
+  position: sticky;
+  bottom: 0;
 }
 
 #algorithmButtons {
@@ -53,8 +70,8 @@ button {
 #distanceMatrixWrapper {
   overflow: auto;
   overflow-y: auto;
-  width: 33vw;
-  height: 33vw;
+  width: 30vw;
+  height: 30vw;
   margin: 0 5px 5px 5px;
 }
 
@@ -73,6 +90,11 @@ button {
 #animationControls {
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
+}
+
+#output {
+  height: inherit;
+  overflow: auto;
 }
 
 #results {

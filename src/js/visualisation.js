@@ -15,7 +15,8 @@ var distances = [],
     vertices = [],
     vertexCount = 0;
 
-var selectedVertex = null;
+var selectedVertex = null,
+    showVertexLabels = 0;
 
 var inEuclideanSpace = true;
 
@@ -31,6 +32,9 @@ window.onload = function() {
   document.getElementById("inputTab").click();
   document.getElementById("euclideanSpace").click();
   document.getElementById("vertexCount").value = vertexCount;
+
+  let number = Math.floor(Math.random() * 5);
+  document.getElementById("favicon").href = "assets/favicons/favicon" + number + ".ico";
 };
 
 function changeVertexCount() {
@@ -537,6 +541,22 @@ function changeSpace(evt, space) {
   }
 }
 
+function changeShowLabels(state) {
+  switch (state) {
+    case 'never':
+      showVertexLabels = 0;
+      break;
+    case 'hover':
+      showVertexLabels = 1;
+      break;
+    case 'always':
+      showVertexLabels = 2;
+      break;
+    default:
+      break;
+  }
+}
+
 function showStepInLog(stepString) {
   var log     = document.getElementById("stepLog"),
       stepDiv = document.createElement("div"),
@@ -620,7 +640,7 @@ function updateMousePosition() {
 
   for (let v of vertices) {
     if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
-        mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
+        mouseY > v.y - v.radius && mouseY < v.y + v.radius && showVertexLabels == 1) {
       drawVertexLabel(v);
     }
   }
@@ -844,6 +864,22 @@ function solveWithChristofides() {
   let result = christofides();
   let t1 = performance.now();
   result.algName = "Christofides";
+  result.elapsedTime = t1 - t0;
+  showResults(result);
+
+  clearTimeout(timeout);
+  playingAnimation = true;
+  playAnimation();
+}
+
+function solveWithIntegerProgramming() {
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = integerProgramming();
+  let t1 = performance.now();
+  result.algName = "Integer Programming";
   result.elapsedTime = t1 - t0;
   showResults(result);
 

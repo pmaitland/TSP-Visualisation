@@ -576,3 +576,39 @@ Fixed Christofides shortcuts.
 
 **16:30-17:25**
 Improved Christofides visualisation.
+
+---
+
+09/01/18
+
+**09:00-11:00**
+Fixed bugs in 2-approximation (random selection of starting vertex and tour length calculation were incorrect) and began implementing integer programming.
+
+**11:10-12:10**
+Continued implementing integer programming.
+
+**12:40-13:05**
+Continued implementing integer programming.
+
+**15:00-15:30**
+Continued implementing integer programming.
+
+**16:20-16:45**
+Added favicons.
+
+---
+
+10/01/18
+
+**15:45-17:55**
+Implemented the generation of integer programming constraints to eliminate sub-tours.
+
+**21:30-22:00**
+Tided integer programming code.
+
+---
+
+11/01/18
+
+**10:40-11:55**
+Allowed labels to be shown in different ways and fixed CSS.
