@@ -15,10 +15,14 @@ var distances = [],
     vertices = [],
     vertexCount = 0;
 
+var currentTab = 'graph';
+
 var selectedVertex = null,
     showVertexLabels = 0;
 
 var inEuclideanSpace = true;
+
+var resultsCount = 0;
 
 var pseudocodeHighlightColour = "#f4e04d";
 
@@ -29,12 +33,14 @@ var stepLogColour1 = "#fff",
 var timeout = 0;
 
 window.onload = function() {
-  document.getElementById("inputTab").click();
-  document.getElementById("euclideanSpace").click();
-  document.getElementById("vertexCount").value = vertexCount;
-
   let number = Math.floor(Math.random() * 5);
   document.getElementById("favicon").href = "assets/favicons/favicon" + number + ".ico";
+
+  document.getElementById("inputTab").click();
+  changeShowLabels();
+  document.getElementById("euclideanSpace").click();
+  document.getElementById("defaultLabelOption").click();
+  document.getElementById("vertexCount").value = vertexCount;
 };
 
 function changeVertexCount() {
@@ -460,35 +466,47 @@ function openTab(evt, tabName) {
     // Declare all variables
     var i, tabContent, tablinks;
 
-    // Get all elements with class="tabContent" and hide them
-    tabContent = document.getElementsByClassName("tabContent");
-    for (i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-    }
-
-    // Get all elements with class="tablinks" and remove the class "active"
-    tabs = document.getElementsByClassName("tab");
-    for (i = 0; i < tabs.length; i++) {
-        tabs[i].className = tabs[i].className.replace(" active", "");
-    }
+    var confirmed = true;
 
     if (tabName == "input") {
-      document.getElementById("inputTab").style.backgroundColor = "#c7c7c7";
-      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+      if (vertexCount > 0)
+        confirmed = confirm("WARNING: Making changes to the graph will erase all results.");
+
+      if (confirmed) {
+        document.getElementById("inputTab").style.backgroundColor = "#c7c7c7";
+        document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
+        document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+        currentTab = 'graph';
+      }
     } else if (tabName == "algorithms") {
       document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
       document.getElementById("algorithmsTab").style.backgroundColor = "#c7c7c7";
       document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+      currentTab = 'algorithms';
     } else if (tabName == "output") {
       document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
       document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
       document.getElementById("outputTab").style.backgroundColor = "#c7c7c7";
+      currentTab = 'results';
     }
 
     // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+    if (confirmed) {
+      // Get all elements with class="tabContent" and hide them
+      tabContent = document.getElementsByClassName("tabContent");
+      for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tabs = document.getElementsByClassName("tab");
+      for (i = 0; i < tabs.length; i++) {
+          tabs[i].className = tabs[i].className.replace(" active", "");
+      }
+
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
 }
 
 function distanceBetween(v1, v2) {
@@ -541,12 +559,14 @@ function changeSpace(evt, space) {
   }
 }
 
-function changeShowLabels(state) {
-  switch (state) {
+function changeShowLabels() {
+  var selection = document.getElementById("changeShowLabelsSelect");
+
+  switch (selection.value) {
     case 'never':
       showVertexLabels = 0;
       break;
-    case 'hover':
+    case 'onHover':
       showVertexLabels = 1;
       break;
     case 'always':
@@ -640,7 +660,8 @@ function updateMousePosition() {
 
   for (let v of vertices) {
     if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
-        mouseY > v.y - v.radius && mouseY < v.y + v.radius && showVertexLabels == 1) {
+        mouseY > v.y - v.radius && mouseY < v.y + v.radius &&
+        showVertexLabels == 1 && inEuclideanSpace) {
       drawVertexLabel(v);
     }
   }
@@ -717,7 +738,7 @@ function showResults(results) {
 
       algNameDiv = document.createElement("div"),
       algNameBold = document.createElement("b"),
-      algName = document.createTextNode(results.algName),
+      algName = document.createTextNode(results.id + ". " + results.algName),
 
       tourLengthDiv = document.createElement("div"),
       tourLength = document.createTextNode("Tour length: " + results.tourLength),
@@ -800,6 +821,7 @@ function solveWithNearestNeighbour() {
   let t1 = performance.now();
   result.algName = "Nearest Neighbour";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   showPseudocode("nn");
@@ -817,6 +839,7 @@ function solveWithBranchAndBound() {
   let t1 = performance.now();
   result.algName = "Branch and Bound";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   clearTimeout(timeout);
@@ -833,6 +856,7 @@ function solveWithBruteForce() {
   let t1 = performance.now()
   result.algName = "Brute Force";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   clearTimeout(timeout);
@@ -849,6 +873,7 @@ function solveWithApproxMinSpanTree() {
   let t1 = performance.now();
   result.algName = "Approx Min Span Tree";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   clearTimeout(timeout);
@@ -865,6 +890,7 @@ function solveWithChristofides() {
   let t1 = performance.now();
   result.algName = "Christofides";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   clearTimeout(timeout);
@@ -881,6 +907,7 @@ function solveWithIntegerProgramming() {
   let t1 = performance.now();
   result.algName = "Integer Programming";
   result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
   showResults(result);
 
   clearTimeout(timeout);

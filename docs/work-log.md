@@ -544,7 +544,7 @@ Supervisor meeting.
 
 ## Week 17
 
-07/01/18
+07/01/19
 
 **10:10-10:50**
 Improved visualisation of approx min span tree.
@@ -563,7 +563,7 @@ Worked on fixing Christofides shortcuts.
 
 ---
 
-08/01/18
+08/01/19
 
 **10:10-10:25**
 Prepared for supervsor meeting.
@@ -579,7 +579,7 @@ Improved Christofides visualisation.
 
 ---
 
-09/01/18
+09/01/19
 
 **09:00-11:00**
 Fixed bugs in 2-approximation (random selection of starting vertex and tour length calculation were incorrect) and began implementing integer programming.
@@ -598,7 +598,7 @@ Added favicons.
 
 ---
 
-10/01/18
+10/01/19
 
 **15:45-17:55**
 Implemented the generation of integer programming constraints to eliminate sub-tours.
@@ -608,7 +608,23 @@ Tided integer programming code.
 
 ---
 
-11/01/18
+11/01/19
 
 **10:40-11:55**
 Allowed labels to be shown in different ways and fixed CSS.
+
+## Week 18
+
+14/01/19
+
+**14:45-16:45**
+Fixed CSS and method for changing when vertex labels are shown. Prevented vertices from being placed if not in graph tab.
+
+---
+
+15/01/19
+
+**10:35-11:10**
+Supervisor meeting.
+
+**11:15-**

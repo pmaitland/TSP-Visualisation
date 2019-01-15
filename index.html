@@ -56,7 +56,7 @@
         </div>
 
         <h3>Randomise Vertices</h3>
-        <div>Number of vertices: <input type="number" id="randomiseVerticesCount"></div>
+        <div>Vertex count: <input type="number" id="randomiseVerticesCount"></div>
         <button onclick="randomiseVertices()">Randomise</button>
       </div>
 
@@ -116,10 +116,10 @@
 
   <div id="configFooter">
     <div>Show vertex labels: </div>
-    <select value="on hover">
-      <option onclick="changeShowLabels('never')">never</option>
-      <option selected onclick="changeShowLabels('hover')">on hover</option>
-      <option onclick="changeShowLabels('always')">always</option>
+    <select id="changeShowLabelsSelect" onchange="changeShowLabels()">
+      <option value="never">never</option>
+      <option id="defaultLabelOption" value="onHover" selected>on hover</option>
+      <option value="always">always</option>
     </select>
   </div>
 </div>

@@ -38,7 +38,9 @@ var vertexColour         = "#fff",
     partofMatchingEdgeColour     = "#e817b4",
     partOfEulerianTourEdgeColour = "#e84747",
     shortcutEdgeColour           = "#778da9",
-    edgeBetweenNonAdjacentColour = "#43638b";
+    edgeBetweenNonAdjacentColour = "#43638b",
+
+    lineDash = [8, 8];
 
 /**
   Called once at the very beginning.
@@ -175,7 +177,7 @@ function drawAnimationEdges() {
 
     stroke(partofMatchingEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    drawingContext.setLineDash([10, 5]);
+    drawingContext.setLineDash(lineDash);
     line(v1.x, v1.y, v2.x, v2.y);
   }
   drawingContext.setLineDash([]);
@@ -216,7 +218,7 @@ function drawAnimationEdges() {
 
     stroke(partofMatchingEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    drawingContext.setLineDash([10, 5]);
+    drawingContext.setLineDash(lineDash);
     curve(c1.x, c1.y, v1.x, v1.y, v2.x, v2.y, c2.x, c2.y);
   }
   drawingContext.setLineDash([]);
@@ -267,7 +269,7 @@ function drawAnimationEdges() {
 
     stroke(shortcutEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
-    drawingContext.setLineDash([10, 5]);
+    drawingContext.setLineDash(lineDash);
     line(v1.x, v1.y, v2.x, v2.y);
     drawingContext.setLineDash([]);
 
@@ -338,7 +340,7 @@ function drawVertices() {
     stroke(vertexBorderColour);
     ellipse(vertex.x, vertex.y, vertex.radius);
 
-    if (showVertexLabels == 2) {
+    if (showVertexLabels == 2 && inEuclideanSpace) {
       drawVertexLabel(vertex);
     }
   }
@@ -352,11 +354,23 @@ function drawVertexLabel(v) {
 }
 
 function drawNonEuclideanVertexLabels() {
-  for (let v of vertices) {
-    fill(vertexLabelColour);
-    strokeWeight(1);
-    textSize(16);
-    text(v.label, v.nonEuclideanLabelX - 5, v.nonEuclideanLabelY + 5);
+  if (showVertexLabels == 1) {
+    for (let v of vertices) {
+      if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
+          mouseY > v.y - v.radius && mouseY < v.y + v.radius) {
+        fill(vertexLabelColour);
+        strokeWeight(1);
+        textSize(16);
+        text(v.label, v.nonEuclideanLabelX - 5, v.nonEuclideanLabelY + 5);
+      }
+    }
+  } else if (showVertexLabels == 2) {
+    for (let v of vertices) {
+      fill(vertexLabelColour);
+      strokeWeight(1);
+      textSize(16);
+      text(v.label, v.nonEuclideanLabelX - 5, v.nonEuclideanLabelY + 5);
+    }
   }
 }
 
@@ -377,7 +391,9 @@ function mousePressed() {
     }
   }
 
-  if (inEuclideanSpace && !isSelecting && mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < windowHeight) {
+  if (inEuclideanSpace && !isSelecting && currentTab == 'graph' &&
+      mouseX > 0 && mouseX < canvasWidth &&
+      mouseY > 0 && mouseY < windowHeight) {
     createNewVertex(mouseX, mouseY);
   }
 }
