@@ -40,22 +40,31 @@ button {
 
 #configurationHolder {
   width: 33.3%;
+  display: flex;
+  flex-flow: column;
   height: 100%;
-  overflow: none;
   border-left: 1px solid #c8c7c7;
 }
 
 #configuration {
-  height: 92.5%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
 }
 
 #configFooter {
   overflow: hidden;
   background-color: #fff;
+  flex: 0 1 40px;
+}
+
+#input {
+  flex: 1 1 auto;
   display: flex;
-  flex-wrap: wrap;
-  position: sticky;
-  bottom: 0;
+  flex-flow: column;
+  height: 100%;
+  overflow: auto;
 }
 
 #algorithmButtons {
@@ -69,10 +78,10 @@ button {
 
 #distanceMatrixWrapper {
   overflow: auto;
-  overflow-y: auto;
-  width: 30vw;
-  height: 30vw;
+  width: 90%;
   margin: auto;
+  flex-grow : 1;
+  max-height: 55vh;
 }
 
 #stepLog {
@@ -122,8 +131,8 @@ button {
    background-color: #f1f1f1;
    display: flex;
    flex-wrap: wrap;
-   position: sticky;
    top: 0;
+   flex: 0 1 auto;
 }
 
 .tabsHolder button {
@@ -137,15 +146,12 @@ button {
    padding: 14px 16px;
 }
 
-.tabsHolder button:hover {
-   background-color: #bbb;
-   float: left;
-   border: 1px solid #ccc;
-   border-left: none;
-   border-top: none;
-   outline: none;
-   cursor: pointer;
-   padding: 14px 16px;
+/*.tabsHolder button:hover {
+   background-color: #203958;
+}*/
+
+.tabsHolder button.active {
+   background-color: #778da9;
 }
 
 .tab {
@@ -160,7 +166,8 @@ button {
 }
 
 .tabcontent {
-   display: none;
-   border: 1px solid #ccc;
-   border-top: none;
+  display: none;
+  border: 1px solid #ccc;
+  border-top: none;
+  height: 100%;
 }

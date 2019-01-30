@@ -627,4 +627,108 @@ Fixed CSS and method for changing when vertex labels are shown. Prevented vertic
 **10:35-11:10**
 Supervisor meeting.
 
-**11:15-**
+**11:15-12:00**
+Read about MTZ formulation for integer programming.
+
+---
+
+16/01/19
+
+**08:50-09:25**
+Read about MTZ.
+
+**09:35-11:30**
+Attempted to implement MTZ.
+
+**15:00-16:00**
+Continued with MTZ.
+
+**16:20-17:20**
+Continued with MTZ.
+
+---
+
+17/01/19
+
+**08:50-09:50**
+Read TSPLIB documentation.
+
+**11:10-11:50**
+Improved how the distance matrix is updated.
+
+**17:00-17:50**
+Starting allowing TSPLIB files to be imported.
+
+---
+
+18/01/19
+
+**10:20-11:10**
+Worked on processing files.
+
+## Week 19
+
+21/01/19
+
+**14:00-17:00**
+Continued implementing file processing.
+
+**17:20-18:00**
+Continued implementing file processing.
+
+**21:55-23:44**
+Continued implementing file processing and improved CSS.
+
+---
+
+22/01/19
+
+**10:30-11:00**
+Supervisor meeting.
+
+**11:15-12:00**
+Continued implementing file processing.
+
+**13:25-14:40**
+Continued implementing file processing.
+
+---
+
+24/01/19
+
+**15:50-17:50**
+Returned to MTZ.
+
+---
+
+25/01/19
+
+**10:10-11:50**
+Continued with MTZ.
+
+## Week 20
+
+28/01/18
+
+**17:30-18:05**
+Continued with MTZ.
+
+**22:10-23:30**
+Continued with MTZ.
+
+---
+
+29/01/18
+
+**10:00-11:00**
+Improved MTZ.
+
+**12:00-12:30**
+Supervisor meeting.
+
+---
+
+30/01/18
+
+**10:00-11:10**
+Reworkd MTZ.

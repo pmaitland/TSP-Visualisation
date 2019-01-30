@@ -1,6 +1,17 @@
 
 var canvasWidth;
 
+var xScale,
+    yScale;
+
+var xPadding = 0,
+    yPadding = 0;
+
+var canvasMinX = 0,
+    canvasMaxX,
+    canvasMinY = 0,
+    canvasMaxY;
+
 var vertexRadius = 15;
 
 // line weights
@@ -47,6 +58,8 @@ var vertexColour         = "#fff",
  */
 function setup() {
   canvasWidth = windowWidth * (2 / 3);
+
+  xScale = yScale = 1;
 
   var canvas = createCanvas(canvasWidth, windowHeight);
   canvas.parent("canvasHolder");

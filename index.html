@@ -14,115 +14,123 @@
   <script src="./src/js/p5/p5.dom.min.js"></script>
 
   <!-- jsLPSolver: https://www.npmjs.com/package/javascript-lp-solver -->
-  <script type="text/javascript" src="./src/js/javascript-lp-solver/src/solver.js"></script>
+  <script src="./src/js/javascript-lp-solver/src/solver.js"></script>
 
-  <script type="text/javascript" src="./src/js/canvas.js"></script>
-  <script type="text/javascript" src="./src/js/animationSteps.js"></script>
-  <script type="text/javascript" src="./src/js/min_span_tree.js"></script>
+  <script src="./src/js/canvas.js"></script>
+  <script src="./src/js/animationSteps.js"></script>
+  <script src="./src/js/min_span_tree.js"></script>
+  <script src="./src/js/file_processing.js"></script>
 
-  <script type="text/javascript" src="./src/js/nearest_neighbour.js"></script>
-  <script type="text/javascript" src="./src/js/branch_and_bound.js"></script>
-  <script type="text/javascript" src="./src/js/brute_force.js"></script>
-  <script type="text/javascript" src="./src/js/approx_min_span_tree.js"></script>
-  <script type="text/javascript" src="./src/js/christofides.js"></script>
-  <script type="text/javascript" src="./src/js/integer_programming.js"></script>
+  <script src="./src/js/nearest_neighbour.js"></script>
+  <script src="./src/js/branch_and_bound.js"></script>
+  <script src="./src/js/brute_force.js"></script>
+  <script src="./src/js/approx_min_span_tree.js"></script>
+  <script src="./src/js/christofides.js"></script>
+  <script src="./src/js/integer_programming_dfj.js"></script>
+  <script src="./src/js/integer_programming_mtz.js"></script>
 
-  <script type="text/javascript" src="./src/js/visualisation.js"></script>
+  <script src="./src/js/visualisation.js"></script>
 </head>
 
 <body>
-  <div id="canvasHolder"></div>
+  <div id="canvasHolder">
+  </div>
 
   <div id="configurationHolder">
 
+    <div id="configurationTabs">
+
+      <div class="tabsHolder">
+        <button id="inputTab" class="tab" onclick="openTab(event, 'input')">Graph</button>
+        <button id="algorithmsTab" class="tab" onclick="openTab(event, 'algorithms')">Algorithms</button>
+        <button id="outputTab" class="tab" onclick="openTab(event, 'output')">Results</button>
+      </div>
+
+    </div>
+
     <div id="configuration">
 
-    <div class="tabsHolder">
-      <button id="inputTab" class="tab" onclick="openTab(event, 'input')">Graph</button>
-      <button id="algorithmsTab" class="tab" onclick="openTab(event, 'algorithms')">Algorithms</button>
-      <button id="outputTab" class="tab" onclick="openTab(event, 'output')">Results</button>
-    </div>
-
-    <div id="input" class="tabContent">
-      <div id="spaceTabHolder" class="tabsHolder">
-        <button id="euclideanSpace" class="spaceTab" onclick="changeSpace(event, 'euclidean')">Euclidean Space</button>
-        <button id="nonEuclideanSpace" class="spaceTab" onclick="changeSpace(event, 'nonEuclidean')">Non-Euclidean Space</button>
-      </div>
-
-      <div id="euclidean" class="spaceTabContent">
-        <div id="mouseCoords">
-          <div id="mouseCoordsX">X: 0</div>
-          <div id="mouseCoordsY">Y: 0</div>
+      <div id="input" class="tabContent">
+        <div id="spaceTabHolder" class="tabsHolder">
+          <button id="euclideanSpace" class="spaceTab" onclick="changeSpace(event, 'euclidean')">Euclidean Space</button>
+          <button id="nonEuclideanSpace" class="spaceTab" onclick="changeSpace(event, 'nonEuclidean')">Non-Euclidean Space</button>
         </div>
 
-        <h3>Randomise Vertices</h3>
-        <div>Vertex count: <input type="number" id="randomiseVerticesCount"></div>
-        <button onclick="randomiseVertices()">Randomise</button>
-      </div>
+        <div id="euclidean" class="spaceTabContent">
+          <div id="mouseCoords">
+            <div id="mouseCoordsX">X: 0</div>
+            <div id="mouseCoordsY">Y: 0</div>
+          </div>
 
-      <div id="nonEuclidean" class="spaceTabContent">
-        <div>Number of vertices: <input type="number" id="vertexCount" onblur="changeVertexCount()"></div>
-        <div>Minimum distance: <input type="number" id="minNonEuclideanDistance"></div>
-        <div>Maximum distance: <input type="number" id="maxNonEuclideanDistance"></div>
-        <div>
-          <button id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Randomise Distances</button>
+          <h3>Randomise Vertices</h3>
+          <div>Vertex count: <input type="number" id="randomiseVerticesCount"></div>
+          <button onclick="randomiseVertices()">Randomise</button>
+        </div>
+
+        <div id="nonEuclidean" class="spaceTabContent">
+          <div>Number of vertices: <input type="number" id="vertexCount" onblur="changeVertexCount()"></div>
+          <div>Minimum distance: <input type="number" id="minNonEuclideanDistance"></div>
+          <div>Maximum distance: <input type="number" id="maxNonEuclideanDistance"></div>
+          <div>
+            <button id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Randomise Distances</button>
+          </div>
+        </div>
+
+        <input type="file" id="file" name="file" enctype="multipart/form-data" />
+
+        <h3>Distance Matrix</h3>
+        <div id="distanceMatrixWrapper">
+          <table id="distanceMatrix">
+          </table>
         </div>
       </div>
 
-      <h3>Distance Matrix</h3>
-      <div id="distanceMatrixWrapper">
-        <table id="distanceMatrix">
-        </table>
+      <div id="algorithms" class="tabContent">
+
+        <h3>Algorithms</h3>
+        <div id="algorithmButtons">
+          <button id="nnButton" class="algorithmButton" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
+          <button id="bnbButton" class="algorithmButton" onclick="solveWithBranchAndBound();">Branch and Bound</button>
+          <button id="bfButton" class="algorithmButton" onclick="solveWithBruteForce();">Brute Force</button>
+          <button id="amstButton" class="algorithmButton" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
+          <button id="chrisButton" class="algorithmButton" onclick="solveWithChristofides();">Christofides</button>
+          <button id="ipdfjButton" class="algorithmButton" onclick="solveWithIntegerProgrammingDFJ();">Integer Programming (DFJ)</button>
+          <button id="ipmtzButton" class="algorithmButton" onclick="solveWithIntegerProgrammingMTZ();">Integer Programming (MTZ)</button>
+        </div>
+
+        <h3>Animation Control</h3>
+        <div id="animationControls">
+          <button class="animationControl" onClick="restartAnimation()">Jump to Start</button>
+          <button class="animationControl" onClick="stepBackwardAnimation()">Step Back</button>
+          <button class="animationControl" onClick="togglePauseAnimation()">Play/ Pause</button>
+          <button class="animationControl" onClick="stepForwardAnimation()">Step Forward</button>
+          <button class="animationControl" onClick="endAnimation()">Jump to End</button>
+        </div>
+
+        <h3>Log</h3>
+        <div id="stepLog">
+        </div>
+
+        <h3>Pseudocode</h3>
+        <div id="pseudocode">
+        </div>
+      </div>
+
+      <div id="output" class="tabContent">
+        <div id="results">
+        </div>
       </div>
     </div>
 
-    <div id="algorithms" class="tabContent">
-
-      <h3>Algorithms</h3>
-      <div id="algorithmButtons">
-        <button id="nnButton" class="algorithmButton" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
-        <button id="bnbButton" class="algorithmButton" onclick="solveWithBranchAndBound();">Branch and Bound</button>
-        <button id="bfButton" class="algorithmButton" onclick="solveWithBruteForce();">Brute Force</button>
-        <button id="amstButton" class="algorithmButton" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
-        <button id="chrisButton" class="algorithmButton" onclick="solveWithChristofides();">Christofides</button>
-        <button id="ipButton" class="algorithmButton" onclick="solveWithIntegerProgramming();">Integer Programming</button>
-      </div>
-
-      <h3>Animation Control</h3>
-      <div id="animationControls">
-        <button class="animationControl" onClick="restartAnimation()">Jump to Start</button>
-        <button class="animationControl" onClick="stepBackwardAnimation()">Step Back</button>
-        <button class="animationControl" onClick="togglePauseAnimation()">Play/ Pause</button>
-        <button class="animationControl" onClick="stepForwardAnimation()">Step Forward</button>
-        <button class="animationControl" onClick="endAnimation()">Jump to End</button>
-      </div>
-
-      <h3>Log</h3>
-      <div id="stepLog">
-      </div>
-
-      <h3>Pseudocode</h3>
-      <div id="pseudocode">
-      </div>
-    </div>
-
-    <div id="output" class="tabContent">
-
-      <div id="results">
-      </div>
-
+    <div id="configFooter">
+      Show vertex labels:
+      <select id="changeShowLabelsSelect" onchange="changeShowLabels()">
+        <option value="never">never</option>
+        <option id="defaultLabelOption" value="onHover" selected>on hover</option>
+        <option value="always">always</option>
+      </select>
     </div>
   </div>
-
-  <div id="configFooter">
-    <div>Show vertex labels: </div>
-    <select id="changeShowLabelsSelect" onchange="changeShowLabels()">
-      <option value="never">never</option>
-      <option id="defaultLabelOption" value="onHover" selected>on hover</option>
-      <option value="always">always</option>
-    </select>
-  </div>
-</div>
 
 </body>
 

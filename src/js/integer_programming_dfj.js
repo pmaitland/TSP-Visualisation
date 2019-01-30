@@ -1,5 +1,5 @@
 
-function integerProgramming() {
+function integerProgrammingDFJ() {
 
   var solver = window.solver,
       results,
@@ -9,7 +9,7 @@ function integerProgramming() {
         "constraints": {},
         "variables": {},
         "ints": {}
-      }
+      };
   model.constraints.numEdges = {"equal": vertices.length};
 
   var ids = [];
@@ -35,14 +35,14 @@ function integerProgramming() {
   }
 
   for (let i = 0; i < vertices.length - 1; i++) {
-    let v1String = "v" + vertices[i].id.toString() + "degree";
+    let v1String = `v${vertices[i].id.toString()}degree`;
     for (let j = i + 1; j < vertices.length; j++) {
-      let v2String = "v" + vertices[j].id.toString() + "degree";
+      let v2String = `v${vertices[j].id.toString()}degree`;
 
-      let constraintFieldName = "edgeBetweenv" + vertices[i].id + "v" + vertices[j].id;
+      let constraintFieldName = `edgeBetweenv${vertices[i].id}v${vertices[j].id}`;
       model.constraints[constraintFieldName] = {"max": 1};
 
-      let variableFieldName = "v" + vertices[i].id + "v" + vertices[j].id;
+      let variableFieldName = `v${vertices[i].id}v${vertices[j].id}`;
       model.variables[variableFieldName] = {
         "distance": distances[vertices[i].id][vertices[j].id],
         "numEdges": 1

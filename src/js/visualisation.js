@@ -20,7 +20,7 @@ var currentTab = 'graph';
 var selectedVertex = null,
     showVertexLabels = 0;
 
-var inEuclideanSpace = true;
+var inEuclideanSpace;
 
 var resultsCount = 0;
 
@@ -34,13 +34,16 @@ var timeout = 0;
 
 window.onload = function() {
   let number = Math.floor(Math.random() * 5);
-  document.getElementById("favicon").href = "assets/favicons/favicon" + number + ".ico";
+  document.getElementById("favicon").href = `assets/favicons/favicon${number}.ico`;
 
   document.getElementById("inputTab").click();
   changeShowLabels();
+  inEuclideanSpace = false;
   document.getElementById("euclideanSpace").click();
   document.getElementById("defaultLabelOption").click();
   document.getElementById("vertexCount").value = vertexCount;
+
+  document.getElementById('file').addEventListener('change', readFile, false);
 };
 
 function changeVertexCount() {
@@ -83,20 +86,21 @@ function displayDistanceMatrix() {
       row, cell;
 
   // leave the top-left cell empty
-  let emptyCell = labelRow.insertCell(0);
-  emptyCell.style.backgroundColor = '#bbb';
-  emptyCell.style.textAlign = 'right';
-
+  if (vertices.length > 0) {
+    let emptyCell = labelRow.insertCell(0);
+    emptyCell.style.backgroundColor = '#778da9';
+    emptyCell.style.textAlign = 'right';
+  }
 
   // fill the top row with vertex labels
   for (let i = 0; i < vertexCount; i++) {
     let vertex = vertices[i];
     cell = labelRow.insertCell(i+1);
-    cell.setAttribute("contenteditable", true);
-    cell.style.backgroundColor = '#bbb';
+    // cell.setAttribute("contenteditable", true);
+    cell.style.backgroundColor = '#778da9';
     cell.style.textAlign = 'right';
     cell.classList.add(vertex.id + "label");
-    cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
+    // cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
     cell.innerHTML = vertex.label;
   }
 
@@ -106,11 +110,11 @@ function displayDistanceMatrix() {
 
     // insert the vertex label in the first cell of its row
     cell = row.insertCell(0);
-    cell.setAttribute("contenteditable", true);
-    cell.style.backgroundColor = '#bbb';
+    // cell.setAttribute("contenteditable", true);
+    cell.style.backgroundColor = '#778da9';
     cell.style.textAlign = 'right';
     cell.classList.add(vertices[i].id + "label");
-    cell.addEventListener("blur", function(){editVertexLabel(vertices[i].id, this.innerHTML)});
+    // cell.addEventListener("blur", function(){editVertexLabel(vertices[i].id, this.innerHTML)});
     cell.innerHTML = vertices[i].label;
 
     // fill the rest of the row with distances to other vertices
@@ -119,6 +123,7 @@ function displayDistanceMatrix() {
 
       if (i == j) {
         distanceCell.innerHTML = 0;
+        distanceCell.style.backgroundColor = '#eee';
       } else {
         if (i < j) {
           distanceCell.classList.add("v" + i.toString() + "v" + j.toString() + "distance");
@@ -136,6 +141,50 @@ function displayDistanceMatrix() {
     }
   }
 
+}
+
+function appendToDistanceMatrix(vertex) {
+  var distanceMatrix = document.getElementById("distanceMatrix");
+
+  var row = distanceMatrix.insertRow(-1),
+      cell;
+
+  // start new row with vertex label
+  cell = row.insertCell(-1);
+  // cell.setAttribute("contenteditable", true);
+  cell.style.backgroundColor = '#778da9';
+  cell.style.textAlign = 'right';
+  cell.classList.add(vertex.id + "label");
+  // cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
+  cell.innerHTML = vertex.label;
+
+  // insert a cell for the distance from this vertex to every other vertex
+  for (let i = 0; i < vertices.length - 1; i ++) {
+    cell = row.insertCell(-1);
+    cell.innerHTML = distances[vertex.id][vertices[i].id];
+  }
+
+  // insert a cell for the distance from this vertex to itself
+  cell = row.insertCell(-1);
+  cell.innerHTML = 0;
+  cell.style.textAlign = 'right';
+  cell.style.backgroundColor = '#eee';
+
+  var rows = distanceMatrix.rows;
+
+  cell = rows[0].insertCell(-1);
+  // cell.setAttribute("contenteditable", true);
+  cell.style.backgroundColor = '#778da9';
+  cell.style.textAlign = 'right';
+  cell.classList.add(vertex.id + "label");
+  // cell.addEventListener("blur", function(){editVertexLabel(vertex.id, this.innerHTML)});
+  cell.innerHTML = vertex.label;
+
+  for (let i = 0; i < vertices.length - 1; i++) {
+    cell = rows[i+1].insertCell(-1);
+    cell.innerHTML = distances[vertex.id][vertices[i].id];
+    cell.style.textAlign = 'right';
+  }
 }
 
 function editVertexLabel(vertexID, newLabel) {
@@ -466,54 +515,49 @@ function openTab(evt, tabName) {
     // Declare all variables
     var i, tabContent, tablinks;
 
-    var confirmed = true;
-
     if (tabName == "input") {
-      if (vertexCount > 0)
-        confirmed = confirm("WARNING: Making changes to the graph will erase all results.");
-
-      if (confirmed) {
-        document.getElementById("inputTab").style.backgroundColor = "#c7c7c7";
-        document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
-        document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
-        currentTab = 'graph';
-      }
+      document.getElementById("inputTab").style.backgroundColor = "#778da9";
+      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
+      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
+      currentTab = 'graph';
     } else if (tabName == "algorithms") {
       document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("algorithmsTab").style.backgroundColor = "#c7c7c7";
+      document.getElementById("algorithmsTab").style.backgroundColor = "#778da9";
       document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
       currentTab = 'algorithms';
     } else if (tabName == "output") {
       document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
       document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("outputTab").style.backgroundColor = "#c7c7c7";
+      document.getElementById("outputTab").style.backgroundColor = "#778da9";
       currentTab = 'results';
     }
 
     // Show the current tab, and add an "active" class to the button that opened the tab
-    if (confirmed) {
-      // Get all elements with class="tabContent" and hide them
-      tabContent = document.getElementsByClassName("tabContent");
-      for (i = 0; i < tabContent.length; i++) {
-          tabContent[i].style.display = "none";
-      }
-
-      // Get all elements with class="tablinks" and remove the class "active"
-      tabs = document.getElementsByClassName("tab");
-      for (i = 0; i < tabs.length; i++) {
-          tabs[i].className = tabs[i].className.replace(" active", "");
-      }
-
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
+    // Get all elements with class="tabContent" and hide them
+    tabContent = document.getElementsByClassName("tabContent");
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
     }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tabs = document.getElementsByClassName("tab");
+    for (i = 0; i < tabs.length; i++) {
+        tabs[i].className = tabs[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
 function distanceBetween(v1, v2) {
-  return Math.round(Math.hypot((v2.x - v1.x), (v2.y - v1.y)));
+  return Math.round(Math.hypot((v2.x - v1.x) / xScale, (v2.y - v1.y) / yScale)) ;
 }
 
 function changeSpace(evt, space) {
+
+  if ((space == "euclidean" && inEuclideanSpace) || (space == nonEuclidean) && !inEuclideanSpace)
+    return;
+
   // Declare all variables
   var i, content, links;
 
@@ -530,11 +574,11 @@ function changeSpace(evt, space) {
   }
 
   if (space == "euclidean") {
-    document.getElementById("euclideanSpace").style.backgroundColor = "#c7c7c7";
+    document.getElementById("euclideanSpace").style.backgroundColor = "#778da9";
     document.getElementById("nonEuclideanSpace").style.backgroundColor = "#f1f1f1";
   } else if (space == "nonEuclidean") {
     document.getElementById("euclideanSpace").style.backgroundColor = "#f1f1f1";
-    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#c7c7c7";
+    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#778da9";
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
@@ -543,10 +587,14 @@ function changeSpace(evt, space) {
 
   vertices = [];
   vertexCount = 0;
-  edgesInTour = [],
-  edgesInTree = [],
-  edgesToNearest = [],
+  edgesInTour = [];
+  edgesInTree = [];
+  edgesToNearest = [];
   edgesInMatching = [];
+  edgesInMatchingCurved = [];
+  edgesInEulerianTour = [];
+  edgesWhichShortcut = [];
+  edgesBetweenNonAdjacent = [];
 
   if (space == 'euclidean' && !inEuclideanSpace) {
     inEuclideanSpace = true;
@@ -655,8 +703,8 @@ function updateMousePosition() {
   var x = document.getElementById("mouseCoordsX"),
       y = document.getElementById("mouseCoordsY");
 
-  x.innerHTML = "X: " + Math.round(mouseX);
-  y.innerHTML = "Y: " + Math.round(mouseY);
+  x.innerHTML = `X: ${Math.round((mouseX + canvasMinX) * xScale - xPadding)}`;
+  y.innerHTML = `Y: ${Math.round((mouseY + canvasMinY) * yScale - yPadding)}`;
 
   for (let v of vertices) {
     if (mouseX > v.x - v.radius && mouseX < v.x + v.radius &&
@@ -669,15 +717,13 @@ function updateMousePosition() {
 
 function createNewVertex(x, y) {
   var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
-  if (id == -Infinity) {
-    id = 0;
-  }
+  if (id == -Infinity) id = 0;
 
   var v = {
     id: id,
     label: id,
-    x: x,
-    y: y,
+    x: (x * xScale) + xPadding,
+    y: (y * yScale) + yPadding,
     radius: vertexRadius
   };
 
@@ -691,7 +737,16 @@ function createNewVertex(x, y) {
   distances[id][id] = 0;
   vertexCount++;
 
-  displayDistanceMatrix();
+  if (vertices.length == 1) {
+    displayDistanceMatrix();
+  } else {
+    appendToDistanceMatrix(v);
+  }
+}
+
+function createNewVertices(coords) {
+  for (let c of coords)
+    createNewVertex(c[0], c[1]);
 }
 
 function randomiseVertices() {
@@ -898,14 +953,31 @@ function solveWithChristofides() {
   playAnimation();
 }
 
-function solveWithIntegerProgramming() {
+function solveWithIntegerProgrammingDFJ() {
   restartAnimation();
   stepsTaken = [];
 
   let t0 = performance.now();
-  let result = integerProgramming();
+  let result = integerProgrammingDFJ();
   let t1 = performance.now();
-  result.algName = "Integer Programming";
+  result.algName = "Integer Programming (DFJ)";
+  result.elapsedTime = t1 - t0;
+  result.id = resultsCount++;
+  showResults(result);
+
+  clearTimeout(timeout);
+  playingAnimation = true;
+  playAnimation();
+}
+
+function solveWithIntegerProgrammingMTZ() {
+  restartAnimation();
+  stepsTaken = [];
+
+  let t0 = performance.now();
+  let result = integerProgrammingMTZ();
+  let t1 = performance.now();
+  result.algName = "Integer Programming (MTZ)";
   result.elapsedTime = t1 - t0;
   result.id = resultsCount++;
   showResults(result);
