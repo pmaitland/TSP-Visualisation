@@ -66,53 +66,124 @@ function christofides() {
 }
 
 function minimumWeightMatching(verticesToMatch) {
+  console.log(verticesToMatch);
   var solver = window.solver,
       results,
-      model = {
-        "optimize": "distance",
-        "opType": "min",
-        "constraints": {},
-        "variables": {},
-        "ints": {}
-    };
+      model = [];
 
-  model.constraints.matchingSize = {"equal": verticesToMatch.length / 2};
+  // select edges to minimise distance
+  var objective = "min:";
+  for (let i = 0; i < verticesToMatch.length - 1; i++) {
+    for (let j = i + 1; j < verticesToMatch.length; j++) {
+      if (i != j) {
+        let v1 = verticesToMatch[i].id,
+            v2 = verticesToMatch[j].id;
+        objective += ` ${distances[v1][v2]} x${v1}x${v2}`;
+      }
+    }
+  }
+  model.push(objective);
 
-  for (let v of verticesToMatch) {
-    let vertexString = "v" + v.id.toString() + "picked";
-    model.constraints[vertexString] = {"equal": 1};
+  // every vertex has exactly one edge
+  for (let i = 0; i < verticesToMatch.length; i++) {
+    let constraint = "";
+    for (let j = 0; j < verticesToMatch.length; j++) {
+      if (i != j) {
+        let v1 = verticesToMatch[i].id,
+            v2 = verticesToMatch[j].id;
+        if (constraint.length > 0) {
+          constraint += ` + x${v1}x${v2}`;
+          constraint += ` + x${v2}x${v1}`;
+        }
+        else {
+          constraint = `x${v1}x${v2} + x${v2}x${v1}`;
+        }
+      }
+    }
+    constraint += " = 1";
+    model.push(constraint);
   }
 
+  // number of edges must be half the number of vertices to match
+  let constraint = "";
   for (let i = 0; i < verticesToMatch.length - 1; i++) {
-    let v1String = "v" + verticesToMatch[i].id.toString() + "picked";
     for (let j = i + 1; j < verticesToMatch.length; j++) {
-      let v2String = "v" + verticesToMatch[j].id.toString() + "picked";
-
-      let constraintFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id + "picked";
-      model.constraints[constraintFieldName] = {"max": 1};
-
-      let variableFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id;
-      model.variables[variableFieldName] = {
-        "distance": distances[verticesToMatch[i].id][verticesToMatch[j].id],
-        "matchingSize": 1
+      if (i != j) {
+        let v1 = verticesToMatch[i].id,
+            v2 = verticesToMatch[j].id;
+        if (constraint.length > 0)
+          constraint += ` + x${v1}x${v2}`;
+        else
+          constraint = `x${v1}x${v2}`;
       }
-      model.variables[variableFieldName][constraintFieldName] = 1;
-      model.variables[variableFieldName][v1String] = 1;
-      model.variables[variableFieldName][v2String] = 1;
+    }
+  }
+  constraint += ` = ${verticesToMatch.length / 2}`;
+  model.push(constraint);
 
-      model.ints[variableFieldName] = 1;
+  // bounds for xij
+  for (let i = 0; i < verticesToMatch.length; i++) {
+    for (let j = 0; j < verticesToMatch.length; j++) {
+      if (i != j) {
+        let v1 = verticesToMatch[i].id,
+            v2 = verticesToMatch[j].id;
+        model.push(`x${v1}x${v2} >= 0`);
+        model.push(`x${v1}x${v2} <= 1`);
+      }
     }
   }
 
+  // xij must be integer values
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        model.push(`int x${i}x${j}`);
+      }
+    }
+  }
+
+  console.log(model);
+
+  // model.constraints.matchingSize = {"equal": verticesToMatch.length / 2};
+
+  // for (let v of verticesToMatch) {
+  //   let vertexString = "v" + v.id.toString() + "picked";
+  //   model.constraints[vertexString] = {"equal": 1};
+  // }
+
+  // for (let i = 0; i < verticesToMatch.length - 1; i++) {
+  //   let v1String = "v" + verticesToMatch[i].id.toString() + "picked";
+  //   for (let j = i + 1; j < verticesToMatch.length; j++) {
+  //     let v2String = "v" + verticesToMatch[j].id.toString() + "picked";
+
+  //     let constraintFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id + "picked";
+  //     model.constraints[constraintFieldName] = {"max": 1};
+
+  //     let variableFieldName = "v" + verticesToMatch[i].id + "v" + verticesToMatch[j].id;
+  //     model.variables[variableFieldName] = {
+  //       "distance": distances[verticesToMatch[i].id][verticesToMatch[j].id],
+  //       "matchingSize": 1
+  //     }
+  //     model.variables[variableFieldName][constraintFieldName] = 1;
+  //     model.variables[variableFieldName][v1String] = 1;
+  //     model.variables[variableFieldName][v2String] = 1;
+
+  //     model.ints[variableFieldName] = 1;
+  //   }
+  // }
+
   // console.log(model);
 
+  model = solver.ReformatLP(model);
   results = solver.Solve(model);
-  // console.log(results);
+
+  console.log(results);
 
   let chosenMatchings = [];
   for (let result of Object.keys(results)) {
     if (results[result] === 1) {
-      let split = result.split("v");
+      let split = result.split("x");
+      console.log(split);
       chosenMatchings.push([split[1], split[2]]);
     }
   }

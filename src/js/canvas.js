@@ -245,14 +245,7 @@ function drawAnimationEdges() {
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
 
-    push();
-    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
-    translate(v2.x, v2.y);
-    rotate(angle-HALF_PI);
-    var offset = v1.radius;
-    fill(partOfEulerianTourEdgeColour);
-    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
-    pop();
+    drawArrowHead(v1, v2);
   }
 
   // tour edges
@@ -263,6 +256,8 @@ function drawAnimationEdges() {
     stroke(partOfTourEdgeColour);
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
+
+    drawArrowHead(v1, v2);
   }
 
   // nearest neighbour edges
@@ -286,14 +281,7 @@ function drawAnimationEdges() {
     line(v1.x, v1.y, v2.x, v2.y);
     drawingContext.setLineDash([]);
 
-    push();
-    var angle = atan2(v1.y - v2.y, v1.x - v2.x);
-    translate(v2.x, v2.y);
-    rotate(angle-HALF_PI);
-    var offset = v1.radius;
-    fill(partOfEulerianTourEdgeColour);
-    triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
-    pop();
+    drawArrowHead(v1, v2);
   }
 
   // edges between non adjacent
@@ -305,6 +293,29 @@ function drawAnimationEdges() {
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
   }
+
+  // directed edges in tour
+  for (let edge of edgesInTourDirected) {
+    v1 = edge[0];
+    v2 = edge[1];
+
+    stroke(partOfTourEdgeColour);
+    strokeWeight(animatedEdgeStrokeWeight);
+    line(v1.x, v1.y, v2.x, v2.y);
+
+    drawArrowHead(v1, v2);
+  }
+}
+
+function drawArrowHead(v1, v2) {
+  push();
+  var angle = atan2(v1.y - v2.y, v1.x - v2.x);
+  translate(v2.x, v2.y);
+  rotate(angle-HALF_PI);
+  var offset = v1.radius;
+  fill(partOfEulerianTourEdgeColour);
+  triangle(-offset*0.25, offset, offset*0.25, offset, 0, offset*0.5);
+  pop();
 }
 
 function drawAnimationEdgeWeights() {

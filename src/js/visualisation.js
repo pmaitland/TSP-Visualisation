@@ -9,7 +9,8 @@ var stepsTaken,
     edgesInMatchingCurved = [],
     edgesInEulerianTour = [],
     edgesWhichShortcut = []
-    edgesBetweenNonAdjacent = [];
+    edgesBetweenNonAdjacent = [],
+    edgesInTourDirected = [];
 
 var distances = [],
     vertices = [],
@@ -36,11 +37,11 @@ window.onload = function() {
   let number = Math.floor(Math.random() * 5);
   document.getElementById("favicon").href = `assets/favicons/favicon${number}.ico`;
 
-  document.getElementById("inputTab").click();
+  // document.getElementById("inputTab").click();
   changeShowLabels();
-  inEuclideanSpace = false;
-  document.getElementById("euclideanSpace").click();
-  document.getElementById("defaultLabelOption").click();
+  inEuclideanSpace = true;
+  // document.getElementById("euclideanSpace").click();
+  // document.getElementById("defaultLabelOption").click();
   document.getElementById("vertexCount").value = vertexCount;
 
   document.getElementById('file').addEventListener('change', readFile, false);
@@ -74,7 +75,11 @@ function resetDistances() {
 function displayDistanceMatrix() {
 
   // get distance matrix element from HTML
-  var distanceMatrix = document.getElementById("distanceMatrix");
+  var distanceMatrix;
+  if (inEuclideanSpace)
+    distanceMatrix = document.getElementById("distanceMatrixEuclidean");
+  else
+    distanceMatrix = document.getElementById("distanceMatrixNonEuclidean");
 
   // delete all cells in the distance matrix
   while(distanceMatrix.hasChildNodes()) {
@@ -144,7 +149,11 @@ function displayDistanceMatrix() {
 }
 
 function appendToDistanceMatrix(vertex) {
-  var distanceMatrix = document.getElementById("distanceMatrix");
+  var distanceMatrix;
+  if (inEuclideanSpace)
+    distanceMatrix = document.getElementById("distanceMatrixEuclidean");
+  else
+    distanceMatrix = document.getElementById("distanceMatrixNonEuclidean");
 
   var row = distanceMatrix.insertRow(-1),
       cell;
@@ -218,6 +227,7 @@ function restartAnimation() {
   edgesToNearest = [];
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
+  edgesInTourDirected = [];
 
   for (let vertex of vertices) {
     vertex.isAt = false;
@@ -406,7 +416,7 @@ function stepForwardAnimation() {
         }
         edgesInEulerianTour.splice(edgesInEulerianTour.indexOf(edgeToDelete), 1);
 
-        edgesInTour.push(edge);
+        edgesInTourDirected.push(edge);
 
         for (let v of vertices) {
           if (v.id == edge[0].id) {
@@ -512,41 +522,20 @@ function stepBackwardAnimation() {
 }
 
 function openTab(evt, tabName) {
-    // Declare all variables
-    var i, tabContent, tablinks;
-
-    if (tabName == "input") {
-      document.getElementById("inputTab").style.backgroundColor = "#778da9";
-      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
-      currentTab = 'graph';
-    } else if (tabName == "algorithms") {
-      document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("algorithmsTab").style.backgroundColor = "#778da9";
-      document.getElementById("outputTab").style.backgroundColor = "#f1f1f1";
-      currentTab = 'algorithms';
-    } else if (tabName == "output") {
-      document.getElementById("inputTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("algorithmsTab").style.backgroundColor = "#f1f1f1";
-      document.getElementById("outputTab").style.backgroundColor = "#778da9";
-      currentTab = 'results';
+    switch (tabName) {
+      case "input":
+        currentTab = 'graph';
+        break;
+      case "algorithms":
+        currentTab = 'algorithms';
+        break;
+      case "output":
+        currentTab = 'results';
+        break;
+      default:
+        currentTab = 'graph';
+        break;
     }
-
-    // Show the current tab, and add an "active" class to the button that opened the tab
-    // Get all elements with class="tabContent" and hide them
-    tabContent = document.getElementsByClassName("tabContent");
-    for (i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-    }
-
-    // Get all elements with class="tablinks" and remove the class "active"
-    tabs = document.getElementsByClassName("tab");
-    for (i = 0; i < tabs.length; i++) {
-        tabs[i].className = tabs[i].className.replace(" active", "");
-    }
-
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
 }
 
 function distanceBetween(v1, v2) {
@@ -555,35 +544,8 @@ function distanceBetween(v1, v2) {
 
 function changeSpace(evt, space) {
 
-  if ((space == "euclidean" && inEuclideanSpace) || (space == nonEuclidean) && !inEuclideanSpace)
+  if ((space == "euclidean" && inEuclideanSpace) || (space == "nonEuclidean") && !inEuclideanSpace)
     return;
-
-  // Declare all variables
-  var i, content, links;
-
-  // Get all elements with class="spaceTabContent" and hide them
-  content = document.getElementsByClassName("spaceTabContent");
-  for (i = 0; i < content.length; i++) {
-      content[i].style.display = "none";
-  }
-
-  // Get all elements with class="tablinks" and remove the class "active"
-  tabs = document.getElementsByClassName("spaceTab");
-  for (i = 0; i < tabs.length; i++) {
-      tabs[i].className = tabs[i].className.replace(" active", "");
-  }
-
-  if (space == "euclidean") {
-    document.getElementById("euclideanSpace").style.backgroundColor = "#778da9";
-    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#f1f1f1";
-  } else if (space == "nonEuclidean") {
-    document.getElementById("euclideanSpace").style.backgroundColor = "#f1f1f1";
-    document.getElementById("nonEuclideanSpace").style.backgroundColor = "#778da9";
-  }
-
-  // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(space).style.display = "block";
-  evt.currentTarget.className += " active";
 
   vertices = [];
   vertexCount = 0;
@@ -595,6 +557,7 @@ function changeSpace(evt, space) {
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
   edgesBetweenNonAdjacent = [];
+  edgesInTourDirected = [];
 
   if (space == 'euclidean' && !inEuclideanSpace) {
     inEuclideanSpace = true;
@@ -768,7 +731,11 @@ function randomiseVertices() {
 }
 
 function randomiseNonEuclideanDistances() {
-  var table = document.getElementById("distanceMatrix");
+  var table;
+  if (inEuclideanSpace)
+    table = document.getElementById("distanceMatrixEuclidean");
+  else
+    table = document.getElementById("distanceMatrixNonEuclidean")
 
   var min = document.getElementById("minNonEuclideanDistance").value,
       max = document.getElementById("maxNonEuclideanDistance").value;
@@ -849,6 +816,7 @@ function showTour(tour) {
   edgesToNearest = [];
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
+  edgesInTourDirected =[];
 
   for (let vertex of vertices) {
     vertex.isAt = false;

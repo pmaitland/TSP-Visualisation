@@ -5,6 +5,7 @@ function integerProgrammingMTZ() {
       results,
       model = [];
 
+  // select edges to minimise distance
   var objective = "min:";
   for (let i = 0; i < vertices.length; i++) {
     for (let j = 0; j < vertices.length; j++) {
@@ -15,7 +16,7 @@ function integerProgrammingMTZ() {
   }
   model.push(objective);
 
-  // family 1
+  // every vertex has exactly one incoming edge
   for (let i = 0; i < vertices.length; i++) {
     let constraint = "";
     for (let j = 0; j < vertices.length; j++) {
@@ -30,7 +31,7 @@ function integerProgrammingMTZ() {
     model.push(constraint);
   }
 
-  // family 2
+  // every vertex has exactly one outgoing edge
   for (let i = 0; i < vertices.length; i++) {
     let constraint = "";
     for (let j = 0; j < vertices.length; j++) {
@@ -45,7 +46,7 @@ function integerProgrammingMTZ() {
     model.push(constraint);
   }
 
-  // family 3
+  // subtour eliminations
   for (let i = 1; i < vertices.length; i++) {
     let constraint = "";
     for (let j = 1; j < vertices.length; j++) {
@@ -56,7 +57,7 @@ function integerProgrammingMTZ() {
     }
   }
 
-  // families 4 and 5
+  // bounds for xij
   for (let i = 0; i < vertices.length; i++) {
     for (let j = 0; j < vertices.length; j++) {
       if (i != j) {
@@ -66,12 +67,13 @@ function integerProgrammingMTZ() {
     }
   }
 
-  // families 6 and 7
+  // bounds for ui
   for (let i = 1; i < vertices.length; i++) {
     model.push(`u${i} >= 0`);
     model.push(`u${i} <= ${vertices.length - 1}`);
   }
 
+  // xij must be integer values
   for (let i = 0; i < vertices.length; i++) {
     for (let j = 0; j < vertices.length; j++) {
       if (i != j) {
@@ -80,12 +82,12 @@ function integerProgrammingMTZ() {
     }
   }
 
-  console.log(model);
+  // console.log(model);
 
   model = solver.ReformatLP(model);
   results = solver.Solve(model);
 
-  console.log(results);
+  // console.log(results);
 
   let tour = [];
   for (let result of Object.keys(results)) {
@@ -124,7 +126,7 @@ function integerProgrammingMTZ() {
     }
   }
 
-  console.log(finalTour);
+  // console.log(finalTour);
 
   stepsTaken.push(new FinishedStep(0, finalTour, tourLength));
 

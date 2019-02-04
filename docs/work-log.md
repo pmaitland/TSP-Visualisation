@@ -708,7 +708,7 @@ Continued with MTZ.
 
 ## Week 20
 
-28/01/18
+28/01/19
 
 **17:30-18:05**
 Continued with MTZ.
@@ -718,7 +718,7 @@ Continued with MTZ.
 
 ---
 
-29/01/18
+29/01/19
 
 **10:00-11:00**
 Improved MTZ.
@@ -728,7 +728,46 @@ Supervisor meeting.
 
 ---
 
-30/01/18
+30/01/19
 
 **10:00-11:10**
 Reworkd MTZ.
+
+**12:00-12:10**
+Improved CSS.
+
+---
+
+31/01/19
+
+**10:10-10:50**
+Added arrow heads to more edges.
+
+**12:10-12:45**
+Attempted to improve CSS.
+
+**16:00-17:00**
+Began using Bootstrap.
+
+---
+
+01/02/19
+
+**10:05-11:55**
+Improved CSS with Bootstrap.
+
+**14:25-16:25**
+Continued with Bootstrap.
+
+**16:35-17:40**
+Continued with Bootstrap.
+
+## Week 21
+
+04/02/19
+
+**09:45-11:30**
+Changed DFJ to use array model instead of JSON model.
+
+**12:50-13:20**
+Changed Chrisofides matching to use array model instead of JSON model.

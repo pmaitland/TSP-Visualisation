@@ -3,83 +3,111 @@ function integerProgrammingDFJ() {
 
   var solver = window.solver,
       results,
-      model = {
-        "optimize": "distance",
-        "opType": "min",
-        "constraints": {},
-        "variables": {},
-        "ints": {}
-      };
-  model.constraints.numEdges = {"equal": vertices.length};
+      model = [];
+  
+  // select edges to minimise distance
+  var objective = "min:";
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        objective += ` ${distances[i][j]} x${i}x${j}`;
+      }
+    }
+  }
+  model.push(objective);
+
+  // every vertex has exactly one incoming edge
+  for (let i = 0; i < vertices.length; i++) {
+    let constraint = "";
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        if (constraint.length > 0)
+          constraint += ` + x${j}x${i}`;
+        else
+          constraint = `x${j}x${i}`;
+      }
+    }
+    constraint += " = 1";
+    model.push(constraint);
+  }
+
+  // every vertex has exactly one outgoing edge
+  for (let i = 0; i < vertices.length; i++) {
+    let constraint = "";
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        if (constraint.length > 0)
+          constraint += ` + x${i}x${j}`;
+        else
+          constraint = `x${i}x${j}`;
+      }
+    }
+    constraint += " = 1";
+    model.push(constraint);
+  }
+
+  // bounds for xij
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        model.push(`x${i}x${j} >= 0`);
+        model.push(`x${i}x${j} <= 1`);
+      }
+    }
+  }
 
   var ids = [];
   for (let v of vertices)
     ids.push(v.id);
+  ids.shift();
 
   var combinations = [];
-  if (vertices.length >= 6)
-    combinations = generateCombinations(ids);
+  combinations = generateCombinations(ids);
 
   // console.log(combinations);
 
-  for (let v of vertices) {
-    let vertexString = "v" + v.id.toString() + "degree";
-    model.constraints[vertexString] = {"equal": 2};
-  }
-
-  for (let c of combinations) {
-    let string = "edgeIncluding";
-    for (let d of c)
-      string += ("v" + d);
-    model.constraints[string] = {"max": c.length - 1};
-  }
-
-  for (let i = 0; i < vertices.length - 1; i++) {
-    let v1String = `v${vertices[i].id.toString()}degree`;
-    for (let j = i + 1; j < vertices.length; j++) {
-      let v2String = `v${vertices[j].id.toString()}degree`;
-
-      let constraintFieldName = `edgeBetweenv${vertices[i].id}v${vertices[j].id}`;
-      model.constraints[constraintFieldName] = {"max": 1};
-
-      let variableFieldName = `v${vertices[i].id}v${vertices[j].id}`;
-      model.variables[variableFieldName] = {
-        "distance": distances[vertices[i].id][vertices[j].id],
-        "numEdges": 1
-      }
-      model.variables[variableFieldName][constraintFieldName] = 1;
-      model.variables[variableFieldName][v1String] = 1;
-      model.variables[variableFieldName][v2String] = 1;
-
-      for (let c of combinations) {
-        if (c.includes(i) && c.includes(j)) {
-          let combinationString = "edgeIncluding";
-          for (let d of c)
-            combinationString += ("v" + d);
-          model.variables[variableFieldName][combinationString] = 1;
+  for (let q of combinations) {
+    let constraint = "";
+    for (let i = 0; i < q.length; i++) {
+      for (let j = 0; j < q.length; j++) {
+        if (i != j) {
+          if (constraint.length > 0)
+            constraint += ` + x${q[i]}x${q[j]}`;
+          else
+            constraint = `x${q[i]}x${q[j]}`;
         }
       }
+    }
+    if (constraint.length > 0)
+      constraint += ` <= ${q.length - 1}`;
+    model.push(constraint);
+  }
 
-      model.ints[variableFieldName] = 1;
+  // xij must be integer values
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = 0; j < vertices.length; j++) {
+      if (i != j) {
+        model.push(`int x${i}x${j}`);
+      }
     }
   }
 
   // console.log(model);
 
+  model = solver.ReformatLP(model);
   results = solver.Solve(model);
 
   // console.log(results);
 
   let tour = [];
   for (let result of Object.keys(results)) {
-    if (results[result] === 1) {
-      let split = result.split("v"),
-          v1, v2;
+    if (result[0] === "x" && results[result] == 1) {
+      let v1, v2;
+      let split = result.split("x");
+
       for (let vertex of vertices) {
-        if (vertex.id == split[1])
-          v1 = vertex;
-        else if (vertex.id == split[2])
-          v2 = vertex;
+        if (vertex.id == split[1]) v1 = vertex;
+        else if (vertex.id == split[2]) v2 = vertex;
       }
       tour.push({
         "edge": [v1, v2],
@@ -120,21 +148,11 @@ function integerProgrammingDFJ() {
 }
 
 function generateCombinations(array) {
-
   var combinations = [];
   for (let i = 0; i < array.length; i++) {
     generateCombination(i, array, [], combinations);
   }
   combinations.push(array);
-
-  let indexesToRemove = [];
-  for (let c of combinations) {
-    if (c.length < 3 || c.length > vertices.length - 3)
-      indexesToRemove.push(combinations.indexOf(c) - indexesToRemove.length);
-  }
-
-  for (let i of indexesToRemove)
-    combinations.splice(i, 1);
 
   return combinations;
 }
