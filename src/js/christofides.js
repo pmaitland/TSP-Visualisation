@@ -66,7 +66,6 @@ function christofides() {
 }
 
 function minimumWeightMatching(verticesToMatch) {
-  console.log(verticesToMatch);
   var solver = window.solver,
       results,
       model = [];
@@ -142,7 +141,7 @@ function minimumWeightMatching(verticesToMatch) {
     }
   }
 
-  console.log(model);
+  // console.log(model);
 
   // model.constraints.matchingSize = {"equal": verticesToMatch.length / 2};
 
@@ -177,13 +176,12 @@ function minimumWeightMatching(verticesToMatch) {
   model = solver.ReformatLP(model);
   results = solver.Solve(model);
 
-  console.log(results);
+  // console.log(results);
 
   let chosenMatchings = [];
   for (let result of Object.keys(results)) {
     if (results[result] === 1) {
       let split = result.split("x");
-      console.log(split);
       chosenMatchings.push([split[1], split[2]]);
     }
   }

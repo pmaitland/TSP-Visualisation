@@ -771,3 +771,42 @@ Changed DFJ to use array model instead of JSON model.
 
 **12:50-13:20**
 Changed Chrisofides matching to use array model instead of JSON model.
+
+**14:40-17:10**
+Started fixing stepping backwards.
+
+---
+
+05/02/19
+
+**10:30-11:00**
+Supervisor meeting.
+
+**13:00-14:10**
+Continued with stepping backwards.
+
+**14:50-16:30**
+Continued with stepping backwards.
+
+---
+
+06/02/19
+
+**10:15-10:25**
+Continued with stepping backwards.
+
+**10:35-12:45**
+Continued with stepping backwards.
+
+**13:35-14:00**
+Continued with stepping backwards.
+
+**15:30-18:10**
+Continued with stepping backwards.
+
+---
+
+07/02/19
+
+**10:00-10:40**
+Finished with stepping backwards.

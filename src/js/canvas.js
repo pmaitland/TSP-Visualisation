@@ -293,18 +293,6 @@ function drawAnimationEdges() {
     strokeWeight(animatedEdgeStrokeWeight);
     line(v1.x, v1.y, v2.x, v2.y);
   }
-
-  // directed edges in tour
-  for (let edge of edgesInTourDirected) {
-    v1 = edge[0];
-    v2 = edge[1];
-
-    stroke(partOfTourEdgeColour);
-    strokeWeight(animatedEdgeStrokeWeight);
-    line(v1.x, v1.y, v2.x, v2.y);
-
-    drawArrowHead(v1, v2);
-  }
 }
 
 function drawArrowHead(v1, v2) {
@@ -350,16 +338,16 @@ function drawVertices() {
       fill(nearestVertexColour);
     if (vertex.isOddDegree)
       fill(oddDegreeVertexColour);
+    if (vertex.isWaiting)
+      fill(waitingVertexColour);
+    if (vertex.isPartOfEulerianTour)
+      fill(partOfEulerianTourVertexColour);
     if (vertex.isPartOfTour)
       fill(partOfTourVertexColour);
     if (vertex.isStart)
       fill(startingVertexColour);
-    if (vertex.isWaiting)
-      fill(waitingVertexColour);
     if (vertex.isAt)
       fill(currentVertexColour);
-    if (vertex.isPartOfEulerianTour)
-      fill(partOfEulerianTourVertexColour);
 
     stroke(vertexBorderColour);
     ellipse(vertex.x, vertex.y, vertex.radius);

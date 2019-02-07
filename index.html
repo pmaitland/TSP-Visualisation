@@ -69,7 +69,7 @@
           </div>
 
           <b>Randomise Vertices</b>
-          <div>Vertex count: <input type="number" id="randomiseVerticesCount"></div>
+          <div>Vertex count: <input type="number" id="randomiseVerticesCount" min="3" step="1"></div>
           <button onclick="randomiseVertices()">Randomise</button>
 
           <input type="file" id="file" name="file" enctype="multipart/form-data" />
@@ -117,8 +117,6 @@
             <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingMTZ();">MTZ</button>
           </div>
 
-          <hr />
-
           <div id="stepLog"></div>
 
           <div class="btn-group" id="animationControls">
@@ -128,8 +126,6 @@
             <button type="button" class="btn btn-secondary" onclick="stepForwardAnimation()"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
             <button type="button" class="btn btn-secondary" onclick="endAnimation()"><span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span></button>
           </div>
-
-          <hr />
 
           <div id="pseudocode"></div>
 

@@ -20,8 +20,9 @@ var nnPseudocode = [
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour() {
-  // console.log(vertices);
-  startingVertex = vertices[Math.floor(Math.random() * (distances.length))];
+  let index = Math.floor(Math.random() * (vertices.length));
+  // console.log(vertices.length, index);
+  startingVertex = vertices[index];
   currentVertex  = startingVertex,
   finalTour      = [startingVertex],
   tourLength     = 0,
@@ -32,7 +33,7 @@ function nearestNeighbour() {
     distances[i][i] = Infinity;
   }
 
-  stepsTaken.push(new AtVertexStep(0, currentVertex));
+  stepsTaken.push(new StartingVertexStep(0, currentVertex));
   stepsTaken.push(new AddVertexToTourStep(1, currentVertex));
 
   for (let i = 0; i < distances.length - 1; i++) {
@@ -75,12 +76,15 @@ function findNearestUnvisitedNeighbour(v) {
       unvisitedVertices = [];
 
   for (let i = 0; i < distances.length; i++) {
-    let n = vertices[i];
-    if (!finalTour.includes(n)) {
-      unvisitedVertices.push(n);
+    if (i < vertices.length) {
+      let n = vertices[i];
+      // console.log(vertices, i, vertices[i]);
+      if (!finalTour.includes(n)) {
+        unvisitedVertices.push(n);
 
-      if (neighbours[n.id] < neighbours[nearest.id])
-        nearest = n;
+        if (neighbours[n.id] < neighbours[nearest.id])
+          nearest = n;
+      }
     }
   }
 

@@ -79,14 +79,11 @@ b {
 .algorithmButtons {
   display: grid;
   grid-template-columns: 50% 50%;
+  padding-bottom: 5px;
 }
 
 .algorithmButton {
-  margin: 0 5px 5px 5px;
-}
-
-#algorithms {
-  padding-left: 5px;
+  margin: 5px 5px 5px 5px;
 }
 
 .distanceMatrixWrapper {
@@ -101,7 +98,7 @@ b {
   height: 100px;
   overflow: auto;
   border: 1px solid;
-  margin: 0 5px 5px 5px;
+  margin: 5px 5px 5px 5px;
 }
 
 #pseudocode {
@@ -114,6 +111,7 @@ b {
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
   padding-left: 5px;
+  padding-bottom: 5px;
 }
 
 #output {

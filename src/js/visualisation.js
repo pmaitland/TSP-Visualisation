@@ -9,8 +9,12 @@ var stepsTaken,
     edgesInMatchingCurved = [],
     edgesInEulerianTour = [],
     edgesWhichShortcut = []
-    edgesBetweenNonAdjacent = [],
-    edgesInTourDirected = [];
+    edgesBetweenNonAdjacent = [];
+
+var mst = [],
+    eulTour = [],
+    firstVertex = -1,
+    currentAlgorithm = "";
 
 var distances = [],
     vertices = [],
@@ -227,7 +231,6 @@ function restartAnimation() {
   edgesToNearest = [];
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
-  edgesInTourDirected = [];
 
   for (let vertex of vertices) {
     vertex.isAt = false;
@@ -244,9 +247,32 @@ function restartAnimation() {
 }
 
 function endAnimation() {
+  if (currentAnimationStep >= stepsTaken.length) return;
+
   jumpLogToEnd(currentAnimationStep);
   currentAnimationStep = stepsTaken.length - 1;
   stepForwardAnimation();
+
+  for (let step of stepsTaken) {
+    switch (step.constructor) {
+    case EdgeBetweenNonAdjacentVerticesStep:
+      edgesWhichShortcut.push([step.mate, step.currentVertex]);
+      break;
+    case StartingVertexStep:
+      firstVertex = step.vertex.id;
+      break;
+    case TakeShortcutStep:
+      edgesWhichShortcut.push(step.edge);
+      break;
+    case EulerianTourStep:
+      for (let e of step.edges)
+        eulTour.push(e);
+      break;
+    default:
+      break;
+    }
+  }
+
   playingAnimation = false;
 }
 
@@ -264,261 +290,422 @@ function togglePauseAnimation() {
   }
 }
 
-function stepForwardAnimation() {
-  if (currentAnimationStep < stepsTaken.length) {
+function takeStep(currentStep) {
+  switch (currentStep.constructor) {
 
-    currentStep = stepsTaken[currentAnimationStep];
-
-    switch (currentStep.constructor) {
-
-      case AtVertexStep:
-        currentStep.vertex.isAt = true;
-        currentStep.vertex.isPartOfTour = true;
-        break;
-
-      case NearestVertexStep:
-        for (let vertex of vertices) {
-          vertex.isNearest = false;
-        }
-        currentStep.nearestVertex.isNearest = true;
-        edgesToNearest = [[currentStep.currentVertex, currentStep.nearestVertex]];
-        break;
-
-      case AddVertexToTourStep:
-        currentStep.vertex.isPartOfTour = true;
-        break;
-
-      case AddEdgeToTourStep:
-        for (let v of vertices) {
-          if (v.id != currentStep.vertex2.id)
-            v.isAt = false;
-        }
-        currentStep.vertex1.isPartOfTour = true;
-        currentStep.vertex2.isAt = true;
-        edgesInTour.push([currentStep.vertex1, currentStep.vertex2]);
-        break;
-
-      case ChangeCurrentVertexStep:
-        currentStep.lastVertex.isAt = false;
-        currentStep.lastVertex.isPartOfTour = true;
-        currentStep.newVertex.isAt = true;
-        currentStep.newVertex.isNearest = false;
-        edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
-        edgesToNearest = [];
-        break;
-
-      case IncreaseTourLengthStep:
+    case AtVertexStep:
+      currentStep.vertex.isAt = true;
+      currentStep.vertex.isPartOfTour = true;
       break;
 
-      case AtLastVertexStep:
-        currentStep.lastVertex.isAt = false;
-        currentStep.lastVertex.isPartOfTour = true;
-        edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
-        edgesToNearest = [];
-        break;
+    case NearestVertexStep:
+      for (let vertex of vertices) {
+        vertex.isNearest = false;
+      }
+      currentStep.nearestVertex.isNearest = true;
+      edgesToNearest = [[currentStep.currentVertex, currentStep.nearestVertex]];
+      break;
 
-      case FindingNearestUnvisitedVertexStep:
-        edgesToNearest = [];
-        for (let vertex of vertices) {
-          if (currentStep.unvisitedVertices.includes(vertex)) {
-            vertex.isNearest = true;
-            edgesToNearest.push([currentStep.currentVertex, vertex]);
-          }
+    case AddVertexToTourStep:
+      currentStep.vertex.isPartOfTour = true;
+      break;
+
+    case AddEdgeToTourStep:
+      for (let v of vertices) {
+        if (v.id != currentStep.vertex2.id)
+          v.isAt = false;
+      }
+      currentStep.vertex1.isPartOfTour = true;
+      currentStep.vertex2.isAt = true;
+      edgesInTour.push([currentStep.vertex1, currentStep.vertex2]);
+      break;
+
+    case ChangeCurrentVertexStep:
+      currentStep.lastVertex.isAt = false;
+      currentStep.lastVertex.isPartOfTour = true;
+      currentStep.newVertex.isAt = true;
+      currentStep.newVertex.isNearest = false;
+      edgesInTour.push([currentStep.lastVertex, currentStep.newVertex]);
+      edgesToNearest = [];
+      break;
+
+    case IncreaseTourLengthStep:
+    break;
+
+    case AtLastVertexStep:
+      currentStep.lastVertex.isAt = false;
+      currentStep.lastVertex.isPartOfTour = true;
+      edgesInTour.push([currentStep.lastVertex, currentStep.startingVertex]);
+      edgesToNearest = [];
+      break;
+
+    case FindingNearestUnvisitedVertexStep:
+      edgesToNearest = [];
+      for (let vertex of vertices) {
+        if (currentStep.unvisitedVertices.includes(vertex)) {
+          vertex.isNearest = true;
+          edgesToNearest.push([currentStep.currentVertex, vertex]);
         }
-        break;
+      }
+      break;
 
-      case FinishedStep:
-        showTour(currentStep.finalTour);
-        break;
+    case FinishedStep:
+      showTour(currentStep.finalTour);
+      break;
 
-      case MinSpanTreeStep:
-        for (let i = 0; i < currentStep.edges.length; i++)
-          edgesInTree.push(currentStep.edges[i]);
-        for (let v of vertices)
-          v.isInTree = true;
-        break;
+    case MinSpanTreeStep:
+      for (let edge of currentStep.edges) {
+        edgesInTree.push(edge);
+        mst.push(edge);
+      }
+      for (let v of vertices)
+        v.isInTree = true;
+      break;
 
-      case OddDegreeVerticesStep:
-        for (let v of currentStep.vertices)
-          v.isOddDegree = true;
-        break;
+    case OddDegreeVerticesStep:
+      for (let v of currentStep.vertices)
+        v.isOddDegree = true;
+      break;
 
-      case MinimumMatchingStep:
-        for (let e of currentStep.edges)
-          edgesInMatching.push(e);
-        for (let e of currentStep.sharedEdges)
-          edgesInMatchingCurved.push(e);
-        break;
+    case MinimumMatchingStep:
+      for (let e of currentStep.edges)
+        edgesInMatching.push(e);
+      for (let e of currentStep.sharedEdges)
+        edgesInMatchingCurved.push(e);
+      break;
 
-      case BacktrackingStep:
-        for (let v of vertices) {
-          if (v.id != currentStep.vertex.id)
-            v.isAt = false;
+    case BacktrackingStep:
+      for (let v of vertices) {
+        if (v.id != currentStep.vertex.id)
+          v.isAt = false;
+      }
+      currentStep.vertex.isAt = true;
+      break;
+
+    case NoUnvisitedNeighboursStep:
+      currentStep.vertex.isWaiting = true;
+      break;
+
+    case EdgeBetweenNonAdjacentVerticesStep:
+      for (let v of vertices) {
+        if (v.id != currentStep.currentVertex.id)
+          v.isAt = false;
+      }
+      currentStep.mate.isPartOfTour = true;
+      currentStep.mate.isWaiting = false;
+      currentStep.currentVertex.isAt = true;
+      edgesWhichShortcut.push([currentStep.mate, currentStep.currentVertex]);
+      break;
+
+    case StartingVertexStep:
+      currentStep.vertex.isPartOfEulerianTour = false;
+      currentStep.vertex.isStart = true;
+      currentStep.vertex.isAt = true;
+      firstVertex = currentStep.vertex.id;
+      break;
+
+    case EulerianTourStep:
+      edgesInMatching = [];
+      edgesInMatchingCurved = [];
+      for (let edge of currentStep.edges) {
+        edgesInEulerianTour.push(edge);
+        eulTour.push(edge);
+      }
+      for (let vertex of vertices)
+        vertex.isPartOfEulerianTour = true;
+      break;
+
+    case TakeShortcutStep:
+      let shortcut = currentStep.edge;
+
+      edgesWhichShortcut.push(shortcut);
+
+      for (let v of vertices) {
+        if (v.id == shortcut[0].id) {
+          v.isAt = false;
+          v.isPartOfTour = true;
         }
-        currentStep.vertex.isAt = true;
-        break;
-
-      case NoUnvisitedNeighboursStep:
-        currentStep.vertex.isWaiting = true;
-        break;
-
-      case EdgeBetweenNonAdjacentVerticesStep:
-        for (let v of vertices) {
-          if (v.id != currentStep.currentVertex.id)
-            v.isAt = false;
+        if (v.id == shortcut[1].id) {
+          v.isAt = true;
+          v.isPartOfEulerianTour = false;
         }
-        currentStep.mate.isPartOfTour = true;
-        currentStep.mate.isWaiting = false;
-        currentStep.currentVertex.isAt = true;
-        edgesWhichShortcut.push([currentStep.mate, currentStep.currentVertex]);
-        break;
+      }
+      break;
 
-      case StartingVertexStep:
-        currentStep.vertex.isPartOfEulerianTour = false;
-        currentStep.vertex.isStart = true;
-        currentStep.vertex.isAt = true;
-        break;
-
-      case EulerianTourStep:
-        edgesInMatching = [];
-        edgesInMatchingCurved = [];
-        for (let edge of currentStep.edges)
-          edgesInEulerianTour.push(edge);
-        for (let vertex of vertices)
-          vertex.isPartOfEulerianTour = true;
-        break;
-
-      case TakeShortcutStep:
-        let shortcut = currentStep.edge;
-
-        edgesWhichShortcut.push(shortcut);
-
-        for (let v of vertices) {
-          if (v.id == shortcut[0].id) {
-            v.isAt = false;
-            v.isPartOfTour = true;
-          }
-          if (v.id == shortcut[1].id) {
-            v.isAt = true;
-            v.isPartOfEulerianTour = false;
-          }
+    case TraverseEdgeInEulerianTourStep:
+      let edge = currentStep.edge,
+          edgeToDelete;
+      for (let e of edgesInEulerianTour) {
+        if (e[0].id == edge[0].id && e[1].id == edge[1].id) {
+          edgeToDelete = e;
+          break;
         }
-        break;
+      }
+      edgesInEulerianTour.splice(edgesInEulerianTour.indexOf(edgeToDelete), 1);
+      edgesInTour.push(edge);
 
-      case TraverseEdgeInEulerianTourStep:
-        let edge = currentStep.edge,
-            edgeToDelete;
-        for (let e of edgesInEulerianTour) {
-          if (e[0].id == edge[0].id && e[1].id == edge[1].id) {
-            edgeToDelete = e;
-            break;
-          }
+      for (let v of vertices) {
+        if (v.id == edge[0].id) {
+          v.isAt = false;
+          v.isPartOfTour = true;
         }
-        edgesInEulerianTour.splice(edgesInEulerianTour.indexOf(edgeToDelete), 1);
-
-        edgesInTourDirected.push(edge);
-
-        for (let v of vertices) {
-          if (v.id == edge[0].id) {
-            v.isAt = false;
-            v.isPartOfTour = true;
-          }
-          if (v.id == edge[1].id) {
-            v.isAt = true;
-            v.isPartOfEulerianTour = false;
-          }
+        if (v.id == edge[1].id) {
+          v.isAt = true;
+          v.isPartOfEulerianTour = false;
         }
-        break;
+      }
+      break;
 
-      default:
-        break;
-    }
-
-    currentAnimationStep++;
-    showStepInLog(currentStep.toString());
-    highlightPseudocode(currentStep.pseudocodeLine);
+    default:
+      break;
   }
 }
 
+function stepForwardAnimation() {
+  if (currentAnimationStep >= stepsTaken.length) return;
+
+  currentStep = stepsTaken[currentAnimationStep];
+
+  takeStep(currentStep);
+
+  currentAnimationStep++;
+  showStepInLog(currentStep.toString());
+  highlightPseudocode(currentStep.pseudocodeLine);
+}
+
 function stepBackwardAnimation() {
-  if (currentAnimationStep > 0) {
+  if (currentAnimationStep < 0) return;
 
-    currentStep = stepsTaken[currentAnimationStep - 1];
+  if (currentAnimationStep == 0) {
+    restartAnimation();
+    return;
+  }
 
-    switch (currentStep.constructor) {
+  currentStep = stepsTaken[currentAnimationStep - 1];
+  previousStep = stepsTaken[currentAnimationStep - 2];
 
-      case AtVertexStep:
-        break;
+  console.log(`TRYING: ${currentStep.constructor.name}`);
 
-      case NearestVertexStep:
-        currentStep.nearestVertex.isNearest = false;
-
-        let previousStep = stepsTaken[currentAnimationStep - 2];
-        for (let vertex of vertices) {
-          if (previousStep.unvisitedVertices.includes(vertex.id)) {
-            vertex.isNearest = true;
-            edgesToNearest.push([previousStep.currentVertex.id, vertex.id]);
-          }
-        }
-        break;
-
-      case AddToTourStep:
-        currentStep.vertex.isPartOfTour = false;
-        break;
-
-      case ChangeCurrentVertexStep:
-        currentStep.lastVertex.isAt = true;
-        currentStep.lastVertex.isPartOfTour = false;
-        currentStep.newVertex.isAt = false;
-        currentStep.newVertex.isNearest = true;
-        currentStep.newVertex.isPartOfTour = false;
-        edgesInTour.splice(-1, 1);
-        edgesToNearest = [[currentStep.lastVertex.id, currentStep.newVertex.id]];
-        break;
-
-      case IncreaseTourLengthStep:
+  switch (currentStep.constructor) {
+    case AtVertexStep:
+      currentStep.vertex.isPartOfTour = false;
       break;
 
-      case AtLastVertexStep:
-        currentStep.lastVertex.isAt = true;
-        while (edgesInTour.length > vertexCount - 1) {
-          edgesInTour.pop();
+    case NearestVertexStep:
+      edgesToNearest = [];
+      for (let vertex of vertices) {
+        if (vertex.id != currentStep.currentVertex.id && !vertex.isPartOfTour) {
+          vertex.isNearest = true;
+          edgesToNearest.push([currentStep.currentVertex, vertex]);
         }
-        edgesToNearest = [];
-        break;
+      }
+      break;
 
-      case FindingNearestUnvisitedVertexStep:
-        edgesToNearest = [];
-        for (let vertex of vertices) {
-          if (currentStep.unvisitedVertices.includes(vertex.id)) {
-            vertex.isNearest = false;
+    case AddVertexToTourStep:
+      currentStep.vertex.isPartOfTour = false;
+      break;
+
+    case AddEdgeToTourStep:
+      currentStep.vertex1.isAt = true;
+      currentStep.vertex1.isPartOfTour = false;
+      currentStep.vertex2.isAt = false;
+      removeEdgeFromTour(currentStep.vertex1.id, currentStep.vertex2.id);
+      break;
+
+    case ChangeCurrentVertexStep:
+      currentStep.lastVertex.isAt = true;
+      currentStep.lastVertex.isPartOfTour = false;
+      currentStep.newVertex.isAt = false;
+      currentStep.newVertex.isNearest = true;
+      removeEdgeFromTour(currentStep.lastVertex.id, currentStep.newVertex.id);
+      edgesToNearest = [[currentStep.lastVertex, currentStep.newVertex]];
+      break;
+
+    case IncreaseTourLengthStep:
+      break;
+
+    case FindingNearestUnvisitedVertexStep:
+      edgesToNearest = [];
+      for (let vertex of vertices) {
+        vertex.isNearest = false;
+      }
+      break;
+
+    case FinishedStep:
+      if (currentAlgorithm == "approxMinSpanTree" || currentAlgorithm == "christofides") {
+        if (firstVertex >= 0) {
+          for (let v of vertices) {
+            if (v.id == firstVertex)
+              v.isStart = true;
           }
         }
-        break;
-
-      case FinishedStep:
-        edgesToNearest = [];
+      }
+      
+      if (currentAnimationStep == 1) {
+        for (let v of vertices) {
+          v.isPartOfTour = false;
+        }
         edgesInTour = [];
+      }
 
-        for (let vertex of vertices) {
-          vertex.isAt = false;
-          vertex.isNearest = false;
-          vertex.isPartOfTour = true;
-        }
+      switch (currentAlgorithm) {
+        case "approxMinSpanTree":
+          for (let v of vertices)
+            v.isInTree = true;
+          showMinSpanTree();
+          break;
+        case "christofides":
+          for (let v of vertices)
+            v.isPartOfEulerianTour = true;
+          showEulTour();
+          break;
+        default:
+          break;
 
-        for (let i = 0; i < currentStep.finalTour.length; i++) {
-          edgesInTour.push([currentStep.finalTour[i], currentStep.finalTour[(i+1) % (currentStep.finalTour.length - 1)]]);
-        }
-        break;
+      }
 
-      default:
-        break;
-    }
+      for (let edge of edgesWhichShortcut) {
+        removeEdgeFromTour(edge[0].id, edge[1].id);
+      }
 
-    removeStepFromLog();
-    highlightPseudocode(stepsTaken[currentAnimationStep - 2].pseudocodeLine);
-    currentAnimationStep--;
+      break;
+
+    case AtLastVertexStep:
+      currentStep.lastVertex.isAt = true;
+      currentStep.lastVertex.isPartOfTour = false;
+      removeEdgeFromTour(currentStep.lastVertex.id, currentStep.startingVertex.id);
+      edgesToNearest = [[currentStep.lastVertex, currentStep.startingVertex]];
+      break;
+
+    case StartingVertexStep:
+      currentStep.vertex.isPartOfEulerianTour = false;
+      currentStep.vertex.isStart = false;
+      currentStep.vertex.isPartOfTour = false;
+      currentStep.vertex.isAt = false;
+      break;
+
+    case BacktrackingStep:
+      if (previousStep.constructor == NoUnvisitedNeighboursStep) {
+        currentStep.vertex.isAt = false;
+        previousStep.vertex.isAt = true;
+        previousStep.vertex.isWaiting = false;
+      }
+      break;
+
+    case EdgeBetweenNonAdjacentVerticesStep:
+      removeEdgeFromShortcuts(currentStep.mate.id, currentStep.currentVertex.id);
+      currentStep.mate.isWaiting = true;
+      break;
+
+    case NoUnvisitedNeighboursStep:
+      currentStep.vertex.isWaiting = false;
+      currentStep.vertex.isPartOfTour = false;
+      break;
+
+    case MinSpanTreeStep:
+      for (let v of vertices)
+        v.isInTree = false;
+      edgesInTree = [];
+      break;
+
+    case TakeShortcutStep:
+      currentStep.edge[1].isAt = false;
+      currentStep.edge[1].isPartOfTour = false;
+      if (currentAlgorithm == "christofides")
+        currentStep.edge[1].isPartOfEulerianTour = true;
+      removeEdgeFromShortcuts(currentStep.edge[0].id, currentStep.edge[1].id);
+      break;
+
+    case TraverseEdgeInEulerianTourStep:
+      currentStep.edge[1].isAt = false;
+      currentStep.edge[1].isPartOfTour = false;
+      currentStep.edge[1].isPartOfEulerianTour = true;
+      removeEdgeFromTour(currentStep.edge[0].id, currentStep.edge[1].id);
+      edgesInEulerianTour.push(currentStep.edge);
+      break;
+
+    case EulerianTourStep:
+      edgesInEulerianTour = [];
+      for (let v of vertices) {
+        v.isPartOfEulerianTour = false;
+        v.isInTree = true;
+      }
+
+      for (let e of previousStep.edges) {
+        e[0].isOddDegree = true;
+        e[1].isOddDegree = true;
+      }
+
+      for (let e of previousStep.sharedEdges) {
+        e[0].isOddDegree = true;
+        e[1].isOddDegree = true;
+      }
+
+      showMinSpanTree();
+      break;
+
+    case MinimumMatchingStep:
+      edgesInMatching = [];
+      break;
+
+    case OddDegreeVerticesStep:
+      for (let v of vertices)
+        v.isOddDegree = false;
+      break;
+
+    default:
+      console.log(`TODO: ${currentStep.constructor.name}`);
+      break;
   }
+
+  // console.log(edgesInTour);
+  if (previousStep) {
+    takeStep(previousStep);
+    highlightPseudocode(previousStep.pseudocodeLine);
+  }
+  // console.log(edgesInTour);
+  currentAnimationStep -= 1;
+  removeStepFromLog();
+}
+
+function removeEdgeFromTour(v1, v2) {
+  let indexesToRemove = [];
+  for (let i = 0; i < edgesInTour.length; i++) {
+    let edgeV1 = edgesInTour[i][0].id,
+        edgeV2 = edgesInTour[i][1].id;
+    if ((edgeV1 === v1 && edgeV2 === v2) || (edgeV1 === v2 && edgeV2 === v1)) {
+      indexesToRemove.push(i);
+    }
+  }
+
+  for (let i = 0; i < indexesToRemove.length; i++) {
+    edgesInTour.splice(indexesToRemove[i] - i, 1);
+  }
+}
+
+function removeEdgeFromShortcuts(v1, v2) {
+  let indexesToRemove = [];
+  for (let i = 0; i < edgesWhichShortcut.length; i++) {
+    let edgeV1 = edgesWhichShortcut[i][0].id,
+        edgeV2 = edgesWhichShortcut[i][1].id;
+    if ((edgeV1 === v1 && edgeV2 === v2) || (edgeV1 === v2 && edgeV2 === v1)) {
+      indexesToRemove.push(i);
+    }
+  }
+
+  for (let i = 0; i < indexesToRemove.length; i++) {
+    edgesWhichShortcut.splice(indexesToRemove[i] - i, 1);
+  }
+}
+
+function showMinSpanTree() {
+  for (let edge of mst)
+    edgesInTree.push(edge);
+}
+
+function showEulTour() {
+  for (let edge of eulTour)
+    edgesInEulerianTour.push(edge);
 }
 
 function openTab(evt, tabName) {
@@ -557,7 +744,6 @@ function changeSpace(evt, space) {
   edgesInEulerianTour = [];
   edgesWhichShortcut = [];
   edgesBetweenNonAdjacent = [];
-  edgesInTourDirected = [];
 
   if (space == 'euclidean' && !inEuclideanSpace) {
     inEuclideanSpace = true;
@@ -614,6 +800,7 @@ function removeStepFromLog() {
   // called twice to remove text AND break
   log.removeChild(log.lastChild);
   log.removeChild(log.lastChild);
+  stepLogUsingColour1 = !stepLogUsingColour1;
 }
 
 function jumpLogToEnd(startingStep) {
@@ -715,6 +902,8 @@ function createNewVertices(coords) {
 function randomiseVertices() {
   var count = document.getElementById("randomiseVerticesCount").value;
 
+  if (count < 3 || count % 1 != 0) return;
+
   vertices = [];
   vertexCount = 0;
 
@@ -815,9 +1004,7 @@ function showTour(tour) {
   edgesInMatchingCurved = [];
   edgesToNearest = [];
   edgesInEulerianTour = [];
-  edgesWhichShortcut = [];
-  edgesInTourDirected =[];
-
+  // edgesWhichShortcut = [];
   for (let vertex of vertices) {
     vertex.isAt = false;
     vertex.isNearest = false;
@@ -847,6 +1034,7 @@ function solveWithNearestNeighbour() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "nearestNeighbour";
   showPseudocode("nn");
   clearTimeout(timeout);
   playingAnimation = true;
@@ -865,6 +1053,7 @@ function solveWithBranchAndBound() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "branchAndBound";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -882,6 +1071,7 @@ function solveWithBruteForce() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "bruteForce";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -899,6 +1089,7 @@ function solveWithApproxMinSpanTree() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "approxMinSpanTree";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -916,6 +1107,7 @@ function solveWithChristofides() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "christofides";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -933,6 +1125,7 @@ function solveWithIntegerProgrammingDFJ() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "ipdfj";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -950,6 +1143,7 @@ function solveWithIntegerProgrammingMTZ() {
   result.id = resultsCount++;
   showResults(result);
 
+  currentAlgorithm = "ipmtz";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
