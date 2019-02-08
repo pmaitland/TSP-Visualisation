@@ -51,10 +51,10 @@
         </ul>
       </li>
       <li>
-        <a data-toggle="tab" href="#solve" onclick="openTab(event, 'algorithms')">Solve</a>
+        <a class="solve-tab-btn" data-toggle="tab" href="#solve" onclick="openTab(event, 'algorithms')">Solve</a>
       </li>
       <li>
-        <a data-toggle="tab" href="#result" onclick="openTab(event, 'output')">Results</a>
+        <a class="result-tab-btn" data-toggle="tab" href="#result" onclick="openTab(event, 'output')">Results</a>
       </li>
     </ul>
 
@@ -120,11 +120,11 @@
           <div id="stepLog"></div>
 
           <div class="btn-group" id="animationControls">
-            <button type="button" class="btn btn-secondary" onclick="restartAnimation()"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-secondary" onclick="stepBackwardAnimation()"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-secondary" onclick="togglePauseAnimation()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>/<span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-secondary" onclick="stepForwardAnimation()"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-secondary" onclick="endAnimation()"><span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary back-step-btn" onclick="restartAnimation()"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary back-step-btn" onclick="stepBackwardAnimation()"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="togglePauseAnimation()"><span class="glyphicon glyphicon-play" id="play-pause-btn-span" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="stepForwardAnimation()"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="endAnimation()"><span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span></button>
           </div>
 
           <div id="pseudocode"></div>

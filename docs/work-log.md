@@ -810,3 +810,16 @@ Continued with stepping backwards.
 
 **10:00-10:40**
 Finished with stepping backwards.
+
+**12:15-13:10**
+Disabled media buttons when they can not be used.
+
+**15:05-16:00**
+Attempted to fix nearest neighbour.
+
+---
+
+08/02/19
+
+**10:10-10:25**
+Fixed nearest neighbour.

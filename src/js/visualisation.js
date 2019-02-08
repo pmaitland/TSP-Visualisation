@@ -1,5 +1,5 @@
 
-var stepsTaken,
+var stepsTaken = [],
     currentAnimationStep = 0,
     playingAnimation = false,
     edgesInTour = [],
@@ -221,6 +221,28 @@ function editDistance(v1, v2, newDistance) {
   }
 }
 
+function disableButtons(btns) {
+  for (let b of btns)
+    b.disabled = true;
+}
+
+function enableButtons(btns) {
+  for (let b of btns)
+    b.disabled = false;
+}
+
+function togglePauseButton() {
+  let btn = document.getElementById("play-pause-btn-span");
+
+  if (playingAnimation) {
+    btn.classList.remove("glyphicon-play");
+    btn.classList.add("glyphicon-pause");
+  } else {
+    btn.classList.remove("glyphicon-pause");
+    btn.classList.add("glyphicon-play"); 
+  }
+}
+
 function restartAnimation() {
   currentAnimationStep = 0;
   playingAnimation = false;
@@ -244,6 +266,9 @@ function restartAnimation() {
   }
 
   clearElementChildren("stepLog");
+  disableButtons(document.getElementsByClassName("back-step-btn"));
+  enableButtons(document.getElementsByClassName("forward-step-btn"));
+  togglePauseButton();
 }
 
 function endAnimation() {
@@ -285,9 +310,11 @@ function playAnimation() {
 
 function togglePauseAnimation() {
   playingAnimation = !playingAnimation;
-  if (playingAnimation) {
+
+  if (playingAnimation)
     playAnimation();
-  }
+
+  togglePauseButton();
 }
 
 function takeStep(currentStep) {
@@ -341,10 +368,12 @@ function takeStep(currentStep) {
 
     case FindingNearestUnvisitedVertexStep:
       edgesToNearest = [];
-      for (let vertex of vertices) {
-        if (currentStep.unvisitedVertices.includes(vertex)) {
-          vertex.isNearest = true;
-          edgesToNearest.push([currentStep.currentVertex, vertex]);
+      for (let v of vertices) {
+        for (let u of currentStep.unvisitedVertices) {
+          if (v.id == u.id) {
+            v.isNearest = true;
+            edgesToNearest.push([currentStep.currentVertex, v]);
+          }
         }
       }
       break;
@@ -464,10 +493,14 @@ function takeStep(currentStep) {
 function stepForwardAnimation() {
   if (currentAnimationStep >= stepsTaken.length) return;
 
+  if (currentAnimationStep == stepsTaken.length - 1)
+    disableButtons(document.getElementsByClassName("forward-step-btn"));
+
   currentStep = stepsTaken[currentAnimationStep];
 
   takeStep(currentStep);
 
+  enableButtons(document.getElementsByClassName("back-step-btn"));
   currentAnimationStep++;
   showStepInLog(currentStep.toString());
   highlightPseudocode(currentStep.pseudocodeLine);
@@ -476,6 +509,9 @@ function stepForwardAnimation() {
 function stepBackwardAnimation() {
   if (currentAnimationStep < 0) return;
 
+  if (currentAnimationStep == 1)
+    disableButtons(document.getElementsByClassName("back-step-btn"));
+
   if (currentAnimationStep == 0) {
     restartAnimation();
     return;
@@ -483,8 +519,6 @@ function stepBackwardAnimation() {
 
   currentStep = stepsTaken[currentAnimationStep - 1];
   previousStep = stepsTaken[currentAnimationStep - 2];
-
-  console.log(`TRYING: ${currentStep.constructor.name}`);
 
   switch (currentStep.constructor) {
     case AtVertexStep:
@@ -532,7 +566,10 @@ function stepBackwardAnimation() {
       break;
 
     case FinishedStep:
-      if (currentAlgorithm == "approxMinSpanTree" || currentAlgorithm == "christofides") {
+      var algorithmsWithStartingVertex = [
+        "approxMinSpanTree", "christofides", "nearestNeighbour"
+      ];
+      if (algorithmsWithStartingVertex.includes(currentAlgorithm)) {
         if (firstVertex >= 0) {
           for (let v of vertices) {
             if (v.id == firstVertex)
@@ -654,16 +691,14 @@ function stepBackwardAnimation() {
       break;
 
     default:
-      console.log(`TODO: ${currentStep.constructor.name}`);
       break;
   }
 
-  // console.log(edgesInTour);
   if (previousStep) {
     takeStep(previousStep);
     highlightPseudocode(previousStep.pseudocodeLine);
   }
-  // console.log(edgesInTour);
+  enableButtons(document.getElementsByClassName("forward-step-btn"));
   currentAnimationStep -= 1;
   removeStepFromLog();
 }
@@ -1035,10 +1070,12 @@ function solveWithNearestNeighbour() {
   showResults(result);
 
   currentAlgorithm = "nearestNeighbour";
+  clearElementChildren("pseudocode");
   showPseudocode("nn");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithBranchAndBound() {
@@ -1054,9 +1091,11 @@ function solveWithBranchAndBound() {
   showResults(result);
 
   currentAlgorithm = "branchAndBound";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithBruteForce() {
@@ -1072,9 +1111,11 @@ function solveWithBruteForce() {
   showResults(result);
 
   currentAlgorithm = "bruteForce";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithApproxMinSpanTree() {
@@ -1090,9 +1131,11 @@ function solveWithApproxMinSpanTree() {
   showResults(result);
 
   currentAlgorithm = "approxMinSpanTree";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithChristofides() {
@@ -1108,9 +1151,11 @@ function solveWithChristofides() {
   showResults(result);
 
   currentAlgorithm = "christofides";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithIntegerProgrammingDFJ() {
@@ -1126,9 +1171,11 @@ function solveWithIntegerProgrammingDFJ() {
   showResults(result);
 
   currentAlgorithm = "ipdfj";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }
 
 function solveWithIntegerProgrammingMTZ() {
@@ -1144,7 +1191,9 @@ function solveWithIntegerProgrammingMTZ() {
   showResults(result);
 
   currentAlgorithm = "ipmtz";
+  clearElementChildren("pseudocode");
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
+  togglePauseButton();
 }

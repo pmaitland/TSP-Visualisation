@@ -1,10 +1,4 @@
 
-var startingVertex, // must be >= 0 and <= m
-    currentVertex,
-    finalTour,
-    tourLength     = 0,
-    stepsTaken     = [];
-
 var nnPseudocode = [
   "start at a vertex v",
   "mark v as visited and add v to tour",
@@ -20,24 +14,33 @@ var nnPseudocode = [
   moving to each vertices nearest, unvisited neighbour.
  */
 function nearestNeighbour() {
-  let index = Math.floor(Math.random() * (vertices.length));
-  // console.log(vertices.length, index);
-  startingVertex = vertices[index];
-  currentVertex  = startingVertex,
-  finalTour      = [startingVertex],
-  tourLength     = 0,
-  stepsTaken     = [];
+  let index = Math.floor(Math.random() * (vertices.length)),
+      startingVertex = vertices[index],
+      currentVertex  = startingVertex,
+      finalTour      = [startingVertex],
+      tourLength     = 0,
+      unvisitedVertices = JSON.parse(JSON.stringify(vertices));
 
   // fills the main diagonal with Infinity
-  for (let i = 0; i < distances.length; i++) {
+  for (let i = 0; i < vertices.length; i++) {
     distances[i][i] = Infinity;
   }
+
+  // remove the starting vertex from the unvisted vertices
+  let indexToRemove;
+  for (let i = 0; i < unvisitedVertices.length; i++) {
+    if (unvisitedVertices[i].id == startingVertex.id)
+      indexToRemove = i;
+  }
+  unvisitedVertices.splice(indexToRemove, 1);
 
   stepsTaken.push(new StartingVertexStep(0, currentVertex));
   stepsTaken.push(new AddVertexToTourStep(1, currentVertex));
 
-  for (let i = 0; i < distances.length - 1; i++) {
-    let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex);
+  for (let i = 0; i < vertices.length - 1; i++) {
+    stepsTaken.push(new FindingNearestUnvisitedVertexStep(3, currentVertex, JSON.parse(JSON.stringify(unvisitedVertices))));
+    let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex, finalTour, unvisitedVertices);
+    console.log(unvisitedVertices);
     stepsTaken.push(new NearestVertexStep(3, currentVertex, nearestNeighbour));
 
     stepsTaken.push(new ChangeCurrentVertexStep(4, currentVertex, nearestNeighbour));
@@ -70,24 +73,25 @@ function nearestNeighbour() {
   Takes a vertex and returns its nearest neighbour which has not already
   been included in the tour.
  */
-function findNearestUnvisitedNeighbour(v) {
-  let neighbours = distances[v.id],
-      nearest    = v, // infinity
-      unvisitedVertices = [];
+function findNearestUnvisitedNeighbour(vertex, tour, unvisited) {
+  let nearestVertex = vertex,
+      distanceToNearest = distances[vertex.id][vertex.id];
 
-  for (let i = 0; i < distances.length; i++) {
-    if (i < vertices.length) {
-      let n = vertices[i];
-      // console.log(vertices, i, vertices[i]);
-      if (!finalTour.includes(n)) {
-        unvisitedVertices.push(n);
-
-        if (neighbours[n.id] < neighbours[nearest.id])
-          nearest = n;
-      }
+  for (let v of vertices) {
+    if (!tour.includes(v) && distances[vertex.id][v.id] < distanceToNearest) {
+      nearestVertex = v;
+      distanceToNearest = distances[vertex.id][v.id];
     }
   }
 
-  stepsTaken.push(new FindingNearestUnvisitedVertexStep(3, currentVertex, unvisitedVertices));
-  return nearest;
+  let indexToRemove;
+  for (let i = 0; i < unvisited.length; i++) {
+    if (unvisited[i].id == nearestVertex.id) {
+      indexToRemove = i;
+      break;
+    }
+  }
+  unvisited.splice(indexToRemove, 1);
+
+  return nearestVertex;
 }
