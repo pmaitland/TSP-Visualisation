@@ -245,6 +245,7 @@ function togglePauseButton() {
 
 function restartAnimation() {
   currentAnimationStep = 0;
+  document.getElementById("currentStep").innerHTML = currentAnimationStep;
   playingAnimation = false;
   edgesInTour = [];
   edgesInTree = [];
@@ -276,6 +277,7 @@ function endAnimation() {
 
   jumpLogToEnd(currentAnimationStep);
   currentAnimationStep = stepsTaken.length - 1;
+  document.getElementById("currentStep").innerHTML = currentAnimationStep;
   stepForwardAnimation();
 
   for (let step of stepsTaken) {
@@ -379,7 +381,7 @@ function takeStep(currentStep) {
       break;
 
     case FinishedStep:
-      showTour(currentStep.finalTour);
+      showTour(currentStep.finalTour, false);
       break;
 
     case MinSpanTreeStep:
@@ -502,6 +504,7 @@ function stepForwardAnimation() {
 
   enableButtons(document.getElementsByClassName("back-step-btn"));
   currentAnimationStep++;
+  document.getElementById("currentStep").innerHTML = currentAnimationStep;
   showStepInLog(currentStep.toString());
   highlightPseudocode(currentStep.pseudocodeLine);
 }
@@ -700,6 +703,7 @@ function stepBackwardAnimation() {
   }
   enableButtons(document.getElementsByClassName("forward-step-btn"));
   currentAnimationStep -= 1;
+  document.getElementById("currentStep").innerHTML = currentAnimationStep;
   removeStepFromLog();
 }
 
@@ -1021,7 +1025,7 @@ function showResults(results) {
   tourDiv.appendChild(tour);
   resultDiv.appendChild(tourDiv);
 
-  showTourButton.onclick = function() { showTour(results.tour) };
+  showTourButton.onclick = function() { showTour(results.tour, true) };
   showTourButton.appendChild(showTourButtonText);
   resultDiv.appendChild(showTourButton);
 
@@ -1029,9 +1033,21 @@ function showResults(results) {
   resultsDiv.appendChild(br);
 }
 
-function showTour(tour) {
+function showTour(tour, fromResults) {
   playingAnimation = false;
   currentAnimationStep = stepsTaken.length - 1;
+
+  if (fromResults) {
+    currentAnimationStep = 0;
+    stepsTaken = [];
+    currentAlgorithm = "";
+    clearElementChildren("pseudocode");
+    clearElementChildren("stepLog");
+    disableButtons(document.getElementsByClassName("forward-step-btn"));
+    disableButtons(document.getElementsByClassName("back-step-btn"));
+    document.getElementById("currentAlgorithm").innerHTML = "&nbsp";
+    document.getElementById("stepCounter").hidden = true;
+  }
 
   edgesInTour = [];
   edgesInTree = [];
@@ -1039,7 +1055,7 @@ function showTour(tour) {
   edgesInMatchingCurved = [];
   edgesToNearest = [];
   edgesInEulerianTour = [];
-  // edgesWhichShortcut = [];
+  edgesWhichShortcut = [];
   for (let vertex of vertices) {
     vertex.isAt = false;
     vertex.isNearest = false;
@@ -1070,7 +1086,11 @@ function solveWithNearestNeighbour() {
   showResults(result);
 
   currentAlgorithm = "nearestNeighbour";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Nearest Neighbour</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   showPseudocode("nn");
   clearTimeout(timeout);
   playingAnimation = true;
@@ -1091,7 +1111,11 @@ function solveWithBranchAndBound() {
   showResults(result);
 
   currentAlgorithm = "branchAndBound";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Branch and Bound</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -1111,7 +1135,11 @@ function solveWithBruteForce() {
   showResults(result);
 
   currentAlgorithm = "bruteForce";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Brute Force</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -1131,7 +1159,11 @@ function solveWithApproxMinSpanTree() {
   showResults(result);
 
   currentAlgorithm = "approxMinSpanTree";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Approx Min Span Tree</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -1151,7 +1183,11 @@ function solveWithChristofides() {
   showResults(result);
 
   currentAlgorithm = "christofides";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Christofides</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -1171,7 +1207,11 @@ function solveWithIntegerProgrammingDFJ() {
   showResults(result);
 
   currentAlgorithm = "ipdfj";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Integer Programming (DFJ)</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();
@@ -1191,7 +1231,11 @@ function solveWithIntegerProgrammingMTZ() {
   showResults(result);
 
   currentAlgorithm = "ipmtz";
+  document.getElementById("currentAlgorithm").innerHTML = "<b>Integer Programming (MTZ)</b>";
   clearElementChildren("pseudocode");
+  document.getElementById("stepCounter").hidden = false;
+  document.getElementById("totalSteps").innerHTML = stepsTaken.length;
+  document.getElementById("currentStep").innerHTML = "0";
   clearTimeout(timeout);
   playingAnimation = true;
   playAnimation();

@@ -821,5 +821,5 @@ Attempted to fix nearest neighbour.
 
 08/02/19
 
-**10:10-10:25**
-Fixed nearest neighbour.
+**10:10-11:30**
+Fixed nearest neighbour, added step counter to UI and made other small changes to UI.

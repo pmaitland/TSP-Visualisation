@@ -40,7 +40,6 @@ function nearestNeighbour() {
   for (let i = 0; i < vertices.length - 1; i++) {
     stepsTaken.push(new FindingNearestUnvisitedVertexStep(3, currentVertex, JSON.parse(JSON.stringify(unvisitedVertices))));
     let nearestNeighbour = findNearestUnvisitedNeighbour(currentVertex, finalTour, unvisitedVertices);
-    console.log(unvisitedVertices);
     stepsTaken.push(new NearestVertexStep(3, currentVertex, nearestNeighbour));
 
     stepsTaken.push(new ChangeCurrentVertexStep(4, currentVertex, nearestNeighbour));

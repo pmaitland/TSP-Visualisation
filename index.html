@@ -98,23 +98,35 @@
 
         <div id="solve" class="tab-pane fade">
 
-          <b>Exact Algorithms</b>
-          <div class="algorithmButtons">
-            <button type="button" class="btn btn-primary" onclick="solveWithBruteForce();">Brute Force</button>
-            <button type="button" class="btn btn-primary" onclick="solveWithBranchAndBound();">Branch and Bound</button>
+          <div id="algorithmButtonsContainer">
+            <b>Exact Algorithms</b>
+            <div class="algorithmButtons">
+              <button type="button" class="btn btn-primary" onclick="solveWithBruteForce();">Brute Force</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithBranchAndBound();">Branch and Bound</button>
+            </div>
+
+            <b>Approximation Algorithms</b>
+            <div class="algorithmButtons">
+              <button type="button" class="btn btn-primary" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithChristofides();">Christofides</button>
+            </div>
+
+            <b>Integer Programming Formulations</b>
+            <div class="algorithmButtons"> 
+              <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingDFJ();">DFJ</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingMTZ();">MTZ</button>
+            </div>
           </div>
 
-          <b>Approximation Algorithms</b>
-          <div class="algorithmButtons">
-            <button type="button" class="btn btn-primary" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
-            <button type="button" class="btn btn-primary" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
-            <button type="button" class="btn btn-primary" onclick="solveWithChristofides();">Christofides</button>
-          </div>
-
-          <b>Integer Programming Formulations</b>
-          <div class="algorithmButtons"> 
-            <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingDFJ();">DFJ</button>
-            <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingMTZ();">MTZ</button>
+          <div>
+            <span id="currentAlgorithm">&nbsp;</span>
+            <span id="stepCounter" hidden>
+              <span>Step</span>
+              <span id="currentStep"></span>
+              <span>/</span>
+              <span id="totalSteps"></span>
+            </span>
           </div>
 
           <div id="stepLog"></div>

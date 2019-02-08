@@ -76,6 +76,11 @@ b {
   overflow: auto;
 }
 
+#algorithmButtonsContainer {
+  padding-bottom: 5px;
+  border-bottom: solid 1px #c8c7c7;
+}
+
 .algorithmButtons {
   display: grid;
   grid-template-columns: 50% 50%;
