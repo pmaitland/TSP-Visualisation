@@ -821,5 +821,18 @@ Attempted to fix nearest neighbour.
 
 08/02/19
 
-**10:10-11:30**
+**10:10-11:45**
 Fixed nearest neighbour, added step counter to UI and made other small changes to UI.
+
+**14:15-14:55**
+Improved CSS.
+
+**15:15-15:40**
+Continued with changes to CSS.
+
+## Week 22
+
+11/02/19
+
+**10:30-10:50**
+Fixed shortcuts not appearing when stepping backwards and made changes to CSS.

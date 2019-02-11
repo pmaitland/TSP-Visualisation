@@ -448,7 +448,7 @@ function takeStep(currentStep) {
 
     case TakeShortcutStep:
       let shortcut = currentStep.edge;
-
+      console.log(shortcut);
       edgesWhichShortcut.push(shortcut);
 
       for (let v of vertices) {
@@ -490,6 +490,18 @@ function takeStep(currentStep) {
     default:
       break;
   }
+}
+
+function pressStepForward() {
+  playingAnimation = false;
+  togglePauseButton();
+  stepForwardAnimation();
+}
+
+function pressStepBackward() {
+  playingAnimation = false;
+  togglePauseButton();
+  stepBackwardAnimation();
 }
 
 function stepForwardAnimation() {
@@ -604,6 +616,7 @@ function stepBackwardAnimation() {
 
       }
 
+      console.log(edgesWhichShortcut);
       for (let edge of edgesWhichShortcut) {
         removeEdgeFromTour(edge[0].id, edge[1].id);
       }
@@ -985,23 +998,30 @@ function showResults(results) {
   var resultsDiv = document.getElementById("results");
 
   var resultDiv = document.createElement("div"),
+      resultContent = document.createElement("div"),
 
       algNameDiv = document.createElement("div"),
       algNameBold = document.createElement("b"),
-      algName = document.createTextNode(results.id + ". " + results.algName),
+      algName = document.createTextNode(`${results.id}. ${results.algName}`),
 
-      tourLengthDiv = document.createElement("div"),
-      tourLength = document.createTextNode("Tour length: " + results.tourLength),
+      tourLengthSpan = document.createElement("div"),
+      tourLengthBold = document.createElement("b"),
+      tourLengthLabel = document.createTextNode(`Tour length: `),
+      tourLengthValue = document.createTextNode(`${results.tourLength}`),
 
-      elapsedTimeDiv = document.createElement("div"),
-      elapsedTime = document.createTextNode("Elapsed time: " + results.elapsedTime + " ms"),
+      elapsedTimeSpan = document.createElement("div"),
+      elapsedTimeBold = document.createElement("b"),
+      elapsedTimeLabel = document.createTextNode(`Elapsed time: `),
+      elapsedTimeValue = document.createTextNode(`${results.elapsedTime} ms`),
 
       tourDiv = document.createElement("div"),
-      tourText = document.createTextNode("Tour: "),
+      tourBold = document.createElement("b"),
+      tourText = document.createTextNode(`Tour: `),
       tour,
 
-      showTourButton = document.createElement("button")
-      showTourButtonText = document.createTextNode("Display Tour"),
+      showTourButtonWrapper = document.createElement("div"),
+      showTourButton = document.createElement("button"),
+      showTourButtonText = document.createTextNode(`Display Tour`),
 
       br = document.createElement("br");
 
@@ -1015,20 +1035,31 @@ function showResults(results) {
   algNameDiv.appendChild(algNameBold);
   resultDiv.appendChild(algNameDiv);
 
-  tourLengthDiv.appendChild(tourLength);
-  resultDiv.appendChild(tourLengthDiv);
+  tourLengthBold.appendChild(tourLengthLabel);
+  tourLengthSpan.appendChild(tourLengthBold);
+  tourLengthSpan.appendChild(tourLengthValue);
+  resultContent.appendChild(tourLengthSpan);
 
-  elapsedTimeDiv.appendChild(elapsedTime)
-  resultDiv.appendChild(elapsedTimeDiv);
+  elapsedTimeBold.appendChild(elapsedTimeLabel);
+  elapsedTimeSpan.appendChild(elapsedTimeBold)
+  elapsedTimeSpan.appendChild(elapsedTimeValue);
+  resultContent.appendChild(elapsedTimeSpan);
 
-  tourDiv.appendChild(tourText);
+  tourBold.appendChild(tourText);
+  tourDiv.appendChild(tourBold);
   tourDiv.appendChild(tour);
-  resultDiv.appendChild(tourDiv);
+  resultContent.appendChild(tourDiv);
 
   showTourButton.onclick = function() { showTour(results.tour, true) };
+  showTourButton.style.display = "inline-block";
   showTourButton.appendChild(showTourButtonText);
-  resultDiv.appendChild(showTourButton);
+  showTourButtonWrapper.appendChild(showTourButton);
+  resultContent.appendChild(showTourButtonWrapper);
 
+  resultDiv.classList.add("result");
+  showTourButtonWrapper.classList.add("showTourButtonWrapper");
+
+  resultDiv.appendChild(resultContent);
   resultsDiv.appendChild(resultDiv);
   resultsDiv.appendChild(br);
 }
@@ -1055,7 +1086,8 @@ function showTour(tour, fromResults) {
   edgesInMatchingCurved = [];
   edgesToNearest = [];
   edgesInEulerianTour = [];
-  edgesWhichShortcut = [];
+  if (fromResults)
+    edgesWhichShortcut = [];
   for (let vertex of vertices) {
     vertex.isAt = false;
     vertex.isNearest = false;
