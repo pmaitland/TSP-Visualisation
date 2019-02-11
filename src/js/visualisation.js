@@ -17,12 +17,12 @@ var mst = [],
     currentAlgorithm = "";
 
 var distances = [],
-    vertices = [],
-    vertexCount = 0;
+    vertices = [];
 
 var currentTab = 'graph';
 
 var selectedVertex = null,
+    lastSelectedVertex = null,
     showVertexLabels = 0;
 
 var inEuclideanSpace;
@@ -46,7 +46,7 @@ window.onload = function() {
   inEuclideanSpace = true;
   // document.getElementById("euclideanSpace").click();
   // document.getElementById("defaultLabelOption").click();
-  document.getElementById("vertexCount").value = vertexCount;
+  document.getElementById("vertexCount").value = vertices.length;
 
   document.getElementById('file').addEventListener('change', readFile, false);
 };
@@ -102,7 +102,7 @@ function displayDistanceMatrix() {
   }
 
   // fill the top row with vertex labels
-  for (let i = 0; i < vertexCount; i++) {
+  for (let i = 0; i < vertices.length; i++) {
     let vertex = vertices[i];
     cell = labelRow.insertCell(i+1);
     // cell.setAttribute("contenteditable", true);
@@ -114,7 +114,7 @@ function displayDistanceMatrix() {
   }
 
   // create a row for every vertex
-  for (let i = 0; i < vertexCount; i++) {
+  for (let i = 0; i < vertices.length; i++) {
     let row = distanceMatrix.insertRow(i+1);
 
     // insert the vertex label in the first cell of its row
@@ -127,7 +127,7 @@ function displayDistanceMatrix() {
     cell.innerHTML = vertices[i].label;
 
     // fill the rest of the row with distances to other vertices
-    for (let j = 0; j < vertexCount; j++) {
+    for (let j = 0; j < vertices.length; j++) {
       var distanceCell = row.insertCell(j+1);
 
       if (i == j) {
@@ -787,7 +787,6 @@ function changeSpace(evt, space) {
     return;
 
   vertices = [];
-  vertexCount = 0;
   edgesInTour = [];
   edgesInTree = [];
   edgesToNearest = [];
@@ -931,13 +930,12 @@ function createNewVertex(x, y) {
 
   vertices.push(v);
   distances.push([]);
-  for (let i = 0; i < vertexCount; i++) {
+  for (let i = 0; i < vertices.length; i++) {
     let distance = distanceBetween(v, vertices[i]);
     distances[i][id] = distance;
     distances[id][i] = distance;
   }
   distances[id][id] = 0;
-  vertexCount++;
 
   if (vertices.length == 1) {
     displayDistanceMatrix();
@@ -957,7 +955,6 @@ function randomiseVertices() {
   if (count < 3 || count % 1 != 0) return;
 
   vertices = [];
-  vertexCount = 0;
 
   let xMin = 0 + (vertexRadius / 2),
       xMax = canvasWidth - (vertexRadius / 2),
@@ -969,6 +966,57 @@ function randomiseVertices() {
         y = Math.floor(Math.random() * (yMax - yMin + 1)) + yMin;
     createNewVertex(x, y);
   }
+}
+
+function deleteSelectedVertex() {
+  if (lastSelectedVertex == null) return;
+
+  // delete vertex
+  vertices.splice(lastSelectedVertex, 1);
+
+  // remove vertex from distance matrix
+  distances.splice(lastSelectedVertex, 1);
+  for (let d of distances)
+    d.splice(lastSelectedVertex, 1);
+
+  // decrement ids of vertices with ids greater than the
+  // vertex being deleted
+  for (let i = lastSelectedVertex; i < vertices.length; i++) {
+    vertices[i].id--;
+    vertices[i].label = vertices[i].id;
+  }
+
+  // get the distance matrix table
+  let dMatrix;
+  if (inEuclideanSpace)
+    dMatrix= document.getElementById("distanceMatrixEuclidean");
+  else
+    dMatrix = document.getElementById("distanceMatrixNonEuclidean");
+
+  // remove vertex's row in distance matrix
+  dMatrix.deleteRow(lastSelectedVertex + 1);
+
+  // remove vertex's column in distance matrix
+  for (let i = 0; i < dMatrix.rows.length; i++)
+    dMatrix.rows[i].deleteCell(lastSelectedVertex + 1);
+
+  // decrement column headings for vertices with dercremented ids
+  for (let i = lastSelectedVertex; i < dMatrix.rows[0].cells.length; i++) {
+    if (i > 0)
+      dMatrix.rows[0].cells[i].innerHTML = i - 1;
+  }
+
+  // derement row headings for vertices with decremented ids
+  for (let i = lastSelectedVertex; i < dMatrix.rows.length; i++) {
+    if (i > 0)
+      dMatrix.rows[i].cells[0].innerHTML = i - 1;
+  }
+}
+
+function deleteAllVertices() {
+  vertices = [];
+  distances = [];
+  displayDistanceMatrix();
 }
 
 function randomiseNonEuclideanDistances() {

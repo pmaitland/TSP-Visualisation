@@ -72,7 +72,12 @@
           <div>Vertex count: <input type="number" id="randomiseVerticesCount" min="3" step="1"></div>
           <button onclick="randomiseVertices()">Randomise</button>
 
+          <b>Import Instance</b>
           <input type="file" id="file" name="file" enctype="multipart/form-data" />
+
+          <b>Delete</b>
+          <button id="deleteSelectedVertexBtn" onclick="deleteSelectedVertex()">Selected</button>
+          <button id="deleteAllVerticesBtn" onclick="deleteAllVertices()">All</button>
 
           <b>Distance Matrix</b>
           <div class="distanceMatrixWrapper">

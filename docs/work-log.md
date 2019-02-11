@@ -834,5 +834,5 @@ Continued with changes to CSS.
 
 11/02/19
 
-**10:30-10:50**
-Fixed shortcuts not appearing when stepping backwards and made changes to CSS.
+**10:30-12:00**
+Fixed shortcuts not appearing when stepping backwards, made changes to CSS, and allowed vertices to be deleted.

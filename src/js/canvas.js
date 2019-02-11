@@ -391,7 +391,7 @@ function drawNonEuclideanVertexLabels() {
  */
 function mousePressed() {
   var isSelecting = false;
-  // deselect the selected vertex
+  lastSelectedVertex = selectedVertex;
   selectedVertex = null;
 
   for (let v of vertices) {
