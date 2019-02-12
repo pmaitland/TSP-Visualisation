@@ -97,8 +97,9 @@ function draw() {
   }
 }
 
-function createVertices() {
-  for (let i = 0; i < vertexCount; i++) {
+function createVertices(count) {
+  clearAnimation();
+  for (let i = 0; i < count; i++) {
     vertices.push({ id: i, label: i });
   }
 }
@@ -106,7 +107,7 @@ function createVertices() {
 function updateCanvasLayout() {
   for (let vertex of vertices) {
 		var r = Math.min(canvasWidth, windowHeight) * (7/16),
-				angle = (vertex.id / (vertexCount / 2)) * Math.PI,
+				angle = (vertex.id / (vertices.length / 2)) * Math.PI,
 				x = (r * Math.cos(angle)) + (canvasWidth / 2),
 				y = (r * Math.sin(angle)) + (windowHeight / 2),
         nonEuclideanLabelX = ((r + 20) * Math.cos(angle)) + (canvasWidth / 2),

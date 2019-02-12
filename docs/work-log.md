@@ -836,3 +836,25 @@ Continued with changes to CSS.
 
 **10:30-12:00**
 Fixed shortcuts not appearing when stepping backwards, made changes to CSS, and allowed vertices to be deleted.
+
+**13:00-15:00**
+Allowed Euclidean and non Euclidean instances to be saved.
+
+**15:30-17:15**
+Extended importing of files.
+
+**17:30-18:30**
+Continued with importing of files and improved CSS.
+
+---
+
+12/02/19
+
+**10:10-10:55**
+Improved CSS.
+
+**11:00-11:30**
+Supervisor meeting.
+
+**11:35-11:45**
+Cleared results page when graph is changed.

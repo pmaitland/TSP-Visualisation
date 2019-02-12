@@ -69,34 +69,61 @@
           </div>
 
           <b>Randomise Vertices</b>
-          <div>Vertex count: <input type="number" id="randomiseVerticesCount" min="3" step="1"></div>
-          <button onclick="randomiseVertices()">Randomise</button>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="randomiseVerticesCount" min="3" step="1" placeholder="Vertex count">
+            <button class="btn btn-primary" onclick="randomiseVertices()">Randomise</button>
+          </div>
 
           <b>Import Instance</b>
-          <input type="file" id="file" name="file" enctype="multipart/form-data" />
+          <div>
+            <input type="file" name="file" class="graphInput" id="importInstanceEuc" onchange="readFile(event)" enctype="multipart/form-data" />
+          </div>
 
-          <b>Delete</b>
-          <button id="deleteSelectedVertexBtn" onclick="deleteSelectedVertex()">Selected</button>
-          <button id="deleteAllVerticesBtn" onclick="deleteAllVertices()">All</button>
+          <b>Export Instance</b>
+          <div class="column2">
+            <input type="text" class="form-control graphInput" id="saveEuclideanFileName" placeholder="Filename">
+            <button class="btn btn-primary" onclick="saveInstance()">Export</button>
+          </div>
+
+          <b>Delete Vertices</b>
+          <div class="column2">
+            <button class="btn btn-danger" id="deleteSelectedVertexBtn" onclick="deleteSelectedVertex()">Selected Vertex Only</button>
+            <button class="btn btn-danger" id="deleteAllVerticesBtn" onclick="deleteAllVertices()">All Vertices</button>
+          </div>
 
           <b>Distance Matrix</b>
-          <div class="distanceMatrixWrapper">
+          <div class="distanceMatrixWrapperEuc">
             <table id="distanceMatrixEuclidean"></table>
           </div>
         </div>
 
         <div id="graphNonEuclidean" class="tab-pane fade">
-          <div>Number of vertices: <input type="number" id="vertexCount" onblur="changeVertexCount()"></div>
-          <div>Minimum distance: <input type="number" id="minNonEuclideanDistance"></div>
-          <div>Maximum distance: <input type="number" id="maxNonEuclideanDistance"></div>
-          <div>
-            <button id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Randomise Distances</button>
+
+          <b>Change Vertex Count</b>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="vertexCount" onchange="changeVertexCount(-1)" placeholder="Vertex count">
           </div>
 
-          <input type="file" id="file" name="file" enctype="multipart/form-data" />
+          <b>Randomise Distances</b>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="minNonEuclideanDistance" placeholder="Maximum distance">
+            <input type="number" class="form-control graphInput" id="maxNonEuclideanDistance" placeholder="Minimum distance">
+          </div>
+          <div class="column2">
+            <button class="btn btn-primary" id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Randomise Distances</button>
+          </div>
+
+          <b>Import Instance</b>
+          <input type="file" class="graphInput" name="file" onchange="readFile(event)" enctype="multipart/form-data" />
+
+          <b>Export Instance</b>
+          <div class="column2">
+            <input type="text" class="graphInput" id="saveNonEuclideanFileName" placeholder="Filename">
+            <button class="btn btn-primary" onclick="saveInstance()">Save</button>
+          </div>
 
           <b>Distance Matrix</b>
-          <div class="distanceMatrixWrapper">
+          <div class="distanceMatrixWrapperNonEuc">
             <table id="distanceMatrixNonEuclidean"></table>
           </div>
         </div>
@@ -105,20 +132,20 @@
 
           <div id="algorithmButtonsContainer">
             <b>Exact Algorithms</b>
-            <div class="algorithmButtons">
+            <div class="column2">
               <button type="button" class="btn btn-primary" onclick="solveWithBruteForce();">Brute Force</button>
               <button type="button" class="btn btn-primary" onclick="solveWithBranchAndBound();">Branch and Bound</button>
             </div>
 
             <b>Approximation Algorithms</b>
-            <div class="algorithmButtons">
+            <div class="column2">
               <button type="button" class="btn btn-primary" onclick="solveWithNearestNeighbour();">Nearest Neighbour</button>
               <button type="button" class="btn btn-primary" onclick="solveWithApproxMinSpanTree();">Approx Min Span Tree</button>
               <button type="button" class="btn btn-primary" onclick="solveWithChristofides();">Christofides</button>
             </div>
 
             <b>Integer Programming Formulations</b>
-            <div class="algorithmButtons"> 
+            <div class="column2"> 
               <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingDFJ();">DFJ</button>
               <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingMTZ();">MTZ</button>
             </div>

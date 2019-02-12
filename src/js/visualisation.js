@@ -8,7 +8,7 @@ var stepsTaken = [],
     edgesInMatching = [],
     edgesInMatchingCurved = [],
     edgesInEulerianTour = [],
-    edgesWhichShortcut = []
+    edgesWhichShortcut = [],
     edgesBetweenNonAdjacent = [];
 
 var mst = [],
@@ -41,21 +41,112 @@ window.onload = function() {
   let number = Math.floor(Math.random() * 5);
   document.getElementById("favicon").href = `assets/favicons/favicon${number}.ico`;
 
-  // document.getElementById("inputTab").click();
   changeShowLabels();
   inEuclideanSpace = true;
-  // document.getElementById("euclideanSpace").click();
-  // document.getElementById("defaultLabelOption").click();
-  document.getElementById("vertexCount").value = vertices.length;
 
-  document.getElementById('file').addEventListener('change', readFile, false);
+  document.getElementById("vertexCount").value = vertices.length;
 };
 
-function changeVertexCount() {
-  vertices = [];
-  vertexCount = document.getElementById("vertexCount").value;
+function saveInstance() {
+  var filename;
+  var text;
 
-  createVertices();
+  if (inEuclideanSpace) {
+    filename = `${document.getElementById("saveEuclideanFileName").value}`;
+    filename = filename.replace(/\s/g, "");
+    filename = filename.split(/\W+/)[0];
+    if (filename.length == 0) filename = "TSP-Instance";
+    if (!filename.endsWith(".tsp")) filename += ".tsp";
+
+    text = generateEuclideanFileContent(filename);
+  } else {
+    filename = `${document.getElementById("saveNonEuclideanFileName").value}`;
+    filename = filename.replace(/\s/g, "");
+    filename = filename.split(/\W+/)[0];
+    if (filename.length == 0) filename = "TSP-Instance";
+    if (!filename.endsWith(".tsp")) filename += ".tsp";
+
+    text = generateNonEuclideanFileContent(filename);
+  }
+
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
+function generateEuclideanFileContent(filename) {
+  var name                  = `NAME: ${filename}`;
+  var type                  = `TYPE: TSP`;
+  var comment               = `COMMENT: Generated using https://pmaitland.github.io/TSP-Visualisation/`;
+  var dimension             = `DIMENSION: ${vertices.length}`;
+  var edgeWeightType        = `EDGE_WEIGHT_TYPE: EUC_2D`;
+  var nodeCoordType         = `NODE_COORD_TYPE: TWOD_COORDS`;
+  var nodeCoordSectionLabel = `NODE_COORD_SECTION`;
+
+  var nodeCoordSection = ``;
+  for (let v of vertices)
+    nodeCoordSection += `${v.id} ${v.x} ${v.y}\n`;
+
+  var text = name + "\n"
+              + type + "\n"
+              + comment + "\n"
+              + dimension + "\n"
+              + edgeWeightType + "\n"
+              + nodeCoordType + "\n"
+              + nodeCoordSectionLabel + "\n"
+              + nodeCoordSection;
+  return text;
+}
+
+function generateNonEuclideanFileContent(filename) {
+  var name                   = `NAME: ${filename}`;
+  var type                   = `TYPE: TSP`;
+  var comment                = `COMMENT: Generated using https://pmaitland.github.io/TSP-Visualisation/`;
+  var dimension              = `DIMENSION: ${vertices.length}`;
+  var edgeWeightType         = `EDGE_WEIGHT_TYPE: EXPLICIT`;
+  var edgeWeightFormat       = `EDGE_WEIGHT_FORMAT: FULL_MATRIX`;
+  var edgeWeightSectionLabel = `EDGE_WEIGHT_SECTION`
+
+  var lengthOfMaxDistance = getLengthOfMaxDistance();
+
+  var edgeWeightSection = ``;
+  for (let distanceArray of distances) {
+    for (let distance of distanceArray) {
+      let whiteSpaceCount = lengthOfMaxDistance - distance.toString().length;
+      for (let i = 0; i < whiteSpaceCount; i++)
+        edgeWeightSection += ` `;
+      edgeWeightSection += `${distance} `;
+    }
+    edgeWeightSection += `\n`;
+  }
+
+  var text = name + "\n"
+              + type + "\n"
+              + comment + "\n"
+              + dimension + "\n"
+              + edgeWeightType + "\n"
+              + edgeWeightFormat + "\n"
+              + edgeWeightSectionLabel + "\n"
+              + edgeWeightSection;
+  return text;
+}
+
+function getLengthOfMaxDistance() {
+  var maxRow = distances.map(function(row){ return Math.max.apply(Math, row); });
+  var max = Math.max.apply(null, maxRow);
+  return max.toString().length;
+}
+
+function changeVertexCount(count) {
+  vertices = [];
+  if (count < 0)
+    count = document.getElementById("vertexCount").value;
+
+  createVertices(count);
   updateCanvasLayout();
   resetDistances();
   displayDistanceMatrix();
@@ -803,7 +894,7 @@ function changeSpace(evt, space) {
   } else if (space == 'nonEuclidean') {
     inEuclideanSpace = false;
     document.getElementById("vertexCount").value = 3;
-    changeVertexCount();
+    changeVertexCount(3);
   }
 }
 
@@ -916,7 +1007,45 @@ function updateMousePosition() {
   }
 }
 
+function clearAnimation() {
+  clearElementChildren("results");
+  clearElementChildren("stepLog");
+
+  document.getElementById("currentAlgorithm").innerHTML = '&nbsp';
+  document.getElementById("stepCounter").hidden = true;
+
+  stepsTaken = [];
+  currentAnimationStep = 0;
+  playingAnimation = false;
+  edgesInTour = [];
+  edgesInTree = [];
+  edgesToNearest = [];
+  edgesInMatching = [];
+  edgesInMatchingCurved = [];
+  edgesInEulerianTour = [];
+  edgesWhichShortcut = [];
+  edgesBetweenNonAdjacent = [];
+
+  mst = [];
+  eulTour = [];
+  firstVertex = -1;
+  currentAlgorithm = "";
+
+  for (let v of vertices) {
+    v.isAt = false;
+    v.isNearest = false;
+    v.isPartOfTour = false;
+    v.isInTree = false;
+    v.isOddDegree = false;
+    v.isWaiting = false;
+    v.isStart = false;
+    v.isPartOfEulerianTour = false;
+  }
+}
+
 function createNewVertex(x, y) {
+  clearAnimation();
+
   var id = Math.max.apply(Math, vertices.map(function(v) { return v.id; })) + 1;
   if (id == -Infinity) id = 0;
 

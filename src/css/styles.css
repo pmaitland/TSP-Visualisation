@@ -76,12 +76,37 @@ b {
   overflow: auto;
 }
 
+.graphInput {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#randomiseVerticesCount {
+  width: 95%;
+}
+
+#saveEuclideanFileName {
+  width: 95%;
+}
+
+#minNonEuclideanDistance {
+  width: 95%;
+}
+
+#maxNonEuclideanDistance {
+  width: 95%;
+}
+
+#vertexCount {
+  width: 95%;
+}
+
 #algorithmButtonsContainer {
   padding-bottom: 5px;
   border-bottom: solid 1px #c8c7c7;
 }
 
-.algorithmButtons {
+.column2 {
   display: grid;
   grid-template-columns: 50% 50%;
   padding-bottom: 5px;
@@ -91,12 +116,20 @@ b {
   margin: 5px 5px 5px 5px;
 }
 
-.distanceMatrixWrapper {
+.distanceMatrixWrapperEuc {
   overflow: auto;
   width: 90%;
   margin: auto;
   flex-grow : 1;
-  max-height: 55vh;
+  max-height: 45vh;
+}
+
+.distanceMatrixWrapperNonEuc {
+  overflow: auto;
+  width: 90%;
+  margin: auto;
+  flex-grow : 1;
+  max-height: 42vh;
 }
 
 #stepLog {
