@@ -1145,6 +1145,7 @@ function deleteSelectedVertex() {
 function deleteAllVertices() {
   vertices = [];
   distances = [];
+  clearAnimation();
   displayDistanceMatrix();
 }
 

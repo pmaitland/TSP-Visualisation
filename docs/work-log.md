@@ -858,3 +858,109 @@ Supervisor meeting.
 
 **11:35-11:45**
 Cleared results page when graph is changed.
+
+**16:45-17:30**
+Listed possible future work, features to be user tested, and requirements for correctness testing.
+
+**17:55-18:15**
+Began plan for dissertation.
+
+---
+
+13/02/19
+
+**14:20-15:40**
+Read 'Hall of fame' dissertations and set up Overleaf.
+
+---
+
+14/02/19
+
+**16:00-17:00**
+Looked at user testing.
+
+## Week 23
+
+18/02/19
+
+**10:20-13:00**
+Continued with user testing.
+
+**14:10-15:20**
+Began working on correctness testing.
+
+---
+
+19/02/19
+
+**10:00-10:25**
+Continued with correctness testing and prepared for supervisor meeting.
+
+**10:30-11:00**
+Supervisor meeting.
+
+**11:30-12:44**
+Continued with user testing.
+
+**13:30-15:30**
+Continued with user testing.
+
+**16:10-16:40**
+Continued with correctness testing.
+
+---
+
+21/02/19
+
+**10:40-11:00**
+Continued with user testing.
+
+---
+
+24/02/19
+
+**21:30-22:00**
+Continued with user testing.
+
+## Week 24
+
+25/02/19
+
+**10:00-11:55**
+Dissertation (background and requirements).
+
+**13:30-14:55**
+Dissertation (requirements).
+
+---
+
+26/02/19
+
+**10:05-11:55**
+Dissertation (plan) and prepared for supervisor meeting.
+
+**11:05-11:45**
+Supervisor meeting.
+
+**13:20-16:50**
+Dissertation (plan) and correctness testing.
+
+---
+
+27/02/19
+
+**09:55-13:00**
+Correctness testing.
+
+**14:55-15:20**
+Correctness testing.
+
+**15:25-17:00**
+Correctness testing.
+
+---
+
+28/02/19
+
+**12:00-**
+Correctness testing.

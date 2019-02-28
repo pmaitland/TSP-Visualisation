@@ -37,6 +37,8 @@ function christofides() {
 
   matchings = matchings.concat(sharedMatchings);
 
+  console.log(matchings);
+
   for (let m of matchings) {
     adj[m[0].id].push(m[1]);
     adj[m[1].id].push(m[0]);
