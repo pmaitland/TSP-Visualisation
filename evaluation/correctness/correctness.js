@@ -9,9 +9,13 @@ var fileText = "";
 
 var testInstances;
 
-var maxBfVertexCount = 10,
+var maxBfVertexCount = 11,
     maxBbVertexCount = 15,
-    maxNnVertexCount = 100;
+    maxNnVertexCount = 500
+    maxApVertexCount = 500,
+    maxChVertexCount = 100,
+    maxDFJVertexCount = 15,
+    maxMTZVertexCount = 10;
 
 window.onload = function() {
   testInstances = [
@@ -27,6 +31,12 @@ window.onload = function() {
 
 function runAll() {
   runAllBf();
+  runAllBb();
+  runAllNn();
+  runAllAp();
+  runAllCh();
+  runAllDFJ();
+  runAllMTZ();
 }
 
 function downloadResults(filename) {
@@ -45,7 +55,7 @@ function runAllBf() {
   fileText = "";
   for (let instance of testInstances)
     if (instance.vertexCount <= maxBfVertexCount) runBf(instance);
-  downloadResults(`BruteForce${numIters}.txt`);
+  downloadResults(`BruteForce${maxBfVertexCount}${numIters}.txt`);
 }
 
 function runBf(instance) {
@@ -82,7 +92,7 @@ function runAllBb() {
   fileText = "";
   for (let instance of testInstances)
     if (instance.vertexCount <= maxBbVertexCount) runBb(instance);
-  downloadResults(`BranchAndBound${numIters}.txt`);
+  downloadResults(`BranchAndBound${maxBbVertexCount}${numIters}.txt`);
 }
 
 function runBb(instance) {
@@ -119,7 +129,7 @@ function runAllNn() {
   fileText = "";
   for (let instance of testInstances)
     if (instance.vertexCount <= maxNnVertexCount) runNn(instance);
-  downloadResults(`NearestNeighbour${numIters}.txt`);
+  downloadResults(`NearestNeighbour${maxNnVertexCount}${numIters}.txt`);
 }
 
 function runNn(instance) {
@@ -140,6 +150,150 @@ function validateNn(result, instance) {
   if (result.tour[0] != result.tour[result.tour.length - 1])
     errors += `Tour does not start and return and same vertex. `;
 
+  if (errors.length == 0)
+    fileText += "✓ ";
+  else {
+    fileText += "✘ ";
+    fileText += errors;
+  }
+}
+
+// APPROX MIN SPAN TREE
+
+function runAllAp() {
+  fileText = "";
+  for (let instance of testInstances)
+    if (instance.vertexCount <= maxApVertexCount) runNn(instance);
+  downloadResults(`ApproxMinSpanTree${maxApVertexCount}${numIters}.txt`);
+}
+
+function runAp(instance) {
+  fileText += `\n${instance.name}:`;
+
+  vertices  = generateVertices(instance.vertexCount);
+  distances = instance.distances;
+
+  for (let i = 0; i < numIters; i++)
+    validateNn(approxMinSpanTree(), instance);
+}
+
+function validateAp(result, instance) {
+  var errors = "";
+
+  if (result.tour.length-1 != instance.vertexCount)
+    errors += `Tour array only includes ${result.tour.length} vertices. `;
+  if (result.tour[0] != result.tour[result.tour.length - 1])
+    errors += `Tour does not start and return and same vertex. `;
+  if (result.tourLength > 2 * instance.optimalTourLength)
+    errors += `Tour length is more than 2x optimal. `;
+
+  if (errors.length == 0)
+    fileText += "✓ ";
+  else {
+    fileText += "✘ ";
+    fileText += errors;
+  }
+}
+
+// CHRISTOFIDES
+
+function runAllCh() {
+  fileText = "";
+  for (let instance of testInstances)
+    if (instance.vertexCount <= maxChVertexCount) runCh(instance);
+  downloadResults(`Christofides${maxChVertexCount}${numIters}.txt`);
+}
+
+function runCh(instance) {
+  fileText += `\n${instance.name}:`;
+
+  vertices  = generateVertices(instance.vertexCount);
+  distances = instance.distances;
+
+  for (let i = 0; i < numIters; i++)
+    validateNn(christofides(), instance);
+}
+
+function validateCh(result, instance) {
+  var errors = "";
+
+  if (result.tour.length-1 != instance.vertexCount)
+    errors += `Tour array only includes ${result.tour.length} vertices. `;
+  if (result.tour[0] != result.tour[result.tour.length - 1])
+    errors += `Tour does not start and return and same vertex. `;
+  if (result.tourLength > 1.5 * instance.optimalTourLength)
+    errors += `Tour length is more than 1.5x optimal. `;
+
+  if (errors.length == 0)
+    fileText += "✓ ";
+  else {
+    fileText += "✘ ";
+    fileText += errors;
+  }
+}
+
+// DFJ
+
+function runAllDFJ() {
+  fileText = "";
+  for (let instance of testInstances)
+    if (instance.vertexCount <= maxDFJVertexCount) runDFJ(instance);
+  downloadResults(`DFJ${maxDFJVertexCount}${numIters}.txt`);
+}
+
+function runDFJ(instance) {
+  fileText += `\n${instance.name}:`;
+
+  vertices  = generateVertices(instance.vertexCount);
+  distances = instance.distances;
+
+  for (let i = 0; i < numIters; i++)
+    validateNn(integerProgrammingDFJ(), instance);
+}
+
+function validateDFJ(result, instance) {
+  var errors = "";
+
+  if (result.tour.length-1 != instance.vertexCount)
+    errors += `Tour array only includes ${result.tour.length} vertices. `;
+  if (result.tour[0] != result.tour[result.tour.length - 1])
+    errors += `Tour does not start and return and same vertex. `;
+
+  if (errors.length == 0)
+    fileText += "✓ ";
+  else {
+    fileText += "✘ ";
+    fileText += errors;
+  }
+}
+
+// MTZ
+
+function runAllMTZ() {
+  fileText = "";
+  for (let instance of testInstances)
+    if (instance.vertexCount <= maxMTZVertexCount) runMTZ(instance);
+  downloadResults(`MTZ${maxMTZVertexCount}${numIters}.txt`);
+}
+
+function runMTZ(instance) {
+  fileText += `\n${instance.name}:`;
+
+  vertices  = generateVertices(instance.vertexCount);
+  distances = instance.distances;
+
+  for (let i = 0; i < numIters; i++)
+    validateNn(integerProgrammingMTZ(), instance);
+}
+
+function validateMTZ(result, instance) {
+  var errors = "";
+
+  if (result.tour.length-1 != instance.vertexCount)
+    errors += `Tour array only includes ${result.tour.length} vertices. `;
+  if (result.tour[0] != result.tour[result.tour.length - 1])
+    errors += `Tour does not start and return and same vertex. `;
+  
   if (errors.length == 0)
     fileText += "✓ ";
   else {
