@@ -965,5 +965,108 @@ Correctness testing.
 **12:00-13:00**
 Correctness testing.
 
-**14:00-**
+**14:00-15:00**
 Correctness testing.
+
+---
+
+02/03/19
+
+**13:00-15:30**
+Correctness testing.
+
+## Week 25
+
+04/02/19
+
+**10:55-11:15**
+Dissertation.
+
+**12:35-13:25**
+Dissertation.
+
+**21:20-23:30**
+Dissertation.
+
+---
+
+05/02/19
+
+**09:20-10:25**
+Dissertation (algorithm background).
+
+**10:30-11:00**
+Supervisor meeting.
+
+---
+
+06/03/19
+
+**09:50-12:10**
+Dissertation.
+
+**13:25-15:00**
+Dissertation.
+
+## Week 26
+
+11/03/19
+
+**14:00-17:30**
+Dissertation.
+
+---
+
+12/03/19
+
+**14:30-19:00**
+Dissertation.
+
+---
+
+13/03/19
+
+**11:00-11:20**
+Dissertation.
+
+**12:30-13:20**
+Supervisor meeting.
+
+**13:30-17:00**
+Dissertation.
+
+---
+
+14/03/19
+
+**13:00-17:00**
+Dissertation.
+
+**19:00-19:30**
+Dissertation.
+
+## Week 27
+
+18/03/19
+
+**10:20-13:00**
+Dissertation.
+
+**14:10-17:00**
+Dissertation.
+
+---
+
+19/03/19
+
+**09:40-09:55**
+Prepared for supervisor meeting.
+
+**10:05-10:55**
+Supervisor meeting.
+
+**11:05-13:00**
+Experimental testing.
+
+**14:00-20:00**
+Experimental testing and dissertation.
