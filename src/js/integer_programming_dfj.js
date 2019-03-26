@@ -92,7 +92,7 @@ function integerProgrammingDFJ() {
     }
   }
 
-  // console.log(model);
+  console.log(model);
 
   model = solver.ReformatLP(model);
   results = solver.Solve(model);

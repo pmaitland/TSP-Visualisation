@@ -1,0 +1,4 @@
+instance_id,instance_size,min_span_tree_weight,algorithm_id,tour_length,runtime
+0,15,2449.11138154533,5,3261.5354714701475,1638.0999996326864
+instance_id,instance_size,min_span_tree_weight,algorithm_id,tour_length,runtime
+1,15,2714.0255093496517,5,3354.8874466161524,1606.5050000324845

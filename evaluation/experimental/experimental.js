@@ -9,35 +9,35 @@ var fileText = "";
 
 var testInstances;
 
-var numberOfInstances = 5;
+var numberOfInstances = 10;
 var instanceSizes = [
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  20,
-  25,
-  30,
-  50,
-  100,
-  150,
-  200,
-  300,
-  500,
-  750,
-  1000,
-  1250,
+  // 4,
+  // 5,
+  // 6,
+  // 7,
+  // 8,
+  // 9,
+  // 10,
+  // 11,
+  // 12,
+  // 13,
+  // 14,
+  // 15,
+  // 20,
+  // 25,
+  // 30,
+  // 50,
+  // 100,
+  // 150,
+  // 175,
+  // 200,
+  // 300,
+  // 500,
+  // 750,
+  // 1000,
+  // 1250,
   1500,
-  2000,
-  5000
+  // 2000
 ];
 
 const BRUTE_FORCE_ID        = 0,
@@ -48,13 +48,13 @@ const BRUTE_FORCE_ID        = 0,
       DFJ_ID                = 5,
       MTZ_ID                = 6;
 
-const MAX_BF_VERTEX_COUNT  = 5,
-      MAX_BB_VERTEX_COUNT  = 8,
-      MAX_NN_VERTEX_COUNT  = 8,
-      MAX_AP_VERTEX_COUNT  = 8,
-      MAX_CH_VERTEX_COUNT  = 8,
-      MAX_DFJ_VERTEX_COUNT = 8,
-      MAX_MTZ_VERTEX_COUNT = 8;
+const MAX_BF_VERTEX_COUNT  = 11,
+      MAX_BB_VERTEX_COUNT  = 20,
+      MAX_NN_VERTEX_COUNT  = 2000,
+      MAX_AP_VERTEX_COUNT  = 2000,
+      MAX_CH_VERTEX_COUNT  = 175,
+      MAX_DFJ_VERTEX_COUNT = 15,
+      MAX_MTZ_VERTEX_COUNT = 11;
 
 var instanceID = 0;
 
@@ -71,25 +71,52 @@ window.onload = function() {
 };
 
 function runAll() {
-  fileText += `instance_id,instance_size,algorithm_id,tour_length,runtime\n`;
+//   fileText = `instance_id,instance_size,min_span_tree_weight,algorithm_id,tour_length,runtime\n`;
 
   for (let i = 0; i < instanceSizes.length; i++) {
     for(let j = 0; j < numberOfInstances; j++) {
       let instance = generateEuclideanInstance(instanceSizes[i]);
       instance.id = instanceID;
+      let mst = minSpanTree();
+      instance.mstWeight = mst.weight;
 
-      if (instance.vertexCount <= MAX_BF_VERTEX_COUNT) runBf(instance);
+      // if (instance.vertexCount <= MAX_BF_VERTEX_COUNT) runBf(instance);
       // if (instance.vertexCount <= MAX_BB_VERTEX_COUNT) runBb(instance);
-      // if (instance.vertexCount <= MAX_NN_VERTEX_COUNT) runNn(instance);
+      if (instance.vertexCount <= MAX_NN_VERTEX_COUNT) runNn(instance);
       // if (instance.vertexCount <= MAX_AP_VERTEX_COUNT) runAp(instance);
       // if (instance.vertexCount <= MAX_CH_VERTEX_COUNT) runCh(instance);
       // if (instance.vertexCount <= MAX_DFJ_VERTEX_COUNT) runDFJ(instance);
       // if (instance.vertexCount <= MAX_MTZ_VERTEX_COUNT) runMTZ(instance);
+
       instanceID++;
     }
   }
 
-  downloadResults(`all.csv`);
+//   downloadResults(`all.csv`);
+
+  var resultsDiv = document.getElementById("results");
+  var instanceNum = 0;
+
+  for (let i = 0; i < instanceSizes.length; i++) {
+    for(let j = 0; j < numberOfInstances; j++) {
+      // if (instanceSizes[i] <= MAX_BF_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${BRUTE_FORCE_ID}`)} <br />`;
+      // if (instanceSizes[i] <= MAX_BB_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${BRANCH_AND_BOUND_ID}`)} <br />`;
+      if (instanceSizes[i] <= MAX_NN_VERTEX_COUNT)
+        resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${NEAREST_NEIGHBOUR_ID}`)} <br />`;
+      // if (instanceSizes[i] <= MAX_AP_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${APPROX_SPAN_TREE_ID}`)} <br />`;
+      // if (instanceSizes[i] <= MAX_CH_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${CHRISTOFIDES_ID}`)} <br />`;
+      // if (instanceSizes[i] <= MAX_DFJ_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${DFJ_ID}`)} <br />`;
+      // if (instanceSizes[i] <= MAX_MTZ_VERTEX_COUNT)
+      //   resultsDiv.innerHTML += `${localStorage.getItem(`${instanceNum}_${MTZ_ID}`)} <br />`;
+
+      instanceNum++;
+    }
+  }
 }
 
 function downloadResults(filename) {
@@ -108,7 +135,10 @@ function runBf(instance) {
   let t0 = performance.now();
   let result = bruteForce();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${BRUTE_FORCE_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${BRUTE_FORCE_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${BRUTE_FORCE_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${BRUTE_FORCE_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // BRANCH AND BOUND
@@ -117,7 +147,10 @@ function runBb(instance) {
   let t0 = performance.now();
   let result = branchAndBound();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${BRANCH_AND_BOUND_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${BRANCH_AND_BOUND_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${BRANCH_AND_BOUND_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${BRANCH_AND_BOUND_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // NEAREST NEIGHBOUR
@@ -126,7 +159,10 @@ function runNn(instance) {
   let t0 = performance.now();
   let result = nearestNeighbour();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${NEAREST_NEIGHBOUR_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${NEAREST_NEIGHBOUR_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${NEAREST_NEIGHBOUR_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${NEAREST_NEIGHBOUR_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // APPROX MIN SPAN TREE
@@ -135,7 +171,10 @@ function runAp(instance) {
   let t0 = performance.now();
   let result = approxMinSpanTree();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${APPROX_SPAN_TREE_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${APPROX_SPAN_TREE_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${APPROX_SPAN_TREE_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${APPROX_SPAN_TREE_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // CHRISTOFIDES
@@ -144,7 +183,10 @@ function runCh(instance) {
   let t0 = performance.now();
   let result = christofides();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${CHRISTOFIDES_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${CHRISTOFIDES_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${CHRISTOFIDES_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${CHRISTOFIDES_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // DFJ
@@ -153,7 +195,10 @@ function runDFJ(instance) {
   let t0 = performance.now();
   let result = integerProgrammingDFJ();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${DFJ_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${DFJ_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${DFJ_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${DFJ_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // MTZ
@@ -162,7 +207,10 @@ function runMTZ(instance) {
   let t0 = performance.now();
   let result = integerProgrammingMTZ();
   let t1 = performance.now();
-  fileText += `${instance.id},${instance.vertexCount},${MTZ_ID},${result.tourLength},${t1-t0}\n`;
+
+  // fileText += `${instance.id},${instance.vertexCount},${instance.mstWeight},${MTZ_ID},${result.tourLength},${t1-t0}\n`;
+
+  localStorage.setItem(`${instance.id}_${MTZ_ID}`, `${instance.id},${instance.vertexCount},${instance.mstWeight},${MTZ_ID},${result.tourLength},${t1-t0}\n`);
 }
 
 // INSTANCE SETUP
