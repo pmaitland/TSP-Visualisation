@@ -3,16 +3,16 @@ var distances;
 
 var stepsTaken = [];
 
-var numIters = 1000;
+var numIters = 500;
 
 var fileText = "";
 
 var testInstances;
 
-var maxBfVertexCount = 11,
+var maxBfVertexCount = 10,
     maxBbVertexCount = 15,
-    maxNnVertexCount = 500
-    maxApVertexCount = 500,
+    maxNnVertexCount = 150,
+    maxApVertexCount = 150,
     maxChVertexCount = 100,
     maxDFJVertexCount = 15,
     maxMTZVertexCount = 10;
