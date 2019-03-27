@@ -1069,4 +1069,37 @@ Supervisor meeting.
 Experimental testing.
 
 **14:00-20:00**
+Experimental testing, dissertation, and presentation.
+
+---
+
+20/03/19
+
+**12:30-18:00**
+Experimental testing and presentation.
+
+**18:30-22:30**
+Experimental testing and presentation.
+
+---
+
+21/03/19
+
+**10:20-12:00**
+Presentation.
+
+**13:00-14:50**
+Presentation.
+
+**15:20-17:00**
+Presentations.
+
+---
+
+22/03/19
+
+**11:30-12:10**
+Experimental testing.
+
+**13:20-16:05**
 Experimental testing and dissertation.
